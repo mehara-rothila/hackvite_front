@@ -9,53 +9,128 @@ export default function LandingPage() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      const x = e.clientX / window.innerWidth
+      const y = e.clientY / window.innerHeight
+      
       document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`)
       document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
+      document.documentElement.style.setProperty('--mouse-x-percent', `${x * 100}%`)
+      document.documentElement.style.setProperty('--mouse-y-percent', `${y * 100}%`)
     }
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  const floatingParticles = Array.from({ length: 60 }, (_, i) => ({
+  // Enhanced particle system with multiple types
+  const floatingParticles = Array.from({ length: 40 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
     animationDelay: Math.random() * 20,
     size: Math.random() * 4 + 2,
+    type: 'standard'
+  }))
+
+  const glowParticles = Array.from({ length: 15 }, (_, i) => ({
+    id: i + 100,
+    left: Math.random() * 100,
+    animationDelay: Math.random() * 25,
+    size: Math.random() * 8 + 4,
+    type: 'glow'
+  }))
+
+  const morphingOrbs = Array.from({ length: 5 }, (_, i) => ({
+    id: i + 200,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    animationDelay: Math.random() * 30,
+    size: Math.random() * 200 + 100,
   }))
 
   const features = [
     {
-      emoji: '💬',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <path d="M13 8H7"/>
+          <path d="M17 12H7"/>
+        </svg>
+      ),
       title: 'Smart Messaging',
       desc: 'Real-time communication with intelligent categorization, file sharing, and conversation threading.',
       gradient: 'feature-gradient-1'
     },
     {
-      emoji: '🤖',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="10" rx="2" ry="2"/>
+          <circle cx="7" cy="8" r="1"/>
+          <path d="M9 8h8"/>
+          <path d="M9 12h6"/>
+          <path d="M12 16l2 2 4-4"/>
+        </svg>
+      ),
       title: 'AI Assistant',
       desc: 'EduBot provides instant answers, suggests responses, and offers personalized learning recommendations.',
       gradient: 'feature-gradient-2'
     },
     {
-      emoji: '📅',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+          <path d="M8 14h.01"/>
+          <path d="M12 14h.01"/>
+          <path d="M16 14h.01"/>
+          <path d="M8 18h.01"/>
+          <path d="M12 18h.01"/>
+        </svg>
+      ),
       title: 'Smart Scheduling',
       desc: 'Intelligent appointment booking with automatic conflict detection and calendar integration.',
       gradient: 'feature-gradient-3'
     },
     {
-      emoji: '📊',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+          <circle cx="18" cy="7" r="3"/>
+          <circle cx="6" cy="11" r="3"/>
+          <circle cx="12" cy="1" r="3"/>
+        </svg>
+      ),
       title: 'Analytics & Insights',
       desc: 'Comprehensive dashboards showing engagement metrics, response times, and learning patterns.',
       gradient: 'feature-gradient-4'
     },
     {
-      emoji: '📁',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10,9 9,9 8,9"/>
+        </svg>
+      ),
       title: 'Resource Management',
       desc: 'Centralized library for course materials, assignments, and collaborative document sharing.',
       gradient: 'feature-gradient-5'
     },
     {
-      emoji: '📱',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+          <circle cx="12" cy="10" r="2"/>
+          <path d="M8 10h.01"/>
+          <path d="M16 10h.01"/>
+        </svg>
+      ),
       title: 'Mobile-First Design',
       desc: 'Progressive Web App with offline capabilities, ensuring access anywhere, anytime.',
       gradient: 'feature-gradient-6'
@@ -70,15 +145,42 @@ export default function LandingPage() {
 
   return (
     <div className="main-container">
-      {/* Animated Background */}
+      {/* Enhanced Animated Background */}
       <div className="animated-background"></div>
       
-      {/* Floating Particles */}
+      {/* Noise Texture Overlay */}
+      <div className="noise-overlay"></div>
+      
+      {/* Wave Background Layers */}
+      <div className="wave-layers">
+        <div className="wave-layer wave-1"></div>
+        <div className="wave-layer wave-2"></div>
+        <div className="wave-layer wave-3"></div>
+      </div>
+
+      {/* Morphing Gradient Orbs */}
+      <div className="morphing-orbs">
+        {morphingOrbs.map((orb) => (
+          <div
+            key={orb.id}
+            className="morphing-orb"
+            style={{
+              left: `${orb.left}%`,
+              top: `${orb.top}%`,
+              width: `${orb.size}px`,
+              height: `${orb.size}px`,
+              animationDelay: `${orb.animationDelay}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Enhanced Floating Particles */}
       <div className="particles-container">
         {floatingParticles.map((particle) => (
           <div
             key={particle.id}
-            className="particle"
+            className={`particle particle-${particle.type}`}
             style={{
               left: `${particle.left}%`,
               animationDelay: `${particle.animationDelay}s`,
@@ -88,18 +190,37 @@ export default function LandingPage() {
             }}
           />
         ))}
+        {glowParticles.map((particle) => (
+          <div
+            key={particle.id}
+            className={`particle particle-${particle.type}`}
+            style={{
+              left: `${particle.left}%`,
+              animationDelay: `${particle.animationDelay}s`,
+              animationDuration: `${20 + Math.random() * 15}s`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+            }}
+          />
+        ))}
       </div>
 
-      {/* Geometric Shapes */}
+      {/* Enhanced Geometric Shapes with Parallax */}
       <div className="geometric-shapes">
-        <div className="shape shape-1" style={{ animationDuration: '20s' }}></div>
-        <div className="shape shape-2" style={{ animationDuration: '25s' }}></div>
-        <div className="shape shape-3" style={{ animationDuration: '30s' }}></div>
-        <div className="shape shape-4" style={{ animationDuration: '35s' }}></div>
-        <div className="shape shape-5" style={{ animationDuration: '40s' }}></div>
-        <div className="shape shape-6" style={{ animationDuration: '45s' }}></div>
-        <div className="shape shape-7" style={{ animationDuration: '22s' }}></div>
-        <div className="shape shape-8" style={{ animationDuration: '28s' }}></div>
+        <div className="shape-layer layer-1">
+          <div className="shape shape-1" style={{ animationDuration: '20s' }}></div>
+          <div className="shape shape-2" style={{ animationDuration: '25s' }}></div>
+          <div className="shape shape-3" style={{ animationDuration: '30s' }}></div>
+        </div>
+        <div className="shape-layer layer-2">
+          <div className="shape shape-4" style={{ animationDuration: '35s' }}></div>
+          <div className="shape shape-5" style={{ animationDuration: '40s' }}></div>
+        </div>
+        <div className="shape-layer layer-3">
+          <div className="shape shape-6" style={{ animationDuration: '45s' }}></div>
+          <div className="shape shape-7" style={{ animationDuration: '22s' }}></div>
+          <div className="shape shape-8" style={{ animationDuration: '28s' }}></div>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -182,7 +303,7 @@ export default function LandingPage() {
           <div className="features-grid">
             {features.map((feature, index) => (
               <div key={index} className={`feature-card ${feature.gradient}`}>
-                <div className="feature-icon">{feature.emoji}</div>
+                <div className="feature-icon-svg">{feature.icon}</div>
                 <h3 className="feature-title">{feature.title}</h3>
                 <p className="feature-desc">{feature.desc}</p>
               </div>
@@ -231,7 +352,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Enhanced Footer */}
+      {/* Enhanced Mobile Responsive Footer */}
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
@@ -239,7 +360,7 @@ export default function LandingPage() {
             <div className="footer-main">
               <div className="footer-sections">
                 {/* Company Info */}
-                <div className="footer-section">
+                <div className="footer-section footer-brand">
                   <div className="footer-logo">
                     <div className="logo-icon">
                       <span>E</span>
@@ -310,19 +431,6 @@ export default function LandingPage() {
                     <li><a href="#webinars" className="footer-link">Webinars</a></li>
                     <li><a href="#community" className="footer-link">Community</a></li>
                     <li><a href="#status" className="footer-link">System Status</a></li>
-                  </ul>
-                </div>
-
-                {/* Company */}
-                <div className="footer-section">
-                  <h4 className="footer-title">Company</h4>
-                  <ul className="footer-links">
-                    <li><a href="#about" className="footer-link">About Us</a></li>
-                    <li><a href="#careers" className="footer-link">Careers</a></li>
-                    <li><a href="#press" className="footer-link">Press</a></li>
-                    <li><a href="#contact" className="footer-link">Contact</a></li>
-                    <li><a href="#partners" className="footer-link">Partners</a></li>
-                    <li><a href="#investors" className="footer-link">Investors</a></li>
                   </ul>
                 </div>
 
