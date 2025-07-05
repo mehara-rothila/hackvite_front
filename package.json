@@ -4,7 +4,13 @@
   "private": true,
   "description": "Educational Communication Platform - Bridge the gap between students and lecturers",
   "author": "HackVite Team",
-  "keywords": ["education", "communication", "nextjs", "typescript", "ai-assistant"],
+  "keywords": [
+    "education",
+    "communication",
+    "nextjs",
+    "typescript",
+    "ai-assistant"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
