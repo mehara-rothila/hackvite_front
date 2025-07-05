@@ -6,11 +6,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
-  // FIX: Removed unused 'selectedRole' state. It was set but never read.
+  // FIX: Removed unused 'selectedRole' state.
   const router = useRouter()
 
   const handleRoleSelect = (role: 'student' | 'lecturer') => {
-    // Navigate to role-specific registration
+    // The state was not needed as the router navigates away immediately.
     router.push(`/register/${role}`)
   }
 

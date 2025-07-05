@@ -35,7 +35,7 @@ export default function LecturerQueries() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortBy, setSortBy] = useState('priority')
   const [selectedQueries, setSelectedQueries] = useState<string[]>([])
-  // FIX: Removed unused 'showBulkActions' state. The bulk actions UI is controlled by `selectedQueries.length > 0`.
+  // FIX: Removed unused 'showBulkActions' state variable.
   const router = useRouter()
 
   // Mock queries data
@@ -145,7 +145,6 @@ export default function LecturerQueries() {
     }
   ]
 
-  // FIX: Added missing dependency `mockQueries`.
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
     
@@ -157,7 +156,7 @@ export default function LecturerQueries() {
     setUser(currentUser as LecturerUser)
     setQueries(mockQueries)
     setLoading(false)
-  }, [router, mockQueries])
+  }, [router, mockQueries]) // FIX: Added missing dependency
 
   const handleLogout = () => {
     AuthService.logout()
@@ -243,7 +242,7 @@ export default function LecturerQueries() {
     // Mock bulk action handling
     console.log(`Performing ${action} on queries:`, selectedQueries)
     setSelectedQueries([])
-    // FIX: Removed call to setShowBulkActions as the state is no longer used.
+    // FIX: Removed call to setShowBulkActions(false) as the state is no longer used.
   }
 
   const handleSelectQuery = (queryId: string) => {
