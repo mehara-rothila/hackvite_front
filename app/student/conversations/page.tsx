@@ -1,7 +1,7 @@
 // app/student/conversations/page.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { AuthService } from '../../../lib/auth'
@@ -30,11 +30,10 @@ export default function StudentConversations() {
   const [selectedFilter, setSelectedFilter] = useState('all')
   const [sortBy, setSortBy] = useState('recent')
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [showFilters, setShowFilters] = useState(false)
   const router = useRouter()
 
-  // Mock conversation data
-  const mockConversations: Conversation[] = [
+  // Move mock conversation data to useMemo to prevent re-creation on every render
+  const mockConversations: Conversation[] = useMemo(() => [
     {
       id: 'conv-001',
       lecturerName: 'Dr. Sarah Johnson',
@@ -125,7 +124,7 @@ export default function StudentConversations() {
       status: 'resolved',
       avatar: 'JM'
     }
-  ]
+  ], [])
 
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
@@ -138,7 +137,7 @@ export default function StudentConversations() {
     setUser(currentUser as StudentUser)
     setConversations(mockConversations)
     setLoading(false)
-  }, [router, mockConversations]) // FIX: Added missing dependency
+  }, [router, mockConversations])
 
   const handleLogout = () => {
     AuthService.logout()
@@ -330,15 +329,6 @@ export default function StudentConversations() {
                 <option value="priority">Priority</option>
                 <option value="name">Lecturer Name</option>
               </select>
-
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors md:hidden"
-              >
-                <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-                </svg>
-              </button>
             </div>
           </div>
 

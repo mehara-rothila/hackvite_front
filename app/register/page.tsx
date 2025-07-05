@@ -1,12 +1,10 @@
 // app/register/page.tsx
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
-  // FIX: Removed unused 'selectedRole' state.
   const router = useRouter()
 
   const handleRoleSelect = (role: 'student' | 'lecturer') => {

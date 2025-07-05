@@ -5,6 +5,30 @@ import { User, StudentUser, LecturerUser, LoginFormData } from '../types'
 export const AUTH_STORAGE_KEY = 'edulink_user'
 export const SESSION_STORAGE_KEY = 'edulink_session'
 
+// Define proper types for form data
+interface StudentRegistrationData {
+  email: string
+  firstName: string
+  lastName: string
+  studentId: string
+  university: string
+  department: string
+  yearOfStudy: string
+}
+
+interface LecturerRegistrationData {
+  email: string
+  firstName: string
+  lastName: string
+  title: string
+  employeeId: string
+  university: string
+  department: string
+  specialization: string
+  officeLocation: string
+  phoneNumber: string
+}
+
 // Mock authentication utilities
 export class AuthService {
   // Check if user is authenticated
@@ -74,7 +98,7 @@ export class AuthService {
   }
 
   // Mock registration for students
-  static async registerStudent(formData: any): Promise<{ success: boolean; user?: StudentUser; error?: string }> {
+  static async registerStudent(formData: StudentRegistrationData): Promise<{ success: boolean; user?: StudentUser; error?: string }> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const mockUser: StudentUser = {
@@ -99,7 +123,7 @@ export class AuthService {
   }
 
   // Mock registration for lecturers
-  static async registerLecturer(formData: any): Promise<{ success: boolean; user?: LecturerUser; error?: string }> {
+  static async registerLecturer(formData: LecturerRegistrationData): Promise<{ success: boolean; user?: LecturerUser; error?: string }> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const mockUser: LecturerUser = {
@@ -250,7 +274,11 @@ export const useAuth = () => {
 }
 
 // Route protection helpers
-export const redirectIfAuthenticated = (router: any) => {
+interface Router {
+  push: (path: string) => void
+}
+
+export const redirectIfAuthenticated = (router: Router) => {
   if (AuthService.isAuthenticated()) {
     const user = AuthService.getCurrentUser()
     if (user?.role === 'student') {
@@ -261,7 +289,7 @@ export const redirectIfAuthenticated = (router: any) => {
   }
 }
 
-export const redirectIfNotAuthenticated = (router: any) => {
+export const redirectIfNotAuthenticated = (router: Router) => {
   if (!AuthService.isAuthenticated()) {
     router.push('/login')
   }

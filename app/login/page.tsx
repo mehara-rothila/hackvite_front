@@ -101,8 +101,7 @@ export default function LoginPage() {
                 placeholder="Enter your email"
               />
               <p className="text-xs text-gray-500 mt-1">
-                {/* FIX: Escaped double quotes */}
-                Use "student@university.edu" for student access or "prof@university.edu" for lecturer access
+                Use &quot;student@university.edu&quot; for student access or &quot;prof@university.edu&quot; for lecturer access
               </p>
             </div>
 
@@ -171,8 +170,7 @@ export default function LoginPage() {
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              {/* FIX: Escaped apostrophe */}
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/register" className="text-blue-600 hover:text-blue-700 font-medium">
                 Sign up for free
               </Link>

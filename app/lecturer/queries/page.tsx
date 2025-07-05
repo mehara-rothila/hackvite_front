@@ -26,6 +26,113 @@ interface Query {
   lastActivity: string
 }
 
+// Mock queries data (moved outside component to prevent re-creation on render)
+const mockQueries: Query[] = [
+  {
+    id: 'query-001',
+    studentName: 'Alice Johnson',
+    studentId: 'S123456',
+    subject: 'Assignment 3 Algorithm Complexity',
+    content: 'I\'m struggling with understanding the time complexity analysis for the sorting algorithms in Assignment 3. Could you provide some guidance on how to approach the Big O analysis?',
+    courseCode: 'CS401',
+    courseName: 'Advanced Algorithms',
+    timestamp: '2024-01-15T09:30:00Z',
+    priority: 'high',
+    status: 'pending',
+    category: 'academic',
+    tags: ['assignment', 'algorithms', 'complexity'],
+    attachments: 2,
+    studentYear: '4th',
+    lastActivity: '2024-01-15T09:30:00Z'
+  },
+  {
+    id: 'query-002',
+    studentName: 'Mark Chen',
+    studentId: 'S789012',
+    subject: 'Project Extension Request',
+    content: 'Due to unexpected family circumstances, I need to request a 3-day extension for the software engineering project. I have completed 80% of the work and can provide documentation.',
+    courseCode: 'CS350',
+    courseName: 'Software Engineering',
+    timestamp: '2024-01-14T16:45:00Z',
+    priority: 'medium',
+    status: 'in-progress',
+    category: 'administrative',
+    tags: ['extension', 'project', 'deadline'],
+    attachments: 1,
+    studentYear: '3rd',
+    lastActivity: '2024-01-15T08:20:00Z'
+  },
+  {
+    id: 'query-003',
+    studentName: 'Sarah Williams',
+    studentId: 'S345678',
+    subject: 'Clarification on Exam Format',
+    content: 'Could you clarify the format of the upcoming midterm exam? Will it include coding questions, and are we allowed to use any reference materials?',
+    courseCode: 'CS201',
+    courseName: 'Data Structures',
+    timestamp: '2024-01-14T11:20:00Z',
+    priority: 'medium',
+    status: 'resolved',
+    responseTime: '2 hours',
+    category: 'academic',
+    tags: ['exam', 'format', 'midterm'],
+    attachments: 0,
+    studentYear: '2nd',
+    lastActivity: '2024-01-14T13:30:00Z'
+  },
+  {
+    id: 'query-004',
+    studentName: 'David Rodriguez',
+    studentId: 'S567890',
+    subject: 'Research Opportunity Inquiry',
+    content: 'I\'m interested in undergraduate research opportunities in machine learning. Could we schedule a meeting to discuss potential projects and requirements?',
+    courseCode: 'CS499',
+    courseName: 'Independent Study',
+    timestamp: '2024-01-13T14:15:00Z',
+    priority: 'low',
+    status: 'pending',
+    category: 'academic',
+    tags: ['research', 'machine-learning', 'meeting'],
+    attachments: 1,
+    studentYear: '4th',
+    lastActivity: '2024-01-13T14:15:00Z'
+  },
+  {
+    id: 'query-005',
+    studentName: 'Emily Brown',
+    studentId: 'S234567',
+    subject: 'Technical Issue with Lab Environment',
+    content: 'I\'m experiencing issues accessing the lab servers for the database project. The connection keeps timing out when I try to connect from home.',
+    courseCode: 'CS340',
+    courseName: 'Database Systems',
+    timestamp: '2024-01-13T10:30:00Z',
+    priority: 'urgent',
+    status: 'escalated',
+    category: 'technical',
+    tags: ['lab', 'server', 'connection', 'database'],
+    attachments: 3,
+    studentYear: '3rd',
+    lastActivity: '2024-01-13T15:45:00Z'
+  },
+  {
+    id: 'query-006',
+    studentName: 'Michael Kim',
+    studentId: 'S678901',
+    subject: 'Grade Review Request',
+    content: 'I would like to request a review of my grade for the recent programming assignment. I believe there may have been an error in the grading of the documentation section.',
+    courseCode: 'CS250',
+    courseName: 'Programming Languages',
+    timestamp: '2024-01-12T15:20:00Z',
+    priority: 'medium',
+    status: 'in-progress',
+    category: 'administrative',
+    tags: ['grade', 'review', 'assignment'],
+    attachments: 2,
+    studentYear: '2nd',
+    lastActivity: '2024-01-13T09:10:00Z'
+  }
+]
+
 export default function LecturerQueries() {
   const [user, setUser] = useState<LecturerUser | null>(null)
   const [loading, setLoading] = useState(true)
@@ -35,115 +142,7 @@ export default function LecturerQueries() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortBy, setSortBy] = useState('priority')
   const [selectedQueries, setSelectedQueries] = useState<string[]>([])
-  // FIX: Removed unused 'showBulkActions' state variable.
   const router = useRouter()
-
-  // Mock queries data
-  const mockQueries: Query[] = [
-    {
-      id: 'query-001',
-      studentName: 'Alice Johnson',
-      studentId: 'S123456',
-      subject: 'Assignment 3 Algorithm Complexity',
-      content: 'I\'m struggling with understanding the time complexity analysis for the sorting algorithms in Assignment 3. Could you provide some guidance on how to approach the Big O analysis?',
-      courseCode: 'CS401',
-      courseName: 'Advanced Algorithms',
-      timestamp: '2024-01-15T09:30:00Z',
-      priority: 'high',
-      status: 'pending',
-      category: 'academic',
-      tags: ['assignment', 'algorithms', 'complexity'],
-      attachments: 2,
-      studentYear: '4th',
-      lastActivity: '2024-01-15T09:30:00Z'
-    },
-    {
-      id: 'query-002',
-      studentName: 'Mark Chen',
-      studentId: 'S789012',
-      subject: 'Project Extension Request',
-      content: 'Due to unexpected family circumstances, I need to request a 3-day extension for the software engineering project. I have completed 80% of the work and can provide documentation.',
-      courseCode: 'CS350',
-      courseName: 'Software Engineering',
-      timestamp: '2024-01-14T16:45:00Z',
-      priority: 'medium',
-      status: 'in-progress',
-      category: 'administrative',
-      tags: ['extension', 'project', 'deadline'],
-      attachments: 1,
-      studentYear: '3rd',
-      lastActivity: '2024-01-15T08:20:00Z'
-    },
-    {
-      id: 'query-003',
-      studentName: 'Sarah Williams',
-      studentId: 'S345678',
-      subject: 'Clarification on Exam Format',
-      content: 'Could you clarify the format of the upcoming midterm exam? Will it include coding questions, and are we allowed to use any reference materials?',
-      courseCode: 'CS201',
-      courseName: 'Data Structures',
-      timestamp: '2024-01-14T11:20:00Z',
-      priority: 'medium',
-      status: 'resolved',
-      responseTime: '2 hours',
-      category: 'academic',
-      tags: ['exam', 'format', 'midterm'],
-      attachments: 0,
-      studentYear: '2nd',
-      lastActivity: '2024-01-14T13:30:00Z'
-    },
-    {
-      id: 'query-004',
-      studentName: 'David Rodriguez',
-      studentId: 'S567890',
-      subject: 'Research Opportunity Inquiry',
-      content: 'I\'m interested in undergraduate research opportunities in machine learning. Could we schedule a meeting to discuss potential projects and requirements?',
-      courseCode: 'CS499',
-      courseName: 'Independent Study',
-      timestamp: '2024-01-13T14:15:00Z',
-      priority: 'low',
-      status: 'pending',
-      category: 'academic',
-      tags: ['research', 'machine-learning', 'meeting'],
-      attachments: 1,
-      studentYear: '4th',
-      lastActivity: '2024-01-13T14:15:00Z'
-    },
-    {
-      id: 'query-005',
-      studentName: 'Emily Brown',
-      studentId: 'S234567',
-      subject: 'Technical Issue with Lab Environment',
-      content: 'I\'m experiencing issues accessing the lab servers for the database project. The connection keeps timing out when I try to connect from home.',
-      courseCode: 'CS340',
-      courseName: 'Database Systems',
-      timestamp: '2024-01-13T10:30:00Z',
-      priority: 'urgent',
-      status: 'escalated',
-      category: 'technical',
-      tags: ['lab', 'server', 'connection', 'database'],
-      attachments: 3,
-      studentYear: '3rd',
-      lastActivity: '2024-01-13T15:45:00Z'
-    },
-    {
-      id: 'query-006',
-      studentName: 'Michael Kim',
-      studentId: 'S678901',
-      subject: 'Grade Review Request',
-      content: 'I would like to request a review of my grade for the recent programming assignment. I believe there may have been an error in the grading of the documentation section.',
-      courseCode: 'CS250',
-      courseName: 'Programming Languages',
-      timestamp: '2024-01-12T15:20:00Z',
-      priority: 'medium',
-      status: 'in-progress',
-      category: 'administrative',
-      tags: ['grade', 'review', 'assignment'],
-      attachments: 2,
-      studentYear: '2nd',
-      lastActivity: '2024-01-13T09:10:00Z'
-    }
-  ]
 
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
@@ -156,7 +155,7 @@ export default function LecturerQueries() {
     setUser(currentUser as LecturerUser)
     setQueries(mockQueries)
     setLoading(false)
-  }, [router, mockQueries]) // FIX: Added missing dependency
+  }, [router])
 
   const handleLogout = () => {
     AuthService.logout()
@@ -242,7 +241,6 @@ export default function LecturerQueries() {
     // Mock bulk action handling
     console.log(`Performing ${action} on queries:`, selectedQueries)
     setSelectedQueries([])
-    // FIX: Removed call to setShowBulkActions(false) as the state is no longer used.
   }
 
   const handleSelectQuery = (queryId: string) => {
