@@ -1,7 +1,7 @@
 // app/student/conversations/[id]/page.tsx
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { AuthService } from '../../../../lib/auth'
@@ -53,7 +53,6 @@ export default function ConversationDetail() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [isDragging, setIsDragging] = useState(false)
   const [replyingTo, setReplyingTo] = useState<Message | null>(null)
-  const [showMessageActions, setShowMessageActions] = useState<string | null>(null)
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -63,8 +62,8 @@ export default function ConversationDetail() {
   const params = useParams()
   const conversationId = params.id as string
 
-  // Mock conversation data
-  const mockConversation: ConversationDetails = {
+  // Move mock data to useMemo to prevent re-creation
+  const mockConversation: ConversationDetails = useMemo(() => ({
     id: conversationId,
     lecturerName: 'Dr. Sarah Johnson',
     lecturerTitle: 'Dr.',
@@ -75,10 +74,9 @@ export default function ConversationDetail() {
     lastSeen: '2024-01-15T10:30:00Z',
     avatar: 'SJ',
     status: 'active'
-  }
+  }), [conversationId])
 
-  // Mock messages data
-  const mockMessages: Message[] = [
+  const mockMessages: Message[] = useMemo(() => [
     {
       id: 'msg-001',
       senderId: 'student-123',
@@ -136,7 +134,7 @@ export default function ConversationDetail() {
       type: 'text',
       status: 'delivered'
     }
-  ]
+  ], [])
 
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
@@ -150,7 +148,7 @@ export default function ConversationDetail() {
     setConversation(mockConversation)
     setMessages(mockMessages)
     setLoading(false)
-  }, [router, conversationId])
+  }, [router, conversationId, mockConversation, mockMessages])
 
   useEffect(() => {
     scrollToBottom()

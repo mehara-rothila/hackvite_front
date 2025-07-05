@@ -1,6 +1,13 @@
 // next.config.ts
 import type { NextConfig } from 'next'
-import withPWA from 'next-pwa'
+
+// Fix TypeScript issue with next-pwa by importing it properly
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development'
+})
 
 const nextConfig: NextConfig = {
   images: {
@@ -35,11 +42,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-const config = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development'
-})(nextConfig)
-
-export default config
+export default withPWA(nextConfig)
