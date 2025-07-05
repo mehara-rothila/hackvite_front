@@ -1,666 +1,391 @@
-// app/page.tsx
 'use client'
-
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import './styles.css'
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [scrollY, setScrollY] = useState(0)
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`)
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
     }
-    
-    const handleScroll = () => setScrollY(window.scrollY)
-    
     window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('scroll', handleScroll)
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Create floating elements
-  const floatingElements = Array.from({ length: 30 }, (_, i) => ({
+  const floatingParticles = Array.from({ length: 60 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
-    top: Math.random() * 100,
-    delay: Math.random() * 5,
-    duration: 3 + Math.random() * 4,
-    size: 20 + Math.random() * 40,
+    animationDelay: Math.random() * 20,
+    size: Math.random() * 4 + 2,
   }))
 
+  const features = [
+    {
+      emoji: '💬',
+      title: 'Smart Messaging',
+      desc: 'Real-time communication with intelligent categorization, file sharing, and conversation threading.',
+      gradient: 'feature-gradient-1'
+    },
+    {
+      emoji: '🤖',
+      title: 'AI Assistant',
+      desc: 'EduBot provides instant answers, suggests responses, and offers personalized learning recommendations.',
+      gradient: 'feature-gradient-2'
+    },
+    {
+      emoji: '📅',
+      title: 'Smart Scheduling',
+      desc: 'Intelligent appointment booking with automatic conflict detection and calendar integration.',
+      gradient: 'feature-gradient-3'
+    },
+    {
+      emoji: '📊',
+      title: 'Analytics & Insights',
+      desc: 'Comprehensive dashboards showing engagement metrics, response times, and learning patterns.',
+      gradient: 'feature-gradient-4'
+    },
+    {
+      emoji: '📁',
+      title: 'Resource Management',
+      desc: 'Centralized library for course materials, assignments, and collaborative document sharing.',
+      gradient: 'feature-gradient-5'
+    },
+    {
+      emoji: '📱',
+      title: 'Mobile-First Design',
+      desc: 'Progressive Web App with offline capabilities, ensuring access anywhere, anytime.',
+      gradient: 'feature-gradient-6'
+    }
+  ]
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('Newsletter signup:', email)
+    setEmail('')
+  }
+
   return (
-    <>
-      {/* CSS Animations */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-          }
-          
-          @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-          }
-          
-          @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          
-          @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-          }
-          
-          @keyframes bubble {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
-          }
-          
-          .floating-animation {
-            animation: float 6s ease-in-out infinite;
-          }
-          
-          .pulse-animation {
-            animation: pulse 4s ease-in-out infinite;
-          }
-          
-          .slide-up {
-            animation: slideInUp 0.8s ease-out forwards;
-          }
-          
-          .fade-in {
-            animation: fadeIn 1s ease-out forwards;
-          }
-          
-          .gradient-bg {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-          }
-          
-          .bubble {
-            animation: bubble 8s linear infinite;
-          }
-          
-          .glassmorphism {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-          }
-          
-          .text-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-          }
-          
-          .hover-lift {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          }
-          
-          .hover-lift:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-          }
-          
-          @media (min-width: 768px) {
-            .md-flex { display: flex !important; }
-            .md-hidden { display: none !important; }
-            .md-block { display: block !important; }
-          }
-        `
-      }} />
+    <div className="main-container">
+      {/* Animated Background */}
+      <div className="animated-background"></div>
+      
+      {/* Floating Particles */}
+      <div className="particles-container">
+        {floatingParticles.map((particle) => (
+          <div
+            key={particle.id}
+            className="particle"
+            style={{
+              left: `${particle.left}%`,
+              animationDelay: `${particle.animationDelay}s`,
+              animationDuration: `${15 + Math.random() * 10}s`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+            }}
+          />
+        ))}
+      </div>
 
-      <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-        {/* Animated Background */}
-        <div 
-          className="gradient-bg"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: -3,
-            opacity: 0.1
-          }}
-        />
+      {/* Geometric Shapes */}
+      <div className="geometric-shapes">
+        <div className="shape shape-1" style={{ animationDuration: '20s' }}></div>
+        <div className="shape shape-2" style={{ animationDuration: '25s' }}></div>
+        <div className="shape shape-3" style={{ animationDuration: '30s' }}></div>
+        <div className="shape shape-4" style={{ animationDuration: '35s' }}></div>
+        <div className="shape shape-5" style={{ animationDuration: '40s' }}></div>
+        <div className="shape shape-6" style={{ animationDuration: '45s' }}></div>
+        <div className="shape shape-7" style={{ animationDuration: '22s' }}></div>
+        <div className="shape shape-8" style={{ animationDuration: '28s' }}></div>
+      </div>
 
-        {/* Mouse Follower Effect */}
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.15), transparent 40%)`,
-          zIndex: -2,
-          pointerEvents: 'none',
-          transition: 'background 0.3s ease'
-        }} />
-
-        {/* Floating Bubbles */}
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: -1,
-          pointerEvents: 'none'
-        }}>
-          {floatingElements.map((element) => (
-            <div
-              key={element.id}
-              className="bubble pulse-animation"
-              style={{
-                position: 'absolute',
-                left: `${element.left}%`,
-                top: `${element.top}%`,
-                width: `${element.size}px`,
-                height: `${element.size}px`,
-                background: `linear-gradient(45deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3))`,
-                borderRadius: '50%',
-                animationDelay: `${element.delay}s`,
-                animationDuration: `${element.duration}s`,
-                filter: 'blur(1px)'
-              }}
-            />
-          ))}
+      {/* Navigation */}
+      <nav className="navbar">
+        <div className="nav-container">
+          <div className="logo-container">
+            <div className="logo-icon">
+              <span>E</span>
+            </div>
+            <span className="logo-text">EduLink Pro</span>
+          </div>
+          
+          <div className="desktop-nav nav-links">
+            <Link href="#features" className="nav-link">Features</Link>
+            <Link href="#pricing" className="nav-link">Pricing</Link>
+            <Link href="#about" className="nav-link">About</Link>
+            <Link href="#contact" className="nav-link">Contact</Link>
+            <Link href="/login" className="btn btn-primary">Get Started</Link>
+          </div>
+          
+          <button 
+            className="mobile-only mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                    d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+          </button>
         </div>
-
-        {/* Geometric Shapes */}
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: -1,
-          pointerEvents: 'none'
-        }}>
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="floating-animation"
-              style={{
-                position: 'absolute',
-                width: `${80 + i * 15}px`,
-                height: `${80 + i * 15}px`,
-                border: `2px solid rgba(${100 + i * 20}, ${120 + i * 15}, 255, 0.2)`,
-                borderRadius: i % 3 === 0 ? '50%' : i % 3 === 1 ? '0' : '25%',
-                top: `${5 + i * 12}%`,
-                left: `${3 + i * 11}%`,
-                animationDelay: `${i * 0.5}s`,
-                transform: `rotate(${i * 45}deg)`
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Navigation */}
-        <nav className="glassmorphism" style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-        }}>
-          <div style={{
-            maxWidth: '80rem',
-            margin: '0 auto',
-            padding: '0 1rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            height: '4rem'
-          }}>
-            {/* Logo */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div className="pulse-animation" style={{
-                width: '2.5rem',
-                height: '2.5rem',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                borderRadius: '0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 25px rgba(102, 126, 234, 0.5)'
-              }}>
-                <span style={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>E</span>
+        
+        {mobileMenuOpen && (
+          <div className="mobile-nav">
+            <div className="mobile-nav-content">
+              <Link href="#features" className="mobile-nav-link">Features</Link>
+              <Link href="#pricing" className="mobile-nav-link">Pricing</Link>
+              <Link href="#about" className="mobile-nav-link">About</Link>
+              <Link href="#contact" className="mobile-nav-link">Contact</Link>
+              <div className="mobile-cta">
+                <Link href="/login" className="btn btn-primary" style={{ width: '100%' }}>Get Started</Link>
               </div>
-              <span style={{ 
-                marginLeft: '0.75rem', 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold',
-                background: 'linear-gradient(135deg, #1f2937 0%, #667eea 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                EduLink Pro
-              </span>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="md-flex">
-              {['Features', 'About'].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="hover-lift"
-                  style={{
-                    color: '#6b7280',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem',
-                    fontWeight: '600',
-                    textDecoration: 'none',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#667eea'
-                    e.currentTarget.style.background = 'rgba(102, 126, 234, 0.1)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#6b7280'
-                    e.currentTarget.style.background = 'transparent'
-                  }}
-                >
-                  {item}
-                </a>
-              ))}
-              <Link
-                href="/login"
-                className="hover-lift"
-                style={{
-                  color: '#6b7280',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  textDecoration: 'none'
-                }}
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="hover-lift"
-                style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '0.75rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  textDecoration: 'none',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-              >
-                Get Started ✨
-              </Link>
-            </div>
-
-            {/* Mobile menu button */}
-            <div style={{ display: 'block' }} className="md-hidden">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="hover-lift"
-                style={{
-                  color: '#6b7280',
-                  padding: '0.5rem',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: '0.5rem'
-                }}
-              >
-                <svg style={{ height: '1.5rem', width: '1.5rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
             </div>
           </div>
+        )}
+      </nav>
 
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="glassmorphism fade-in" style={{
-              borderTop: '1px solid rgba(255, 255, 255, 0.2)'
-            }}>
-              <div style={{ padding: '1rem' }}>
-                {['Features', 'About', 'Login'].map((item) => (
-                  <a
-                    key={item}
-                    href={item === 'Login' ? '/login' : `#${item.toLowerCase()}`}
-                    style={{
-                      display: 'block',
-                      color: '#6b7280',
-                      padding: '0.75rem',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      fontWeight: '500',
-                      textDecoration: 'none',
-                      marginBottom: '0.5rem'
-                    }}
-                  >
-                    {item}
-                  </a>
-                ))}
-                <Link
-                  href="/register"
-                  style={{
-                    display: 'block',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    padding: '0.75rem',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    textDecoration: 'none',
-                    textAlign: 'center'
-                  }}
-                >
-                  Get Started ✨
-                </Link>
-              </div>
-            </div>
-          )}
-        </nav>
-
-        {/* Hero Section */}
-        <section style={{
-          padding: '6rem 1rem',
-          position: 'relative',
-          textAlign: 'center',
-          background: 'linear-gradient(135deg, rgba(240, 249, 255, 0.8) 0%, rgba(224, 242, 254, 0.8) 100%)'
-        }}>
-          <div style={{
-            maxWidth: '80rem',
-            margin: '0 auto'
-          }}>
-            <div className="slide-up" style={{ animationDelay: '0.2s' }}>
-              <h1 style={{
-                fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-                fontWeight: 'bold',
-                marginBottom: '2rem',
-                lineHeight: '1.1'
-              }}>
-                Bridge the Gap Between{' '}
-                <span className="text-gradient">
-                  Students & Lecturers
-                </span>
-              </h1>
-            </div>
-            
-            <p className="slide-up" style={{
-              fontSize: '1.25rem',
-              color: '#6b7280',
-              marginBottom: '3rem',
-              maxWidth: '50rem',
-              margin: '0 auto 3rem auto',
-              animationDelay: '0.4s'
-            }}>
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="container">
+          <div className="hero-content">
+            <h1 className="hero-title">
+              Revolutionize Educational <span className="highlight">Communication</span>
+            </h1>
+            <p className="hero-subtitle">
               EduLink Pro revolutionizes educational communication with AI-powered insights, 
               seamless messaging, smart scheduling, and collaborative learning tools.
             </p>
-            
-            <div className="slide-up" style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-              justifyContent: 'center',
-              alignItems: 'center',
-              animationDelay: '0.6s'
-            }}>
-              <Link
-                href="/register"
-                className="hover-lift pulse-animation"
-                style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  padding: '1.25rem 2.5rem',
-                  borderRadius: '1rem',
-                  fontSize: '1.25rem',
-                  fontWeight: '700',
-                  textDecoration: 'none',
-                  boxShadow: '0 15px 35px rgba(102, 126, 234, 0.5)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-              >
-                <span>Start Free Trial</span>
-                <span style={{ marginLeft: '0.5rem', fontSize: '1.5rem' }}>🚀</span>
+            <div className="hero-buttons">
+              <Link href="/register" className="btn btn-hero-primary">
+                Start Free Trial
               </Link>
-              
-              <button className="glassmorphism hover-lift" style={{
-                color: '#374151',
-                padding: '1.25rem 2.5rem',
-                borderRadius: '1rem',
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                cursor: 'pointer',
-                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)'
-              }}>
-                <span>Watch Demo</span>
-                <span style={{ marginLeft: '0.5rem', fontSize: '1.5rem' }}>🎥</span>
-              </button>
+              <Link href="#features" className="btn btn-hero-secondary">
+                Explore Features
+              </Link>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Features Section */}
-        <section id="features" style={{
-          padding: '6rem 1rem',
-          position: 'relative'
-        }}>
-          <div className="glassmorphism" style={{
-            maxWidth: '80rem',
-            margin: '0 auto',
-            padding: '4rem 2rem',
-            borderRadius: '2rem'
-          }}>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 className="slide-up text-gradient" style={{
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                fontWeight: 'bold',
-                marginBottom: '1rem'
-              }}>
-                Everything You Need for Modern Education
-              </h2>
-              <p className="slide-up" style={{
-                fontSize: '1.25rem',
-                color: '#6b7280',
-                maxWidth: '42rem',
-                margin: '0 auto',
-                animationDelay: '0.2s'
-              }}>
-                Powerful features designed to enhance communication and learning outcomes
-              </p>
+      {/* Features Section */}
+      <section id="features" className="features-section">
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Powerful Features</h2>
+            <p className="section-subtitle">
+              Powerful features designed to enhance communication and learning outcomes
+            </p>
+          </div>
+          
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <div key={index} className={`feature-card ${feature.gradient}`}>
+                <div className="feature-icon">{feature.emoji}</div>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-desc">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="stats-section">
+        <div className="container">
+          <div className="stats-grid">
+            <div className="stat-item">
+              <div className="stat-number">10,000+</div>
+              <div className="stat-label">Active Students</div>
             </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-              gap: '2rem'
-            }}>
-              {[
-                { emoji: '💬', title: 'Smart Messaging', desc: 'Real-time communication with intelligent categorization, file sharing, and conversation threading.', gradient: 'linear-gradient(135deg, #667eea, #764ba2)' },
-                { emoji: '🤖', title: 'AI Assistant', desc: 'EduBot provides instant answers, suggests responses, and offers personalized learning recommendations.', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)' },
-                { emoji: '📅', title: 'Smart Scheduling', desc: 'Intelligent appointment booking with automatic conflict detection and calendar integration.', gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)' },
-                { emoji: '📊', title: 'Analytics & Insights', desc: 'Comprehensive dashboards showing engagement metrics, response times, and learning patterns.', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)' },
-                { emoji: '📁', title: 'Resource Management', desc: 'Centralized library for course materials, assignments, and collaborative document sharing.', gradient: 'linear-gradient(135deg, #fa709a, #fee140)' },
-                { emoji: '📱', title: 'Mobile-First Design', desc: 'Progressive Web App with offline capabilities, ensuring access anywhere, anytime.', gradient: 'linear-gradient(135deg, #a8edea, #fed6e3)' }
-              ].map((feature, index) => (
-                <div
-                  key={index}
-                  className="glassmorphism hover-lift slide-up"
-                  style={{
-                    padding: '2.5rem',
-                    borderRadius: '1.5rem',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    animationDelay: `${index * 0.1}s`,
-                    border: '2px solid rgba(255, 255, 255, 0.2)'
-                  }}
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: '-2px',
-                    left: '-2px',
-                    right: '-2px',
-                    bottom: '-2px',
-                    background: feature.gradient,
-                    borderRadius: '1.5rem',
-                    zIndex: -1,
-                    opacity: 0.1
-                  }} />
-                  
-                  <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>{feature.emoji}</div>
-                  <h3 style={{
-                    fontSize: '1.5rem',
-                    fontWeight: '700',
-                    color: '#1f2937',
-                    marginBottom: '1rem'
-                  }}>
-                    {feature.title}
-                  </h3>
-                  <p style={{ color: '#6b7280', lineHeight: '1.6', fontSize: '1rem' }}>
-                    {feature.desc}
-                  </p>
-                </div>
-              ))}
+            <div className="stat-item">
+              <div className="stat-number">500+</div>
+              <div className="stat-label">Lecturers</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">98%</div>
+              <div className="stat-label">Satisfaction Rate</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">24/7</div>
+              <div className="stat-label">AI Support</div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="gradient-bg" style={{
-          padding: '6rem 1rem',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            maxWidth: '80rem',
-            margin: '0 auto',
-            textAlign: 'center',
-            position: 'relative'
-          }}>
-            <h2 className="slide-up" style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: 'bold',
-              color: 'white',
-              marginBottom: '1.5rem',
-              textShadow: '0 4px 8px rgba(0, 0, 0, 0.3)'
-            }}>
-              Ready to Transform Your Educational Experience?
-            </h2>
-            <p className="slide-up" style={{
-              fontSize: '1.25rem',
-              color: 'rgba(255, 255, 255, 0.9)',
-              marginBottom: '3rem',
-              maxWidth: '42rem',
-              margin: '0 auto 3rem auto',
-              animationDelay: '0.2s'
-            }}>
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-pattern"></div>
+        <div className="container">
+          <div className="cta-content">
+            <h2 className="cta-title">Ready to Transform Your Educational Experience?</h2>
+            <p className="cta-subtitle">
               Join thousands of students and lecturers who are already using EduLink Pro.
             </p>
-            <Link
-              href="/register"
-              className="glassmorphism hover-lift pulse-animation slide-up"
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                color: '#667eea',
-                padding: '1.25rem 2.5rem',
-                borderRadius: '1rem',
-                fontSize: '1.25rem',
-                fontWeight: '700',
-                textDecoration: 'none',
-                display: 'inline-block',
-                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.2)',
-                animationDelay: '0.4s'
-              }}
-            >
-              Start Free Trial 🌟
+            <Link href="/register" className="btn btn-cta">
+              Start Free Trial 🚀
             </Link>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="glassmorphism" style={{
-          color: '#1f2937',
-          padding: '3rem 1rem',
-          position: 'relative',
-          background: 'rgba(255, 255, 255, 0.9)'
-        }}>
-          <div style={{
-            maxWidth: '80rem',
-            margin: '0 auto',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '1.5rem'
-            }}>
-              <div className="pulse-animation" style={{
-                width: '2.5rem',
-                height: '2.5rem',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                borderRadius: '0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <span style={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>E</span>
+      {/* Enhanced Footer */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            {/* Main Footer Content */}
+            <div className="footer-main">
+              <div className="footer-sections">
+                {/* Company Info */}
+                <div className="footer-section">
+                  <div className="footer-logo">
+                    <div className="logo-icon">
+                      <span>E</span>
+                    </div>
+                    <span className="logo-text">EduLink Pro</span>
+                  </div>
+                  <p className="footer-desc">
+                    Revolutionizing educational communication with AI-powered insights, 
+                    seamless messaging, and smart collaboration tools.
+                  </p>
+                  <div className="social-links">
+                    <a href="#" className="social-link" aria-label="Facebook">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                    </a>
+                    <a href="#" className="social-link" aria-label="Twitter">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                      </svg>
+                    </a>
+                    <a href="#" className="social-link" aria-label="LinkedIn">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                    </a>
+                    <a href="#" className="social-link" aria-label="Instagram">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Product Links */}
+                <div className="footer-section">
+                  <h4 className="footer-title">Product</h4>
+                  <ul className="footer-links">
+                    <li><a href="#features" className="footer-link">Features</a></li>
+                    <li><a href="#pricing" className="footer-link">Pricing</a></li>
+                    <li><a href="#integrations" className="footer-link">Integrations</a></li>
+                    <li><a href="#api" className="footer-link">API</a></li>
+                    <li><a href="#mobile" className="footer-link">Mobile App</a></li>
+                    <li><a href="#security" className="footer-link">Security</a></li>
+                  </ul>
+                </div>
+
+                {/* Solutions */}
+                <div className="footer-section">
+                  <h4 className="footer-title">Solutions</h4>
+                  <ul className="footer-links">
+                    <li><a href="#students" className="footer-link">For Students</a></li>
+                    <li><a href="#lecturers" className="footer-link">For Lecturers</a></li>
+                    <li><a href="#institutions" className="footer-link">For Institutions</a></li>
+                    <li><a href="#administrators" className="footer-link">For Administrators</a></li>
+                    <li><a href="#enterprise" className="footer-link">Enterprise</a></li>
+                    <li><a href="#case-studies" className="footer-link">Case Studies</a></li>
+                  </ul>
+                </div>
+
+                {/* Resources */}
+                <div className="footer-section">
+                  <h4 className="footer-title">Resources</h4>
+                  <ul className="footer-links">
+                    <li><a href="#blog" className="footer-link">Blog</a></li>
+                    <li><a href="#help" className="footer-link">Help Center</a></li>
+                    <li><a href="#guides" className="footer-link">User Guides</a></li>
+                    <li><a href="#webinars" className="footer-link">Webinars</a></li>
+                    <li><a href="#community" className="footer-link">Community</a></li>
+                    <li><a href="#status" className="footer-link">System Status</a></li>
+                  </ul>
+                </div>
+
+                {/* Company */}
+                <div className="footer-section">
+                  <h4 className="footer-title">Company</h4>
+                  <ul className="footer-links">
+                    <li><a href="#about" className="footer-link">About Us</a></li>
+                    <li><a href="#careers" className="footer-link">Careers</a></li>
+                    <li><a href="#press" className="footer-link">Press</a></li>
+                    <li><a href="#contact" className="footer-link">Contact</a></li>
+                    <li><a href="#partners" className="footer-link">Partners</a></li>
+                    <li><a href="#investors" className="footer-link">Investors</a></li>
+                  </ul>
+                </div>
+
+                {/* Newsletter */}
+                <div className="footer-section newsletter-section">
+                  <h4 className="footer-title">Stay Updated</h4>
+                  <p className="newsletter-desc">
+                    Get the latest updates on new features, educational insights, and platform improvements.
+                  </p>
+                  <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
+                    <div className="newsletter-input-group">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        className="newsletter-input"
+                        required
+                      />
+                      <button type="submit" className="newsletter-btn">
+                        Subscribe
+                      </button>
+                    </div>
+                  </form>
+                  <p className="newsletter-privacy">
+                    We respect your privacy. Unsubscribe anytime.
+                  </p>
+                </div>
               </div>
-              <span style={{ 
-                marginLeft: '0.75rem', 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                EduLink Pro
-              </span>
             </div>
-            <p style={{
-              color: '#6b7280',
-              marginBottom: '2rem',
-              fontSize: '1.1rem'
-            }}>
-              Revolutionizing educational communication with AI-powered insights and seamless collaboration.
-            </p>
-            <p style={{ color: '#9ca3af' }}>
-              &copy; 2024 EduLink Pro. All rights reserved.
-            </p>
+
+            {/* Footer Bottom */}
+            <div className="footer-bottom">
+              <div className="footer-bottom-content">
+                <div className="footer-legal">
+                  <p className="footer-copy">
+                    © 2025 EduLink Pro. All rights reserved.
+                  </p>
+                  <div className="footer-legal-links">
+                    <a href="#privacy" className="footer-legal-link">Privacy Policy</a>
+                    <a href="#terms" className="footer-legal-link">Terms of Service</a>
+                    <a href="#cookies" className="footer-legal-link">Cookie Policy</a>
+                    <a href="#gdpr" className="footer-legal-link">GDPR</a>
+                  </div>
+                </div>
+                <div className="footer-badges">
+                  <div className="security-badges">
+                    <div className="badge">
+                      <span className="badge-text">🔒 SOC 2 Certified</span>
+                    </div>
+                    <div className="badge">
+                      <span className="badge-text">🛡️ GDPR Compliant</span>
+                    </div>
+                    <div className="badge">
+                      <span className="badge-text">✅ ISO 27001</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </footer>
-      </div>
-    </>
+        </div>
+      </footer>
+    </div>
   )
 }
