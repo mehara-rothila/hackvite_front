@@ -15,14 +15,18 @@ export default function LandingPage() {
 
   return (
     <div className="main-container">
-      {/* Background Elements */}
+      {/* Enhanced Background Layers */}
       <div className="animated-background"></div>
       <div className="noise-overlay"></div>
+      
+      {/* Wave Background Layers */}
       <div className="wave-layers">
         <div className="wave-layer wave-1"></div>
         <div className="wave-layer wave-2"></div>
         <div className="wave-layer wave-3"></div>
       </div>
+      
+      {/* Morphing Gradient Orbs */}
       <div className="morphing-orbs">
         <div className="morphing-orb orb-1"></div>
         <div className="morphing-orb orb-2"></div>
@@ -30,6 +34,8 @@ export default function LandingPage() {
         <div className="morphing-orb orb-4"></div>
         <div className="morphing-orb orb-5"></div>
       </div>
+      
+      {/* Enhanced Particle System */}
       <div className="particles-container">
         <div className="particle particle-standard p1"></div>
         <div className="particle particle-standard p2"></div>
@@ -40,6 +46,8 @@ export default function LandingPage() {
         <div className="particle particle-glow g2"></div>
         <div className="particle particle-glow g3"></div>
       </div>
+      
+      {/* Enhanced Geometric Shapes */}
       <div className="geometric-shapes">
         <div className="shape-layer layer-1">
           <div className="shape shape-1"></div>
@@ -64,15 +72,15 @@ export default function LandingPage() {
             <div className="logo-icon">
               <span>E</span>
             </div>
-            <span className="logo-text">EduLink Pro</span>
+            <div className="logo-text">EduLink Pro</div>
           </div>
           
           <div className="desktop-nav nav-links">
             <Link href="#features" className="nav-link">Features</Link>
-            <Link href="#pricing" className="nav-link">Pricing</Link>
             <Link href="#about" className="nav-link">About</Link>
+            <Link href="#pricing" className="nav-link">Pricing</Link>
             <Link href="#contact" className="nav-link">Contact</Link>
-            <Link href="/login" className="btn btn-primary">Get Started</Link>
+            <Link href="#login" className="btn btn-primary">Login</Link>
           </div>
           
           <button 
@@ -80,8 +88,7 @@ export default function LandingPage() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
@@ -90,11 +97,11 @@ export default function LandingPage() {
           <div className="mobile-nav">
             <div className="mobile-nav-content">
               <Link href="#features" className="mobile-nav-link">Features</Link>
-              <Link href="#pricing" className="mobile-nav-link">Pricing</Link>
               <Link href="#about" className="mobile-nav-link">About</Link>
+              <Link href="#pricing" className="mobile-nav-link">Pricing</Link>
               <Link href="#contact" className="mobile-nav-link">Contact</Link>
               <div className="mobile-cta">
-                <Link href="/login" className="btn btn-primary">Get Started</Link>
+                <Link href="#login" className="btn btn-primary" style={{width: '100%'}}>Login</Link>
               </div>
             </div>
           </div>
@@ -105,19 +112,19 @@ export default function LandingPage() {
       <section className="hero-section">
         <div className="container">
           <div className="hero-content">
-            <h1 className="hero-title">
-              Revolutionize Educational <span className="highlight">Communication</span>
+            <h1 className="hero-title" data-text="Transform Educational Communication">
+              Transform Educational <span className="highlight">Communication</span>
             </h1>
             <p className="hero-subtitle">
               EduLink Pro revolutionizes educational communication with AI-powered insights, 
               seamless messaging, smart scheduling, and collaborative learning tools.
             </p>
             <div className="hero-buttons">
-              <Link href="/register" className="btn btn-hero-primary">
-                Start Free Trial
+              <Link href="#signup" className="btn btn-hero-primary">
+                Start Free Trial 🚀
               </Link>
-              <Link href="#features" className="btn btn-hero-secondary">
-                Explore Features
+              <Link href="#demo" className="btn btn-hero-secondary">
+                Watch Demo
               </Link>
             </div>
           </div>
@@ -138,32 +145,49 @@ export default function LandingPage() {
             <div className="feature-card feature-gradient-1">
               <div className="feature-icon-svg icon-messaging"></div>
               <h3 className="feature-title">Smart Messaging</h3>
-              <p className="feature-desc">Real-time communication with intelligent categorization, file sharing, and conversation threading.</p>
+              <p className="feature-desc">
+                Real-time communication with intelligent categorization, file sharing, and conversation threading.
+              </p>
             </div>
+            
             <div className="feature-card feature-gradient-2">
               <div className="feature-icon-svg icon-ai"></div>
-              <h3 className="feature-title">AI Assistant</h3>
-              <p className="feature-desc">EduBot provides instant answers, suggests responses, and offers personalized learning recommendations.</p>
+              <h3 className="feature-title">AI-Powered Assistant</h3>
+              <p className="feature-desc">
+                EduBot provides instant answers, suggests responses, and offers personalized learning recommendations.
+              </p>
             </div>
+            
             <div className="feature-card feature-gradient-3">
               <div className="feature-icon-svg icon-calendar"></div>
               <h3 className="feature-title">Smart Scheduling</h3>
-              <p className="feature-desc">Intelligent appointment booking with automatic conflict detection and calendar integration.</p>
+              <p className="feature-desc">
+                Intelligent appointment booking with automatic conflict detection and calendar integration.
+              </p>
             </div>
+            
             <div className="feature-card feature-gradient-4">
               <div className="feature-icon-svg icon-analytics"></div>
-              <h3 className="feature-title">Analytics & Insights</h3>
-              <p className="feature-desc">Comprehensive dashboards showing engagement metrics, response times, and learning patterns.</p>
+              <h3 className="feature-title">Advanced Analytics</h3>
+              <p className="feature-desc">
+                Comprehensive dashboards showing engagement metrics, response times, and learning patterns.
+              </p>
             </div>
+            
             <div className="feature-card feature-gradient-5">
               <div className="feature-icon-svg icon-resources"></div>
-              <h3 className="feature-title">Resource Management</h3>
-              <p className="feature-desc">Centralized library for course materials, assignments, and collaborative document sharing.</p>
+              <h3 className="feature-title">Resource Hub</h3>
+              <p className="feature-desc">
+                Centralized library for course materials, assignments, and collaborative document sharing.
+              </p>
             </div>
+            
             <div className="feature-card feature-gradient-6">
               <div className="feature-icon-svg icon-mobile"></div>
-              <h3 className="feature-title">Mobile-First Design</h3>
-              <p className="feature-desc">Progressive Web App with offline capabilities, ensuring access anywhere, anytime.</p>
+              <h3 className="feature-title">Mobile First</h3>
+              <p className="feature-desc">
+                Progressive Web App with offline capabilities, ensuring access anywhere, anytime.
+              </p>
             </div>
           </div>
         </div>
@@ -174,20 +198,20 @@ export default function LandingPage() {
         <div className="container">
           <div className="stats-grid">
             <div className="stat-item">
-              <div className="stat-number">10,000+</div>
-              <div className="stat-label">Active Students</div>
+              <span className="stat-number">50K+</span>
+              <span className="stat-label">Active Users</span>
             </div>
             <div className="stat-item">
-              <div className="stat-number">500+</div>
-              <div className="stat-label">Lecturers</div>
+              <span className="stat-number">1M+</span>
+              <span className="stat-label">Messages Sent</span>
             </div>
             <div className="stat-item">
-              <div className="stat-number">98%</div>
-              <div className="stat-label">Satisfaction Rate</div>
+              <span className="stat-number">99.9%</span>
+              <span className="stat-label">Uptime</span>
             </div>
             <div className="stat-item">
-              <div className="stat-number">24/7</div>
-              <div className="stat-label">AI Support</div>
+              <span className="stat-number">500+</span>
+              <span className="stat-label">Universities</span>
             </div>
           </div>
         </div>
@@ -202,94 +226,87 @@ export default function LandingPage() {
             <p className="cta-subtitle">
               Join thousands of students and lecturers who are already using EduLink Pro.
             </p>
-            <Link href="/register" className="btn btn-cta">
+            <Link href="#signup" className="btn btn-cta">
               Start Free Trial 🚀
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Footer */}
+      {/* Footer */}
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
             <div className="footer-main">
               <div className="footer-sections">
-                <div className="footer-section footer-brand">
+                <div className="footer-brand">
                   <div className="footer-logo">
                     <div className="logo-icon">
                       <span>E</span>
                     </div>
-                    <span className="logo-text">EduLink Pro</span>
+                    <div className="logo-text">EduLink Pro</div>
                   </div>
                   <p className="footer-desc">
-                    Revolutionizing educational communication with AI-powered insights, 
-                    seamless messaging, and smart collaboration tools.
+                    Revolutionizing educational communication with AI-powered insights and seamless collaboration tools.
                   </p>
                   <div className="social-links">
-                    <a href="#" className="social-link" aria-label="Facebook">
+                    <a href="#" className="social-link">
                       <div className="social-icon facebook-icon"></div>
                     </a>
-                    <a href="#" className="social-link" aria-label="Twitter">
+                    <a href="#" className="social-link">
                       <div className="social-icon twitter-icon"></div>
                     </a>
-                    <a href="#" className="social-link" aria-label="LinkedIn">
+                    <a href="#" className="social-link">
                       <div className="social-icon linkedin-icon"></div>
                     </a>
-                    <a href="#" className="social-link" aria-label="Instagram">
+                    <a href="#" className="social-link">
                       <div className="social-icon instagram-icon"></div>
                     </a>
                   </div>
                 </div>
-
+                
                 <div className="footer-section">
                   <h4 className="footer-title">Product</h4>
                   <ul className="footer-links">
-                    <li><a href="#features" className="footer-link">Features</a></li>
-                    <li><a href="#pricing" className="footer-link">Pricing</a></li>
-                    <li><a href="#integrations" className="footer-link">Integrations</a></li>
-                    <li><a href="#api" className="footer-link">API</a></li>
-                    <li><a href="#mobile" className="footer-link">Mobile App</a></li>
-                    <li><a href="#security" className="footer-link">Security</a></li>
+                    <li><a href="#" className="footer-link">Features</a></li>
+                    <li><a href="#" className="footer-link">Pricing</a></li>
+                    <li><a href="#" className="footer-link">API</a></li>
+                    <li><a href="#" className="footer-link">Integrations</a></li>
                   </ul>
                 </div>
-
+                
                 <div className="footer-section">
-                  <h4 className="footer-title">Solutions</h4>
+                  <h4 className="footer-title">Company</h4>
                   <ul className="footer-links">
-                    <li><a href="#students" className="footer-link">For Students</a></li>
-                    <li><a href="#lecturers" className="footer-link">For Lecturers</a></li>
-                    <li><a href="#institutions" className="footer-link">For Institutions</a></li>
-                    <li><a href="#administrators" className="footer-link">For Administrators</a></li>
-                    <li><a href="#enterprise" className="footer-link">Enterprise</a></li>
-                    <li><a href="#case-studies" className="footer-link">Case Studies</a></li>
+                    <li><a href="#" className="footer-link">About</a></li>
+                    <li><a href="#" className="footer-link">Blog</a></li>
+                    <li><a href="#" className="footer-link">Careers</a></li>
+                    <li><a href="#" className="footer-link">Contact</a></li>
                   </ul>
                 </div>
-
+                
                 <div className="footer-section">
-                  <h4 className="footer-title">Resources</h4>
+                  <h4 className="footer-title">Support</h4>
                   <ul className="footer-links">
-                    <li><a href="#blog" className="footer-link">Blog</a></li>
-                    <li><a href="#help" className="footer-link">Help Center</a></li>
-                    <li><a href="#guides" className="footer-link">User Guides</a></li>
-                    <li><a href="#webinars" className="footer-link">Webinars</a></li>
-                    <li><a href="#community" className="footer-link">Community</a></li>
-                    <li><a href="#status" className="footer-link">System Status</a></li>
+                    <li><a href="#" className="footer-link">Help Center</a></li>
+                    <li><a href="#" className="footer-link">Documentation</a></li>
+                    <li><a href="#" className="footer-link">Community</a></li>
+                    <li><a href="#" className="footer-link">Status</a></li>
                   </ul>
                 </div>
-
-                <div className="footer-section newsletter-section">
+                
+                <div className="newsletter-section">
                   <h4 className="footer-title">Stay Updated</h4>
                   <p className="newsletter-desc">
-                    Get the latest updates on new features, educational insights, and platform improvements.
+                    Get the latest updates and educational insights delivered to your inbox.
                   </p>
                   <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
                     <div className="newsletter-input-group">
                       <input
                         type="email"
+                        placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email"
                         className="newsletter-input"
                         required
                       />
@@ -299,35 +316,35 @@ export default function LandingPage() {
                     </div>
                   </form>
                   <p className="newsletter-privacy">
-                    We respect your privacy. Unsubscribe anytime.
+                    We respect your privacy. Unsubscribe at any time.
                   </p>
                 </div>
               </div>
             </div>
-
+            
             <div className="footer-bottom">
               <div className="footer-bottom-content">
                 <div className="footer-legal">
                   <p className="footer-copy">
-                    © 2025 EduLink Pro. All rights reserved.
+                    © 2024 EduLink Pro. All rights reserved.
                   </p>
                   <div className="footer-legal-links">
-                    <a href="#privacy" className="footer-legal-link">Privacy Policy</a>
-                    <a href="#terms" className="footer-legal-link">Terms of Service</a>
-                    <a href="#cookies" className="footer-legal-link">Cookie Policy</a>
-                    <a href="#gdpr" className="footer-legal-link">GDPR</a>
+                    <a href="#" className="footer-legal-link">Privacy Policy</a>
+                    <a href="#" className="footer-legal-link">Terms of Service</a>
+                    <a href="#" className="footer-legal-link">Cookie Policy</a>
                   </div>
                 </div>
+                
                 <div className="footer-badges">
                   <div className="security-badges">
                     <div className="badge">
-                      <span className="badge-text">🔒 SOC 2 Certified</span>
+                      <span className="badge-text">🔒 SSL Secured</span>
                     </div>
                     <div className="badge">
                       <span className="badge-text">🛡️ GDPR Compliant</span>
                     </div>
                     <div className="badge">
-                      <span className="badge-text">✅ ISO 27001</span>
+                      <span className="badge-text">✅ SOC 2 Type II</span>
                     </div>
                   </div>
                 </div>
