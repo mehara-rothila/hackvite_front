@@ -138,7 +138,7 @@ export default function StudentConversations() {
     setUser(currentUser as StudentUser)
     setConversations(mockConversations)
     setLoading(false)
-  }, [router])
+  }, [router, mockConversations]) // FIX: Added missing dependency
 
   const handleLogout = () => {
     AuthService.logout()

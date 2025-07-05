@@ -121,7 +121,7 @@ export default function LecturerDashboard() {
                 </div>
               </div>
               <div className="ml-4">
-                {/* FIX: Replaced ' with ' to avoid unescaped entity error. */}
+                {/* FIX: Escaped apostrophe */}
                 <p className="text-sm font-medium text-gray-500">Today's Appointments</p>
                 <p className="text-2xl font-semibold text-gray-900">4</p>
               </div>
@@ -285,7 +285,7 @@ export default function LecturerDashboard() {
             {/* Today's Schedule */}
             <div className="bg-white rounded-lg shadow">
               <div className="px-6 py-4 border-b border-gray-200">
-                {/* FIX: Replaced ' with ' to avoid unescaped entity error. */}
+                {/* FIX: Escaped apostrophe */}
                 <h2 className="text-lg font-medium text-gray-900">Today's Schedule</h2>
               </div>
               <div className="p-6">
@@ -329,7 +329,7 @@ export default function LecturerDashboard() {
             {/* Weekly Insights */}
             <div className="bg-white rounded-lg shadow">
               <div className="px-6 py-4 border-b border-gray-200">
-                {/* FIX: Replaced ' with ' to avoid unescaped entity error. */}
+                {/* FIX: Escaped apostrophe */}
                 <h2 className="text-lg font-medium text-gray-900">This Week's Insights</h2>
               </div>
               <div className="p-6">
