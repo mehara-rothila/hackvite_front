@@ -224,10 +224,10 @@ export default function LecturerQueries() {
   const filteredQueries = queries
     .filter(query => {
       const matchesSearch = query.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          query.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          query.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          query.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          query.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+                            query.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            query.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            query.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            query.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
 
       const matchesFilter = selectedFilter === 'all' || query.status === selectedFilter
       const matchesCategory = selectedCategory === 'all' || query.category === selectedCategory
@@ -280,8 +280,15 @@ export default function LecturerQueries() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="loading-spinner w-32 h-32"></div>
+      <div className="page-container">
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          minHeight: '100vh' 
+        }}>
+          <div className="loading-spinner" style={{ width: '8rem', height: '8rem' }}></div>
+        </div>
       </div>
     )
   }
@@ -289,42 +296,103 @@ export default function LecturerQueries() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="page-container">
       {/* Educational Background - SAME AS LOGIN */}
-      <div className="absolute inset-0 z-0">
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         {/* Dynamic mouse-following gradient */}
         <div
-          className="absolute inset-0 opacity-20 transition-all duration-700 ease-out"
           style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.2,
+            transition: 'all 0.7s ease-out',
             background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 25%, transparent 50%)`
           }}
         />
 
         {/* Light colorful gradient meshes */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-purple-100/25 to-pink-100/30 animate-mesh-drift-1" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/25 via-violet-100/20 to-orange-100/25 animate-mesh-drift-2" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/30 via-purple-100/15 to-rose-100/30 animate-mesh-drift-3" />
-        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/20 via-transparent to-green-100/20 animate-mesh-drift-4" />
+        <div className="animate-mesh-drift-1" style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(135deg, rgba(147, 197, 253, 0.3) 0%, rgba(196, 181, 253, 0.25) 50%, rgba(251, 207, 232, 0.3) 100%)'
+        }} />
+        <div className="animate-mesh-drift-2" style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(45deg, rgba(52, 211, 153, 0.25) 0%, rgba(196, 181, 253, 0.2) 50%, rgba(254, 215, 170, 0.25) 100%)'
+        }} />
+        <div className="animate-mesh-drift-3" style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(225deg, rgba(165, 243, 252, 0.3) 0%, rgba(196, 181, 253, 0.15) 50%, rgba(251, 207, 232, 0.3) 100%)'
+        }} />
+        <div className="animate-mesh-drift-4" style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(90deg, rgba(254, 240, 138, 0.2) 0%, transparent 50%, rgba(134, 239, 172, 0.2) 100%)'
+        }} />
       </div>
 
       {/* Educational Equations - Academic/Query Management Context */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/8 left-1/12 text-2xl font-bold text-purple-500/60 animate-equation-float-1">
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <div className="animate-equation-float-1" style={{
+          position: 'absolute',
+          top: '12.5%',
+          left: '8.33%',
+          fontSize: '1.5rem',
+          fontWeight: 700,
+          color: 'rgba(147, 51, 234, 0.6)'
+        }}>
           Q(s,a) = R(s,a) + γΣP(s&apos;|s,a)V(s&apos;)
         </div>
-        <div className="absolute top-1/4 right-1/8 text-xl font-bold text-blue-500/60 animate-equation-float-2">
-          Response_Time = (Total_Time / Queries_Count)
+        <div className="animate-equation-float-2" style={{
+          position: 'absolute',
+          top: '25%',
+          right: '12.5%',
+          fontSize: '1.25rem',
+          fontWeight: 700,
+          color: 'rgba(59, 130, 246, 0.6)'
+        }}>
+          Response_Time = Total_Time / Queries_Count
         </div>
-        <div className="absolute bottom-1/4 left-1/8 text-2xl font-bold text-emerald-500/60 animate-equation-float-3">
+        <div className="animate-equation-float-3" style={{
+          position: 'absolute',
+          bottom: '25%',
+          left: '12.5%',
+          fontSize: '1.5rem',
+          fontWeight: 700,
+          color: 'rgba(16, 185, 129, 0.6)'
+        }}>
           Priority = Urgency × Impact
         </div>
-        <div className="absolute top-1/2 right-1/12 text-xl font-bold text-pink-500/60 animate-equation-float-4">
+        <div className="animate-equation-float-4" style={{
+          position: 'absolute',
+          top: '50%',
+          right: '8.33%',
+          fontSize: '1.25rem',
+          fontWeight: 700,
+          color: 'rgba(236, 72, 153, 0.6)'
+        }}>
           Satisfaction = Quality / Response_Time
         </div>
-        <div className="absolute bottom-1/3 right-1/6 text-2xl font-bold text-orange-500/60 animate-equation-float-1">
+        <div className="animate-equation-float-1" style={{
+          position: 'absolute',
+          bottom: '33.33%',
+          right: '16.67%',
+          fontSize: '1.5rem',
+          fontWeight: 700,
+          color: 'rgba(245, 158, 11, 0.6)'
+        }}>
           Load_Balance = Queries / Faculty
         </div>
-        <div className="absolute top-2/3 left-1/6 text-xl font-bold text-cyan-500/60 animate-equation-float-2">
+        <div className="animate-equation-float-2" style={{
+          position: 'absolute',
+          top: '66.67%',
+          left: '16.67%',
+          fontSize: '1.25rem',
+          fontWeight: 700,
+          color: 'rgba(34, 211, 238, 0.6)'
+        }}>
           Efficiency = Resolved / (Resolved + Pending)
         </div>
 
@@ -332,79 +400,181 @@ export default function LecturerQueries() {
         {[...Array(15)].map((_, i) => (
           <div
             key={i}
-            className={`absolute w-2 h-2 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-sm`}
+            className={`animate-particle-drift-${(i % 4) + 1}`}
             style={{
+              position: 'absolute',
+              width: '0.5rem',
+              height: '0.5rem',
+              borderRadius: '50%',
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 8}s`,
               animationDuration: `${8 + Math.random() * 4}s`,
-              background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.6)', 'rgba(147, 51, 234, 0.6)', 'rgba(236, 72, 153, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(245, 158, 11, 0.6)', 'rgba(239, 68, 68, 0.6)'][i % 6]}, rgba(255,255,255,0.2))`
+              background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.6)', 'rgba(147, 51, 234, 0.6)', 'rgba(236, 72, 153, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(245, 158, 11, 0.6)', 'rgba(239, 68, 68, 0.6)'][i % 6]}, rgba(255,255,255,0.2))`,
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
             }}
           />
         ))}
       </div>
 
       {/* Floating Glass Orbs - More subtle for dashboard */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-16 left-16 w-60 h-60 bg-gradient-to-br from-purple-200/20 to-indigo-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-1 shadow-lg" />
-        <div className="absolute top-32 right-24 w-80 h-80 bg-gradient-to-br from-blue-200/15 to-cyan-200/10 rounded-full backdrop-blur-sm border border-blue-300/20 animate-glass-float-2 shadow-lg" />
-        <div className="absolute bottom-24 left-32 w-70 h-70 bg-gradient-to-br from-emerald-200/15 to-teal-200/10 rounded-full backdrop-blur-sm border border-emerald-300/20 animate-glass-float-3 shadow-lg" />
-        <div className="absolute bottom-16 right-16 w-50 h-50 bg-gradient-to-br from-pink-200/15 to-rose-200/10 rounded-full backdrop-blur-sm border border-pink-300/20 animate-glass-float-4 shadow-lg" />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <div className="animate-glass-float-1" style={{
+          position: 'absolute',
+          top: '4rem',
+          left: '4rem',
+          width: '15rem',
+          height: '15rem',
+          background: 'linear-gradient(135deg, rgba(196, 181, 253, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(147, 51, 234, 0.3)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }} />
+        <div className="animate-glass-float-2" style={{
+          position: 'absolute',
+          top: '8rem',
+          right: '6rem',
+          width: '20rem',
+          height: '20rem',
+          background: 'linear-gradient(135deg, rgba(147, 197, 253, 0.15) 0%, rgba(34, 211, 238, 0.1) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(59, 130, 246, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }} />
+        <div className="animate-glass-float-3" style={{
+          position: 'absolute',
+          bottom: '6rem',
+          left: '8rem',
+          width: '17.5rem',
+          height: '17.5rem',
+          background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(20, 184, 166, 0.1) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(16, 185, 129, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }} />
+        <div className="animate-glass-float-4" style={{
+          position: 'absolute',
+          bottom: '4rem',
+          right: '4rem',
+          width: '12.5rem',
+          height: '12.5rem',
+          background: 'linear-gradient(135deg, rgba(251, 207, 232, 0.15) 0%, rgba(244, 114, 182, 0.1) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(236, 72, 153, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }} />
 
-        <div className="absolute top-1/4 left-1/5 w-40 h-40 bg-gradient-to-br from-violet-200/15 to-purple-200/10 rounded-full backdrop-blur-sm border border-violet-300/20 animate-bubble-drift-1 shadow-md" />
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-gradient-to-br from-indigo-200/15 to-blue-200/10 rounded-full backdrop-blur-sm border border-indigo-300/20 animate-bubble-drift-2 shadow-md" />
-        <div className="absolute top-3/5 right-1/5 w-36 h-36 bg-gradient-to-br from-orange-200/15 to-yellow-200/10 rounded-full backdrop-blur-sm border border-orange-300/15 animate-bubble-drift-3 shadow-md" />
+        <div className="animate-bubble-drift-1" style={{
+          position: 'absolute',
+          top: '25%',
+          left: '20%',
+          width: '10rem',
+          height: '10rem',
+          background: 'linear-gradient(135deg, rgba(196, 181, 253, 0.15) 0%, rgba(147, 51, 234, 0.1) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(139, 92, 246, 0.2)',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+        }} />
+        <div className="animate-bubble-drift-2" style={{
+          position: 'absolute',
+          bottom: '25%',
+          right: '25%',
+          width: '12rem',
+          height: '12rem',
+          background: 'linear-gradient(135deg, rgba(224, 231, 255, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(99, 102, 241, 0.2)',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+        }} />
+        <div className="animate-bubble-drift-3" style={{
+          position: 'absolute',
+          top: '60%',
+          right: '20%',
+          width: '9rem',
+          height: '9rem',
+          background: 'linear-gradient(135deg, rgba(254, 215, 170, 0.15) 0%, rgba(251, 191, 36, 0.1) 100%)',
+          borderRadius: '50%',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(245, 158, 11, 0.15)',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+        }} />
       </div>
 
       {/* Navigation Header */}
-      <nav className="relative z-30 glass-nav">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/lecturer/dashboard" className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                  <span className="text-white font-bold text-sm">E</span>
+      <nav className="glass-nav">
+        {/* FIX: Replaced inline styles with a className and a <style jsx> block */}
+        <div className="nav-container">
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            height: '4rem' 
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Link href="/lecturer/dashboard" className="nav-brand">
+                <div className="nav-logo">
+                  <span style={{ color: 'white', fontWeight: 700, fontSize: '0.875rem' }}>E</span>
                 </div>
-                <span className="ml-3 text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">EduLink Pro</span>
+                <span className="nav-title">EduLink Pro</span>
               </Link>
-              <div className="ml-8">
-                <span className="text-sm text-gray-600 font-medium">Query Management</span>
+              <div className="nav-subtitle">
+                <span>Query Management</span>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-700">
-                <span className="font-semibold">{user.title} {user.lastName}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div className="nav-user">
+                <span>{user.title} {user.lastName}</span>
               </div>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-gray-600 hover:text-red-600 transition-colors font-medium"
-              >
+              <button onClick={handleLogout} className="nav-logout">
                 Logout
               </button>
             </div>
           </div>
         </div>
+        <style jsx>{`
+          .nav-container {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+          }
+          @media (min-width: 640px) {
+            .nav-container {
+              padding: 0 1.5rem;
+            }
+          }
+          @media (min-width: 1024px) {
+            .nav-container {
+              padding: 0 2rem;
+            }
+          }
+        `}</style>
       </nav>
 
       {/* Main Content */}
-      <div className="relative z-20 max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div className="main-content">
         {/* Header Section */}
-        <div className="mb-8 animate-glass-fade-in">
-          <div className="flex items-center justify-between">
+        <div className="page-header animate-glass-fade-in">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="page-title">
                 Student Queries
               </h1>
-              <p className="text-gray-600 mt-1 font-medium">
+              <p className="page-subtitle">
                 {pendingCount} pending • {urgentCount} urgent • {todayCount} today
               </p>
             </div>
-            <div className="flex space-x-3">
-              <button className="glass-button-primary text-white px-6 py-3 rounded-xl font-semibold">
+            <div className="page-actions">
+              <button className="glass-button-primary">
                 Create Announcement
               </button>
-              <button className="glass-button-secondary px-6 py-3 rounded-xl font-semibold">
+              <button className="glass-button-secondary">
                 Export Data
               </button>
             </div>
@@ -412,71 +582,84 @@ export default function LecturerQueries() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 animate-slide-up-delayed">
-          <div className="stats-card rounded-2xl p-6">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <span className="text-orange-600 text-2xl">📥</span>
+        <div className="stats-grid animate-slide-up-delayed">
+          <div className="stats-card">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="stats-icon" style={{ 
+                background: 'linear-gradient(135deg, rgba(254, 215, 170, 1) 0%, rgba(254, 243, 199, 1) 100%)' 
+              }}>
+                <span style={{ color: '#ea580c' }}>📥</span>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-bold text-gray-500">Pending</p>
-                <p className="text-3xl font-bold text-gray-900">{pendingCount}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="stats-card rounded-2xl p-6">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <span className="text-red-600 text-2xl">🚨</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-bold text-gray-500">Urgent</p>
-                <p className="text-3xl font-bold text-gray-900">{urgentCount}</p>
+              <div className="stats-content">
+                <p className="stats-label">Pending</p>
+                <p className="stats-value">{pendingCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="stats-card rounded-2xl p-6">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <span className="text-blue-600 text-2xl">📊</span>
+          <div className="stats-card">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="stats-icon" style={{ 
+                background: 'linear-gradient(135deg, rgba(254, 202, 202, 1) 0%, rgba(254, 226, 226, 1) 100%)' 
+              }}>
+                <span style={{ color: '#dc2626' }}>🚨</span>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-bold text-gray-500">Today</p>
-                <p className="text-3xl font-bold text-gray-900">{todayCount}</p>
+              <div className="stats-content">
+                <p className="stats-label">Urgent</p>
+                <p className="stats-value">{urgentCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="stats-card rounded-2xl p-6">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <span className="text-green-600 text-2xl">⏱️</span>
+          <div className="stats-card">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="stats-icon" style={{ 
+                background: 'linear-gradient(135deg, rgba(147, 197, 253, 1) 0%, rgba(219, 234, 254, 1) 100%)' 
+              }}>
+                <span style={{ color: '#2563eb' }}>📊</span>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-bold text-gray-500">Avg Response</p>
-                <p className="text-3xl font-bold text-gray-900">2.3h</p>
+              <div className="stats-content">
+                <p className="stats-label">Today</p>
+                <p className="stats-value">{todayCount}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="stats-icon" style={{ 
+                background: 'linear-gradient(135deg, rgba(134, 239, 172, 1) 0%, rgba(220, 252, 231, 1) 100%)' 
+              }}>
+                <span style={{ color: '#16a34a' }}>⏱️</span>
+              </div>
+              <div className="stats-content">
+                <p className="stats-label">Avg Response</p>
+                <p className="stats-value">2.3h</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="search-container rounded-2xl p-6 mb-6 animate-slide-up-delayed-2">
-          <div className="flex flex-col md:flex-row gap-4">
+        <div className="search-container animate-slide-up-delayed-2">
+          <div className="search-filters">
             {/* Search Input */}
-            <div className="flex-1">
-              <div className="relative">
+            <div className="search-input-container">
+              <div style={{ position: 'relative' }}>
                 <input
                   type="text"
                   placeholder="Search queries, students, courses, or tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="glass-input w-full pl-12 pr-4 py-3 rounded-xl focus:outline-none text-gray-700 font-medium placeholder-gray-500"
+                  className="glass-input search-input"
                 />
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '1rem',
+                  transform: 'translateY(-50%)'
+                }}>
+                  <svg className="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
@@ -484,11 +667,11 @@ export default function LecturerQueries() {
             </div>
 
             {/* Filters */}
-            <div className="flex gap-3">
+            <div className="filter-selects">
               <select
                 value={selectedFilter}
                 onChange={(e) => setSelectedFilter(e.target.value)}
-                className="glass-input px-4 py-3 rounded-xl focus:outline-none font-medium text-gray-700"
+                className="glass-input"
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending ({queries.filter(q => q.status === 'pending').length})</option>
@@ -500,7 +683,7 @@ export default function LecturerQueries() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="glass-input px-4 py-3 rounded-xl focus:outline-none font-medium text-gray-700"
+                className="glass-input"
               >
                 <option value="all">All Categories</option>
                 <option value="academic">Academic</option>
@@ -512,7 +695,7 @@ export default function LecturerQueries() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="glass-input px-4 py-3 rounded-xl focus:outline-none font-medium text-gray-700"
+                className="glass-input"
               >
                 <option value="priority">Priority</option>
                 <option value="recent">Most Recent</option>
@@ -523,26 +706,26 @@ export default function LecturerQueries() {
           </div>
 
           {/* Quick Filters */}
-          <div className="flex flex-wrap gap-3 mt-6">
+          <div className="filter-pills">
             <button
               onClick={() => setSelectedFilter('pending')}
-              className={`filter-pill px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                selectedFilter === 'pending' ? 'active' : ''
-              }`}
+              className={`filter-pill ${selectedFilter === 'pending' ? 'active' : ''}`}
             >
               Pending ({pendingCount})
             </button>
             <button
               onClick={() => { setSelectedFilter('all'); setSelectedCategory('all'); setSortBy('priority'); }}
-              className="filter-pill px-4 py-2 rounded-full text-sm font-semibold transition-all bg-gradient-to-r from-red-100 to-red-200 text-red-800 hover:from-red-200 hover:to-red-300"
+              className="filter-pill"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(254, 202, 202, 0.8) 0%, rgba(254, 226, 226, 0.8) 100%)',
+                color: '#991b1b'
+              }}
             >
               Urgent ({urgentCount})
             </button>
             <button
               onClick={() => setSelectedCategory('technical')}
-              className={`filter-pill px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                selectedCategory === 'technical' ? 'active' : ''
-              }`}
+              className={`filter-pill ${selectedCategory === 'technical' ? 'active' : ''}`}
             >
               Technical Issues
             </button>
@@ -551,35 +734,47 @@ export default function LecturerQueries() {
 
         {/* Bulk Actions */}
         {selectedQueries.length > 0 && (
-          <div className="bulk-actions rounded-2xl p-4 mb-6 animate-slide-up-delayed-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="text-sm font-bold text-blue-900">
-                  {selectedQueries.length} queries selected
-                </span>
+          <div className="bulk-actions animate-slide-up-delayed-3">
+            <div className="bulk-actions-content">
+              <div className="bulk-actions-info">
+                {selectedQueries.length} queries selected
               </div>
-              <div className="flex space-x-3">
+              <div className="bulk-actions-buttons">
                 <button
                   onClick={() => handleBulkAction('mark-progress')}
-                  className="glass-button-primary text-white px-4 py-2 rounded-lg text-sm font-semibold"
+                  className="glass-button-primary"
+                  style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
                 >
                   Mark In Progress
                 </button>
                 <button
                   onClick={() => handleBulkAction('assign-priority')}
-                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-yellow-600 hover:to-yellow-700 transition-all"
+                  className="glass-button-primary"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #eab308, #ca8a04)',
+                    padding: '0.5rem 1rem', 
+                    fontSize: '0.875rem' 
+                  }}
                 >
                   Set Priority
                 </button>
                 <button
                   onClick={() => handleBulkAction('archive')}
-                  className="glass-button-secondary px-4 py-2 rounded-lg text-sm font-semibold"
+                  className="glass-button-secondary"
+                  style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
                 >
                   Archive
                 </button>
                 <button
                   onClick={() => setSelectedQueries([])}
-                  className="text-gray-600 hover:text-gray-800 px-3 py-2 font-medium"
+                  style={{
+                    color: '#6b7280',
+                    padding: '0.5rem 0.75rem',
+                    fontWeight: 500,
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
@@ -589,89 +784,108 @@ export default function LecturerQueries() {
         )}
 
         {/* Queries List */}
-        <div className="glass-container rounded-2xl animate-slide-up-delayed-4">
+        <div className="glass-container animate-slide-up-delayed-4">
           {/* Table Header */}
-          <div className="px-6 py-4 border-b border-white/30">
-            <div className="flex items-center">
+          <div style={{ 
+            padding: '1.5rem', 
+            borderBottom: '1px solid rgba(255, 255, 255, 0.3)' 
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 type="checkbox"
                 checked={selectedQueries.length === filteredQueries.length && filteredQueries.length > 0}
                 onChange={handleSelectAll}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                style={{
+                  width: '1rem',
+                  height: '1rem',
+                  accentColor: '#7c3aed',
+                  borderRadius: '0.25rem'
+                }}
               />
-              <span className="ml-3 text-sm font-bold text-gray-700">
+              <span style={{ 
+                marginLeft: '0.75rem',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                color: '#374151'
+              }}>
                 Select All ({filteredQueries.length})
               </span>
             </div>
           </div>
 
           {filteredQueries.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="empty-state w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="empty-state">
+              <div className="empty-state-icon">
+                <svg style={{ width: '2.5rem', height: '2.5rem', color: '#9ca3af' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">No queries found</h3>
-              <p className="text-gray-600 font-medium">
+              <h3 className="empty-state-title">No queries found</h3>
+              <p className="empty-state-description">
                 {searchQuery ? 'Try adjusting your search or filter criteria' : 'No student queries match your current filters'}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-white/20">
+            <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>
               {filteredQueries.map((query) => (
-                <div key={query.id} className="query-item p-6">
-                  <div className="flex items-start space-x-4">
+                <div key={query.id} className="query-item">
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                     <input
                       type="checkbox"
                       checked={selectedQueries.includes(query.id)}
                       onChange={() => handleSelectQuery(query.id)}
-                      className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      style={{
+                        marginTop: '0.25rem',
+                        width: '1rem',
+                        height: '1rem',
+                        accentColor: '#7c3aed',
+                        borderRadius: '0.25rem'
+                      }}
                     />
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-3">
-                            <h3 className="text-lg font-bold text-gray-900">
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                        <div style={{ flex: 1 }}>
+                          <div className="query-header">
+                            <h3 className="query-title">
                               {query.subject}
                             </h3>
-                            <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getPriorityBadgeClass(query.priority)}`}>
+                            <span className={getPriorityBadgeClass(query.priority)}>
                               {query.priority}
                             </span>
-                            <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getStatusBadgeClass(query.status)}`}>
+                            <span className={getStatusBadgeClass(query.status)}>
                               {query.status}
                             </span>
-                            <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getCategoryBadgeClass(query.category)}`}>
+                            <span className={getCategoryBadgeClass(query.category)}>
                               {query.category}
                             </span>
                           </div>
 
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
-                            <span className="font-bold">{query.studentName}</span>
+                          <div className="query-meta">
+                            <span className="query-meta-item">{query.studentName}</span>
                             <span>•</span>
-                            <span className="font-medium">{query.studentId}</span>
+                            <span className="query-meta-item">{query.studentId}</span>
                             <span>•</span>
-                            <span className="font-medium">{query.courseCode} - {query.courseName}</span>
+                            <span className="query-meta-item">{query.courseCode} - {query.courseName}</span>
                             <span>•</span>
-                            <span className="font-medium">{query.studentYear} Year</span>
+                            <span className="query-meta-item">{query.studentYear} Year</span>
                           </div>
 
-                          <p className="text-gray-700 mb-4 line-clamp-2 font-medium">
+                          <p className="query-content">
                             {query.content}
                           </p>
 
-                          <div className="flex items-center space-x-4 text-sm">
-                            <div className="flex flex-wrap gap-2">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>
+                            <div className="query-tags">
                               {query.tags.map((tag, index) => (
-                                <span key={index} className="query-tag px-3 py-1 rounded-full text-xs font-semibold">
+                                <span key={index} className="query-tag">
                                   #{tag}
                                 </span>
                               ))}
                             </div>
                             {query.attachments > 0 && (
-                              <div className="flex items-center text-gray-500 font-medium">
-                                <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <div className="query-attachments">
+                                <svg style={{ width: '1rem', height: '1rem', marginRight: '0.25rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                                 </svg>
                                 {query.attachments} attachment{query.attachments !== 1 ? 's' : ''}
@@ -680,23 +894,24 @@ export default function LecturerQueries() {
                           </div>
                         </div>
 
-                        <div className="flex-shrink-0 flex flex-col items-end space-y-3">
-                          <span className="text-xs text-gray-500 font-medium">
+                        <div className="query-actions">
+                          <span className="query-timestamp">
                             {formatTimestamp(query.timestamp)}
                           </span>
                           {query.responseTime && (
-                            <span className="text-xs text-green-700 bg-green-100/80 backdrop-blur-sm px-3 py-1 rounded-full font-semibold">
+                            <span className="query-response-time">
                               Responded in {query.responseTime}
                             </span>
                           )}
-                          <div className="flex space-x-2">
+                          <div className="query-buttons">
                             <Link
                               href={`/lecturer/queries/${query.id}`}
-                              className="glass-button-primary text-white px-4 py-2 rounded-lg text-sm font-semibold"
+                              className="glass-button-primary"
+                              style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
                             >
                               View Details
                             </Link>
-                            <button className="glass-button-secondary px-4 py-2 rounded-lg text-sm font-semibold">
+                            <button className="glass-button-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
                               Quick Reply
                             </button>
                           </div>
@@ -712,7 +927,7 @@ export default function LecturerQueries() {
 
         {/* Results Summary */}
         {filteredQueries.length > 0 && (
-          <div className="mt-6 text-center text-sm text-gray-600 font-medium animate-slide-up-delayed-5">
+          <div className="results-summary animate-slide-up-delayed-5">
             Showing {filteredQueries.length} of {queries.length} queries
             {searchQuery && ` for "${searchQuery}"`}
           </div>
@@ -720,30 +935,37 @@ export default function LecturerQueries() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden mobile-nav fixed bottom-0 left-0 right-0 z-40">
-        <div className="grid grid-cols-4 py-2">
-          <Link href="/lecturer/dashboard" className="flex flex-col items-center py-2 text-gray-600">
-            <span className="text-lg">🏠</span>
-            <span className="text-xs font-medium">Home</span>
+      <div className="mobile-nav" style={{ display: 'block' }}>
+        <style jsx>{`
+          @media (min-width: 768px) {
+            .mobile-nav {
+              display: none !important;
+            }
+          }
+        `}</style>
+        <div className="mobile-nav-grid">
+          <Link href="/lecturer/dashboard" className="mobile-nav-item">
+            <div className="mobile-nav-icon">🏠</div>
+            <span className="mobile-nav-label">Home</span>
           </Link>
-          <Link href="/lecturer/queries" className="flex flex-col items-center py-2 text-purple-600">
-            <div className="relative">
-              <span className="text-lg">📥</span>
+          <Link href="/lecturer/queries" className="mobile-nav-item active">
+            <div className="mobile-nav-icon">
+              📥
               {pendingCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                <span className="mobile-nav-badge">
                   {pendingCount > 9 ? '9+' : pendingCount}
                 </span>
               )}
             </div>
-            <span className="text-xs font-medium">Queries</span>
+            <span className="mobile-nav-label">Queries</span>
           </Link>
-          <Link href="/lecturer/appointments" className="flex flex-col items-center py-2 text-gray-600">
-            <span className="text-lg">📅</span>
-            <span className="text-xs font-medium">Schedule</span>
+          <Link href="/lecturer/appointments" className="mobile-nav-item">
+            <div className="mobile-nav-icon">📅</div>
+            <span className="mobile-nav-label">Schedule</span>
           </Link>
-          <Link href="/lecturer/analytics" className="flex flex-col items-center py-2 text-gray-600">
-            <span className="text-lg">📊</span>
-            <span className="text-xs font-medium">Analytics</span>
+          <Link href="/lecturer/analytics" className="mobile-nav-item">
+            <div className="mobile-nav-icon">📊</div>
+            <span className="mobile-nav-label">Analytics</span>
           </Link>
         </div>
       </div>
