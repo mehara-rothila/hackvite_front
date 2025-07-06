@@ -1,9 +1,10 @@
 // app/register/lecturer/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import './lecturer-register.css'
 
 export default function LecturerRegisterPage() {
   const [formData, setFormData] = useState({
@@ -23,7 +24,19 @@ export default function LecturerRegisterPage() {
   })
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const router = useRouter()
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ 
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -52,9 +65,7 @@ export default function LecturerRegisterPage() {
 
     setLoading(true)
 
-    // Mock registration
     setTimeout(() => {
-      // Store mock user data
       const userData = {
         id: Math.random().toString(36).substr(2, 9),
         email: formData.email,
@@ -74,8 +85,6 @@ export default function LecturerRegisterPage() {
       }
 
       localStorage.setItem('edulink_user', JSON.stringify(userData))
-      
-      // Redirect to lecturer dashboard
       router.push('/lecturer/dashboard')
     }, 1500)
   }
@@ -89,7 +98,6 @@ export default function LecturerRegisterPage() {
       [name]: type === 'checkbox' ? checked : value
     }))
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -99,325 +107,419 @@ export default function LecturerRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center mb-6">
-            <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xl">E</span>
-            </div>
-            <span className="ml-3 text-2xl font-bold text-gray-900">EduLink Pro</span>
-          </Link>
-          <div className="flex items-center justify-center mb-4">
-            <span className="text-3xl mr-3">👨‍🏫</span>
-            <h2 className="text-3xl font-bold text-gray-900">Lecturer Registration</h2>
-          </div>
-          <p className="text-gray-600">
-            Create your educator account to start managing student communications
-          </p>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Light Colorful Educational Background - SAME AS LOGIN */}
+      <div className="absolute inset-0">
+        {/* Dynamic mouse-following gradient */}
+        <div 
+          className="absolute inset-0 opacity-30 transition-all duration-700 ease-out"
+          style={{
+            background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.2) 0%, rgba(168, 85, 247, 0.15) 25%, transparent 50%)`
+          }}
+        />
+        
+        {/* Light colorful gradient meshes */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/40 via-purple-100/25 to-rose-100/40 animate-mesh-drift-3" />
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/30 via-transparent to-green-100/30 animate-mesh-drift-4" />
+      </div>
+
+      {/* Educational Background - Academic/Lecturer Equations */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/6 text-4xl font-bold text-blue-600/80 animate-equation-float-1">
+          ∇²φ = ρ/ε₀
+        </div>
+        <div className="absolute top-1/3 right-1/5 text-3xl font-bold text-emerald-600/80 animate-equation-float-2">
+          ∫∫ F·dA = ∮ F·dr
+        </div>
+        <div className="absolute bottom-1/4 left-1/5 text-3xl font-bold text-pink-600/80 animate-equation-float-3">
+          H|ψ⟩ = E|ψ⟩
+        </div>
+        <div className="absolute top-1/2 right-1/6 text-3xl font-bold text-purple-600/80 animate-equation-float-4">
+          ∂²u/∂t² = c²∇²u
+        </div>
+        <div className="absolute bottom-1/3 right-1/4 text-3xl font-bold text-orange-600/80 animate-equation-float-1">
+          det(A - λI) = 0
+        </div>
+        <div className="absolute top-2/3 left-1/4 text-3xl font-bold text-cyan-600/80 animate-equation-float-2">
+          lim(n→∞) Σ aₙ = S
         </div>
 
-        {/* Registration Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Personal Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name *
-                </label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                    errors.firstName ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Enter your first name"
-                />
-                {errors.firstName && <p className="text-red-600 text-sm mt-1">{errors.firstName}</p>}
-              </div>
+        {/* Floating Knowledge Particles */}
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className={`absolute w-3 h-3 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-md`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${6 + Math.random() * 4}s`,
+              background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(239, 68, 68, 0.8)', 'rgba(168, 85, 247, 0.8)', 'rgba(245, 158, 11, 0.8)', 'rgba(236, 72, 153, 0.8)'][i % 6]}, rgba(255,255,255,0.3))`
+            }}
+          />
+        ))}
+      </div>
 
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name *
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                    errors.lastName ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Enter your last name"
-                />
-                {errors.lastName && <p className="text-red-600 text-sm mt-1">{errors.lastName}</p>}
-              </div>
-            </div>
+      {/* Light Floating Glass Orbs - SAME AS LOGIN */}
+      <div className="absolute inset-0">
+        <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-blue-200/30 to-cyan-200/20 rounded-full backdrop-blur-sm border border-blue-300/40 animate-glass-float-1 shadow-lg" />
+        <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/25 to-pink-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-2 shadow-lg" />
+        <div className="absolute bottom-24 left-32 w-88 h-88 bg-gradient-to-br from-emerald-200/25 to-teal-200/15 rounded-full backdrop-blur-sm border border-emerald-300/25 animate-glass-float-3 shadow-lg" />
+        <div className="absolute bottom-16 right-16 w-72 h-72 bg-gradient-to-br from-orange-200/25 to-yellow-200/15 rounded-full backdrop-blur-sm border border-orange-300/30 animate-glass-float-4 shadow-lg" />
+        
+        <div className="absolute top-1/4 left-1/5 w-56 h-56 bg-gradient-to-br from-rose-200/20 to-pink-200/10 rounded-full backdrop-blur-sm border border-rose-300/25 animate-bubble-drift-1 shadow-md" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-200/22 to-blue-200/12 rounded-full backdrop-blur-sm border border-indigo-300/30 animate-bubble-drift-2 shadow-md" />
+        <div className="absolute top-3/5 right-1/5 w-48 h-48 bg-gradient-to-br from-green-200/20 to-emerald-200/10 rounded-full backdrop-blur-sm border border-green-300/20 animate-bubble-drift-3 shadow-md" />
+      </div>
 
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="professor@university.edu"
-              />
-              {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
-            </div>
-
-            {/* Password Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password *
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Create a password"
-                />
-                {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password *
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                    errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Confirm your password"
-                />
-                {errors.confirmPassword && <p className="text-red-600 text-sm mt-1">{errors.confirmPassword}</p>}
-              </div>
-            </div>
-
-            {/* Professional Information */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Professional Information</h3>
+      {/* Main Content - SAME STRUCTURE AS LOGIN */}
+      <div className="relative z-20 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          
+          {/* Light Glass Container - SAME AS LOGIN */}
+          <div className="relative group">
+            {/* Colorful outer glow */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-blue-300/30 via-purple-300/40 to-pink-300/30 rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-1000 animate-aurora-glow" />
+            
+            {/* Glass Panel */}
+            <div className="relative bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-2xl overflow-hidden">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="employeeId" className="block text-sm font-medium text-gray-700 mb-1">
-                    Employee ID *
-                  </label>
-                  <input
-                    type="text"
-                    id="employeeId"
-                    name="employeeId"
-                    value={formData.employeeId}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                      errors.employeeId ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="e.g., EMP123456"
-                  />
-                  {errors.employeeId && <p className="text-red-600 text-sm mt-1">{errors.employeeId}</p>}
+              {/* Inner glass effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-blue-50/20 to-purple-50/20 rounded-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/20 via-transparent to-purple-100/20 rounded-3xl" />
+              
+              {/* Content */}
+              <div className="relative p-10">
+                
+                {/* Header - SAME STYLE AS LOGIN */}
+                <div className="text-center mb-10 animate-glass-fade-in">
+                  <div className="mb-8">
+                    <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-text-glow">
+                      EduLink Pro
+                    </h1>
+                    <div className="mt-3 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-purple-400/60 to-transparent animate-line-glow" />
+                  </div>
+                  
+                  <div className="flex items-center justify-center mb-4">
+                    <span className="text-3xl mr-3">👨‍🏫</span>
+                    <h2 className="text-3xl font-medium text-gray-800 animate-slide-up-delayed">
+                      Lecturer Registration
+                    </h2>
+                  </div>
+                  
+                  <p className="text-gray-600 text-lg animate-slide-up-delayed-2">
+                    Create your educator account to start managing student communications
+                  </p>
                 </div>
 
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                    Academic Title *
-                  </label>
-                  <select
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                      errors.title ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  >
-                    <option value="">Select title</option>
-                    <option value="Dr.">Dr.</option>
-                    <option value="Prof.">Prof.</option>
-                    <option value="Assoc. Prof.">Assoc. Prof.</option>
-                    <option value="Asst. Prof.">Asst. Prof.</option>
-                    <option value="Lecturer">Lecturer</option>
-                    <option value="Sr. Lecturer">Sr. Lecturer</option>
-                    <option value="Instructor">Instructor</option>
-                  </select>
-                  {errors.title && <p className="text-red-600 text-sm mt-1">{errors.title}</p>}
-                </div>
-              </div>
+                {/* Form - USING SAME FIELD STRUCTURE AS LOGIN */}
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  
+                  {/* Name Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up-delayed-3">
+                    <div className="group">
+                      <label className="block text-sm font-bold text-gray-700 mb-3 group-focus-within:text-blue-600 transition-all duration-500">
+                        First Name *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
+                        
+                        <input
+                          type="text"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          className="relative w-full px-6 py-4 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none text-lg"
+                          placeholder="Enter first name"
+                        />
+                      </div>
+                      {errors.firstName && <p className="text-red-600 text-sm mt-2 ml-2">{errors.firstName}</p>}
+                    </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div>
-                  <label htmlFor="university" className="block text-sm font-medium text-gray-700 mb-1">
-                    University *
-                  </label>
-                  <input
-                    type="text"
-                    id="university"
-                    name="university"
-                    value={formData.university}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                      errors.university ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="University of Technology"
-                  />
-                  {errors.university && <p className="text-red-600 text-sm mt-1">{errors.university}</p>}
-                </div>
+                    <div className="group">
+                      <label className="block text-sm font-bold text-gray-700 mb-3 group-focus-within:text-blue-600 transition-all duration-500">
+                        Last Name *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
+                        
+                        <input
+                          type="text"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          className="relative w-full px-6 py-4 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none text-lg"
+                          placeholder="Enter last name"
+                        />
+                      </div>
+                      {errors.lastName && <p className="text-red-600 text-sm mt-2 ml-2">{errors.lastName}</p>}
+                    </div>
+                  </div>
 
-                <div>
-                  <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
-                    Department *
-                  </label>
-                  <input
-                    type="text"
-                    id="department"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${
-                      errors.department ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="Computer Science"
-                  />
-                  {errors.department && <p className="text-red-600 text-sm mt-1">{errors.department}</p>}
-                </div>
-              </div>
+                  {/* Email Field - SAME AS LOGIN */}
+                  <div className="group animate-slide-up-delayed-4">
+                    <label className="block text-sm font-bold text-gray-700 mb-3 group-focus-within:text-blue-600 transition-all duration-500">
+                      Email Address *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
+                      
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="relative w-full px-6 py-4 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none text-lg"
+                        placeholder="professor@university.edu"
+                      />
+                    </div>
+                    {errors.email && <p className="text-red-600 text-sm mt-2 ml-2">{errors.email}</p>}
+                  </div>
 
-              <div className="mt-6">
-                <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 mb-1">
-                  Specialization / Research Area
-                </label>
-                <input
-                  type="text"
-                  id="specialization"
-                  name="specialization"
-                  value={formData.specialization}
-                  onChange={handleChange}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
-                  placeholder="e.g., Machine Learning, Software Engineering, Data Science"
-                />
-              </div>
+                  {/* Password Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up-delayed-5">
+                    <div className="group">
+                      <label className="block text-sm font-bold text-gray-700 mb-3 group-focus-within:text-blue-600 transition-all duration-500">
+                        Password *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
+                        
+                        <input
+                          type="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          className="relative w-full px-6 py-4 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none text-lg"
+                          placeholder="Create password"
+                        />
+                      </div>
+                      {errors.password && <p className="text-red-600 text-sm mt-2 ml-2">{errors.password}</p>}
+                    </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div>
-                  <label htmlFor="officeLocation" className="block text-sm font-medium text-gray-700 mb-1">
-                    Office Location
-                  </label>
-                  <input
-                    type="text"
-                    id="officeLocation"
-                    name="officeLocation"
-                    value={formData.officeLocation}
-                    onChange={handleChange}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
-                    placeholder="e.g., Building A, Room 301"
-                  />
-                </div>
+                    <div className="group">
+                      <label className="block text-sm font-bold text-gray-700 mb-3 group-focus-within:text-blue-600 transition-all duration-500">
+                        Confirm Password *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
+                        
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          className="relative w-full px-6 py-4 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none text-lg"
+                          placeholder="Confirm password"
+                        />
+                      </div>
+                      {errors.confirmPassword && <p className="text-red-600 text-sm mt-2 ml-2">{errors.confirmPassword}</p>}
+                    </div>
+                  </div>
 
-                <div>
-                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
-                    placeholder="+1 (555) 123-4567"
-                  />
+                  {/* Professional Info Section */}
+                  <div className="animate-slide-up-delayed-6">
+                    <div className="relative overflow-hidden rounded-2xl mb-6">
+                      <div className="absolute inset-0 bg-white/40 backdrop-blur-lg border border-gray-200/50 shadow-sm" />
+                      <div className="relative p-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                          <span className="text-2xl mr-3">🎓</span>
+                          Professional Information
+                        </h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="group">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Employee ID *</label>
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-xl border border-gray-200/60 group-focus-within:border-blue-400/60 transition-all duration-300" />
+                              <input
+                                type="text"
+                                name="employeeId"
+                                value={formData.employeeId}
+                                onChange={handleChange}
+                                className="relative w-full px-4 py-3 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none"
+                                placeholder="EMP123456"
+                              />
+                            </div>
+                            {errors.employeeId && <p className="text-red-600 text-sm mt-1">{errors.employeeId}</p>}
+                          </div>
+
+                          <div className="group">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Academic Title *</label>
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-xl border border-gray-200/60 group-focus-within:border-blue-400/60 transition-all duration-300" />
+                              <select
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                className="relative w-full px-4 py-3 bg-transparent text-gray-700 font-semibold focus:outline-none appearance-none"
+                              >
+                                <option value="">Select title</option>
+                                <option value="Dr.">Dr.</option>
+                                <option value="Prof.">Prof.</option>
+                                <option value="Assoc. Prof.">Assoc. Prof.</option>
+                                <option value="Asst. Prof.">Asst. Prof.</option>
+                                <option value="Lecturer">Lecturer</option>
+                                <option value="Sr. Lecturer">Sr. Lecturer</option>
+                                <option value="Instructor">Instructor</option>
+                              </select>
+                            </div>
+                            {errors.title && <p className="text-red-600 text-sm mt-1">{errors.title}</p>}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                          <div className="group">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">University *</label>
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-xl border border-gray-200/60 group-focus-within:border-blue-400/60 transition-all duration-300" />
+                              <input
+                                type="text"
+                                name="university"
+                                value={formData.university}
+                                onChange={handleChange}
+                                className="relative w-full px-4 py-3 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none"
+                                placeholder="University of Technology"
+                              />
+                            </div>
+                            {errors.university && <p className="text-red-600 text-sm mt-1">{errors.university}</p>}
+                          </div>
+
+                          <div className="group">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Department *</label>
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-xl border border-gray-200/60 group-focus-within:border-blue-400/60 transition-all duration-300" />
+                              <input
+                                type="text"
+                                name="department"
+                                value={formData.department}
+                                onChange={handleChange}
+                                className="relative w-full px-4 py-3 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none"
+                                placeholder="Computer Science"
+                              />
+                            </div>
+                            {errors.department && <p className="text-red-600 text-sm mt-1">{errors.department}</p>}
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <div className="group">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Specialization</label>
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-xl border border-gray-200/60 group-focus-within:border-blue-400/60 transition-all duration-300" />
+                              <input
+                                type="text"
+                                name="specialization"
+                                value={formData.specialization}
+                                onChange={handleChange}
+                                className="relative w-full px-4 py-3 bg-transparent text-gray-700 font-semibold placeholder-gray-500 focus:outline-none"
+                                placeholder="Machine Learning, Data Science..."
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Terms Checkbox - SAME STYLE AS LOGIN */}
+                  <div className="animate-slide-up-delayed-7">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.agreeToTerms}
+                        onChange={handleChange}
+                        name="agreeToTerms"
+                        className="sr-only"
+                      />
+                      <div className="relative">
+                        <div className={`w-6 h-6 rounded-lg border-2 border-gray-300 bg-white/60 backdrop-blur-lg transition-all duration-300 shadow-sm ${formData.agreeToTerms ? 'border-blue-500 bg-blue-100' : 'group-hover:border-gray-400'}`}>
+                          {formData.agreeToTerms && (
+                            <svg className="w-4 h-4 text-blue-600 absolute top-0.5 left-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                      <span className="ml-3 text-gray-700 font-semibold group-hover:text-gray-800 transition-colors duration-300">
+                        I agree to the{' '}
+                        <Link href="/terms" className="text-blue-600 hover:text-blue-700 transition-colors duration-300 hover:underline">
+                          Terms of Service
+                        </Link>{' '}
+                        and{' '}
+                        <Link href="/privacy" className="text-blue-600 hover:text-blue-700 transition-colors duration-300 hover:underline">
+                          Privacy Policy
+                        </Link>
+                      </span>
+                    </label>
+                    {errors.agreeToTerms && <p className="text-red-600 text-sm mt-2 ml-8">{errors.agreeToTerms}</p>}
+                  </div>
+
+                  {/* Submit Button - SAME STYLE AS LOGIN */}
+                  <div className="animate-slide-up-delayed-8">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="relative w-full group overflow-hidden rounded-2xl"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 backdrop-blur-lg border border-blue-400/30 group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 transition-all duration-500 shadow-lg" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 blur opacity-50 group-hover:opacity-70 transition-all duration-500" />
+                      
+                      <div className="relative py-4 px-6 text-white font-bold text-lg group-hover:scale-[1.02] transition-transform duration-300">
+                        {loading ? (
+                          <div className="flex items-center justify-center">
+                            <div className="w-6 h-6 border-2 border-white/50 border-t-white rounded-full animate-spin mr-3" />
+                            Creating Account...
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                            Create Lecturer Account
+                            <svg className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                </form>
+
+                {/* Footer Links - SAME STYLE AS LOGIN */}
+                <div className="mt-8 text-center animate-slide-up-delayed-9">
+                  <p className="text-gray-600 font-medium mb-3">
+                    Want to register as a student?{' '}
+                    <Link href="/register/student" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300 hover:underline cursor-pointer">
+                      Switch to student registration
+                    </Link>
+                  </p>
+                  <p className="text-gray-600 font-medium">
+                    Already have an account?{' '}
+                    <Link href="/login" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300 hover:underline cursor-pointer">
+                      Sign in here
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>
-
-            {/* Terms and Conditions */}
-            <div className="border-t pt-6">
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="agreeToTerms"
-                  name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mt-1"
-                />
-                <label htmlFor="agreeToTerms" className="ml-3 text-sm text-gray-700">
-                  I agree to the{' '}
-                  <Link href="/terms" className="text-purple-600 hover:text-purple-700">
-                    Terms of Service
-                  </Link>{' '}
-                  and{' '}
-                  <Link href="/privacy" className="text-purple-600 hover:text-purple-700">
-                    Privacy Policy
-                  </Link>{' '}
-                  and confirm that I am an authorized educator at my institution.
-                </label>
-              </div>
-              {errors.agreeToTerms && <p className="text-red-600 text-sm mt-1">{errors.agreeToTerms}</p>}
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Creating Account...
-                </div>
-              ) : (
-                'Create Lecturer Account'
-              )}
-            </button>
-          </form>
-
-          {/* Footer Links */}
-          <div className="mt-6 text-center space-y-2">
-            <p className="text-sm text-gray-600">
-              Want to register as a student?{' '}
-              <Link href="/register/student" className="text-purple-600 hover:text-purple-700 font-medium">
-                Switch to student registration
-              </Link>
-            </p>
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">
-                Sign in here
-              </Link>
-            </p>
           </div>
-        </div>
 
-        {/* Back to Role Selection */}
-        <div className="text-center mt-6">
-          <Link href="/register" className="text-sm text-gray-500 hover:text-gray-700">
-            ← Back to role selection
-          </Link>
+          {/* Back to Role Selection - SAME AS LOGIN */}
+          <div className="mt-8 text-center animate-slide-up-delayed-9">
+            <Link href="/register" className="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-300 cursor-pointer group font-medium">
+              <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to role selection
+            </Link>
+          </div>
         </div>
       </div>
     </div>

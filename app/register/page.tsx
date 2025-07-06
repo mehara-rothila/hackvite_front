@@ -140,7 +140,7 @@ export default function RegisterPage() {
                 <div className="animate-slide-up-delayed-3">
                   <div className="text-center mb-10">
                     <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                      I am a&hellip;
+                      I am a…
                     </h3>
                     <p className="text-gray-600 text-lg">
                       Select your role to customize your experience
