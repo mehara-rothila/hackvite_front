@@ -1,11 +1,24 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './styles.css'
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [email, setEmail] = useState('')
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
+
+  // Mouse tracking for dynamic gradient
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -15,54 +28,75 @@ export default function LandingPage() {
 
   return (
     <div className="main-container">
-      {/* Enhanced Background Layers */}
-      <div className="animated-background"></div>
-      <div className="noise-overlay"></div>
-      
-      {/* Wave Background Layers */}
-      <div className="wave-layers">
-        <div className="wave-layer wave-1"></div>
-        <div className="wave-layer wave-2"></div>
-        <div className="wave-layer wave-3"></div>
+      {/* EXACT BACKGROUND COPY FROM LOGIN PAGE - BRIGHTER */}
+      <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
+        {/* Dynamic mouse-following gradient */}
+        <div
+          className="absolute inset-0 opacity-40 transition-all duration-700 ease-out"
+          style={{
+            background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.3) 0%, rgba(168, 85, 247, 0.25) 25%, transparent 50%)`
+          }}
+        />
+
+        {/* Light colorful gradient meshes - BRIGHTER */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/60 via-purple-100/55 to-pink-100/60 animate-mesh-drift-1" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/55 via-violet-100/50 to-orange-100/55 animate-mesh-drift-2" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/60 via-purple-100/45 to-rose-100/60 animate-mesh-drift-3" />
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/50 via-transparent to-green-100/50 animate-mesh-drift-4" />
       </div>
-      
-      {/* Morphing Gradient Orbs */}
-      <div className="morphing-orbs">
-        <div className="morphing-orb orb-1"></div>
-        <div className="morphing-orb orb-2"></div>
-        <div className="morphing-orb orb-3"></div>
-        <div className="morphing-orb orb-4"></div>
-        <div className="morphing-orb orb-5"></div>
+
+      {/* Clean Educational Background - 6 Large Mathematical Equations - BRIGHTER */}
+      <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
+        {/* 6 Large Mathematical Equations Only */}
+        <div className="absolute top-1/4 left-1/6 text-4xl font-bold text-blue-600 animate-equation-float-1" style={{ opacity: 0.9, maxWidth: '100vw' }}>
+          ∫₀^∞ e^(-x²) dx = √π/2
+        </div>
+        <div className="absolute top-1/3 right-1/5 text-3xl font-bold text-emerald-600 animate-equation-float-2" style={{ opacity: 0.9, maxWidth: '100vw' }}>
+          ∑ᵢ₌₁^∞ 1/n² = π²/6
+        </div>
+        <div className="absolute bottom-1/4 left-1/5 text-3xl font-bold text-pink-600 animate-equation-float-3" style={{ opacity: 0.9, maxWidth: '100vw' }}>
+          E = mc² = ħω
+        </div>
+        <div className="absolute top-1/2 right-1/6 text-3xl font-bold text-purple-600 animate-equation-float-4" style={{ opacity: 0.9, maxWidth: '100vw' }}>
+          π = 4∑(-1)ⁿ/(2n+1)
+        </div>
+        <div className="absolute bottom-1/3 right-1/4 text-3xl font-bold text-orange-600 animate-equation-float-1" style={{ opacity: 0.9, maxWidth: '100vw' }}>
+          lim(x→0) sin(x)/x = 1
+        </div>
+        <div className="absolute top-2/3 left-1/4 text-3xl font-bold text-cyan-600 animate-equation-float-2" style={{ opacity: 0.9, maxWidth: '100vw' }}>
+          a² + b² = c²
+        </div>
+
+        {/* Floating Knowledge Particles - BRIGHTER */}
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className={`absolute w-3 h-3 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-md`}
+            style={{
+              left: `${5 + Math.random() * 90}%`,
+              top: `${5 + Math.random() * 90}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${6 + Math.random() * 4}s`,
+              background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.9)', 'rgba(16, 185, 129, 0.9)', 'rgba(239, 68, 68, 0.9)', 'rgba(168, 85, 247, 0.9)', 'rgba(245, 158, 11, 0.9)', 'rgba(236, 72, 153, 0.9)'][i % 6]}, rgba(255,255,255,0.4))`,
+              maxWidth: '100vw',
+              maxHeight: '100vh'
+            }}
+          />
+        ))}
       </div>
-      
-      {/* Enhanced Particle System */}
-      <div className="particles-container">
-        <div className="particle particle-standard p1"></div>
-        <div className="particle particle-standard p2"></div>
-        <div className="particle particle-standard p3"></div>
-        <div className="particle particle-standard p4"></div>
-        <div className="particle particle-standard p5"></div>
-        <div className="particle particle-glow g1"></div>
-        <div className="particle particle-glow g2"></div>
-        <div className="particle particle-glow g3"></div>
-      </div>
-      
-      {/* Enhanced Geometric Shapes */}
-      <div className="geometric-shapes">
-        <div className="shape-layer layer-1">
-          <div className="shape shape-1"></div>
-          <div className="shape shape-2"></div>
-          <div className="shape shape-3"></div>
-        </div>
-        <div className="shape-layer layer-2">
-          <div className="shape shape-4"></div>
-          <div className="shape shape-5"></div>
-        </div>
-        <div className="shape-layer layer-3">
-          <div className="shape shape-6"></div>
-          <div className="shape shape-7"></div>
-          <div className="shape shape-8"></div>
-        </div>
+
+      {/* Light Floating Glass Orbs - BRIGHTER */}
+      <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
+        {/* Large colorful glass orbs - BRIGHTER */}
+        <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-blue-200/50 to-cyan-200/40 rounded-full backdrop-blur-sm border border-blue-300/60 animate-glass-float-1 shadow-lg" />
+        <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/45 to-pink-200/35 rounded-full backdrop-blur-sm border border-purple-300/50 animate-glass-float-2 shadow-lg" />
+        <div className="absolute bottom-24 left-32 w-88 h-88 bg-gradient-to-br from-emerald-200/45 to-teal-200/35 rounded-full backdrop-blur-sm border border-emerald-300/45 animate-glass-float-3 shadow-lg" />
+        <div className="absolute bottom-16 right-16 w-72 h-72 bg-gradient-to-br from-orange-200/45 to-yellow-200/35 rounded-full backdrop-blur-sm border border-orange-300/50 animate-glass-float-4 shadow-lg" />
+
+        {/* Medium colorful bubbles - BRIGHTER */}
+        <div className="absolute top-1/4 left-1/5 w-56 h-56 bg-gradient-to-br from-rose-200/40 to-pink-200/30 rounded-full backdrop-blur-sm border border-rose-300/45 animate-bubble-drift-1 shadow-md" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-200/42 to-blue-200/32 rounded-full backdrop-blur-sm border border-indigo-300/50 animate-bubble-drift-2 shadow-md" />
+        <div className="absolute top-3/5 right-1/5 w-48 h-48 bg-gradient-to-br from-green-200/40 to-emerald-200/30 rounded-full backdrop-blur-sm border border-green-300/40 animate-bubble-drift-3 shadow-md" />
       </div>
 
       {/* Navigation */}
@@ -80,7 +114,7 @@ export default function LandingPage() {
             <Link href="#about" className="nav-link">About</Link>
             <Link href="#pricing" className="nav-link">Pricing</Link>
             <Link href="#contact" className="nav-link">Contact</Link>
-            <Link href="#login" className="btn btn-primary">Login</Link>
+            <Link href="/login" className="btn btn-primary">Login</Link>
           </div>
           
           <button 
@@ -101,7 +135,7 @@ export default function LandingPage() {
               <Link href="#pricing" className="mobile-nav-link">Pricing</Link>
               <Link href="#contact" className="mobile-nav-link">Contact</Link>
               <div className="mobile-cta">
-                <Link href="#login" className="btn btn-primary" style={{width: '100%'}}>Login</Link>
+                <Link href="/login" className="btn btn-primary" style={{width: '100%'}}>Login</Link>
               </div>
             </div>
           </div>
@@ -120,10 +154,16 @@ export default function LandingPage() {
               seamless messaging, smart scheduling, and collaborative learning tools.
             </p>
             <div className="hero-buttons">
-              <Link href="#signup" className="btn btn-hero-primary">
-                Start Free Trial 🚀
+              <Link href="/register" className="btn btn-hero-primary">
+                <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Start Free Trial
               </Link>
               <Link href="#demo" className="btn btn-hero-secondary">
+                <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 Watch Demo
               </Link>
             </div>
@@ -226,8 +266,11 @@ export default function LandingPage() {
             <p className="cta-subtitle">
               Join thousands of students and lecturers who are already using EduLink Pro.
             </p>
-            <Link href="#signup" className="btn btn-cta">
-              Start Free Trial 🚀
+            <Link href="/register" className="btn btn-cta">
+              <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Start Free Trial
             </Link>
           </div>
         </div>
@@ -311,6 +354,9 @@ export default function LandingPage() {
                         required
                       />
                       <button type="submit" className="newsletter-btn">
+                        <svg style={{ width: '1rem', height: '1rem', marginRight: '0.25rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
                         Subscribe
                       </button>
                     </div>
@@ -338,13 +384,28 @@ export default function LandingPage() {
                 <div className="footer-badges">
                   <div className="security-badges">
                     <div className="badge">
-                      <span className="badge-text">🔒 SSL Secured</span>
+                      <span className="badge-text">
+                        <svg style={{ width: '0.875rem', height: '0.875rem', marginRight: '0.25rem', display: 'inline' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        SSL Secured
+                      </span>
                     </div>
                     <div className="badge">
-                      <span className="badge-text">🛡️ GDPR Compliant</span>
+                      <span className="badge-text">
+                        <svg style={{ width: '0.875rem', height: '0.875rem', marginRight: '0.25rem', display: 'inline' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        GDPR Compliant
+                      </span>
                     </div>
                     <div className="badge">
-                      <span className="badge-text">✅ SOC 2 Type II</span>
+                      <span className="badge-text">
+                        <svg style={{ width: '0.875rem', height: '0.875rem', marginRight: '0.25rem', display: 'inline' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        SOC 2 Type II
+                      </span>
                     </div>
                   </div>
                 </div>
