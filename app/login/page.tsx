@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ 
+      setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
       })
@@ -38,7 +38,7 @@ export default function LoginPage() {
       if (formData.email && formData.password) {
         const isStudent = formData.email.includes('student') || formData.email.includes('s.')
         const role = isStudent ? 'student' : 'lecturer'
-        
+
         // Store mock user data
         localStorage.setItem('edulink_user', JSON.stringify({
           id: Math.random().toString(36).substr(2, 9),
@@ -74,13 +74,13 @@ export default function LoginPage() {
       {/* Light Colorful Educational Background */}
       <div className="absolute inset-0">
         {/* Dynamic mouse-following gradient */}
-        <div 
+        <div
           className="absolute inset-0 opacity-30 transition-all duration-700 ease-out"
           style={{
             background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.2) 0%, rgba(168, 85, 247, 0.15) 25%, transparent 50%)`
           }}
         />
-        
+
         {/* Light colorful gradient meshes */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
         <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
@@ -107,7 +107,7 @@ export default function LoginPage() {
           lim(x→0) sin(x)/x = 1
         </div>
         <div className="absolute top-2/3 left-1/4 text-3xl font-bold text-cyan-600/80 animate-equation-float-2">
-          a² + b² = c² 
+          a² + b² = c²
         </div>
 
         {/* Floating Knowledge Particles - Bright colors */}
@@ -133,7 +133,7 @@ export default function LoginPage() {
         <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/25 to-pink-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-2 shadow-lg" />
         <div className="absolute bottom-24 left-32 w-88 h-88 bg-gradient-to-br from-emerald-200/25 to-teal-200/15 rounded-full backdrop-blur-sm border border-emerald-300/25 animate-glass-float-3 shadow-lg" />
         <div className="absolute bottom-16 right-16 w-72 h-72 bg-gradient-to-br from-orange-200/25 to-yellow-200/15 rounded-full backdrop-blur-sm border border-orange-300/30 animate-glass-float-4 shadow-lg" />
-        
+
         {/* Medium colorful bubbles */}
         <div className="absolute top-1/4 left-1/5 w-56 h-56 bg-gradient-to-br from-rose-200/20 to-pink-200/10 rounded-full backdrop-blur-sm border border-rose-300/25 animate-bubble-drift-1 shadow-md" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-200/22 to-blue-200/12 rounded-full backdrop-blur-sm border border-indigo-300/30 animate-bubble-drift-2 shadow-md" />
@@ -143,22 +143,22 @@ export default function LoginPage() {
       {/* Main Content */}
       <div className="relative z-20 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-lg">
-          
+
           {/* Light Glass Container */}
           <div className="relative group">
             {/* Colorful outer glow for light theme */}
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-300/30 via-purple-300/40 to-pink-300/30 rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-1000 animate-aurora-glow" />
-            
+
             {/* Glass Panel adapted for light background */}
             <div className="relative bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-2xl overflow-hidden">
-              
+
               {/* Inner glass effect for light theme */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-blue-50/20 to-purple-50/20 rounded-3xl" />
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/20 via-transparent to-purple-100/20 rounded-3xl" />
-              
+
               {/* Content */}
               <div className="relative p-10">
-                
+
                 {/* Header with dark text for light background */}
                 <div className="text-center mb-10 animate-glass-fade-in">
                   {/* Text Logo - Dark for light background */}
@@ -168,11 +168,11 @@ export default function LoginPage() {
                     </h1>
                     <div className="mt-3 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-purple-400/60 to-transparent animate-line-glow" />
                   </div>
-                  
+
                   <h2 className="text-3xl font-medium text-gray-800 mb-3 animate-slide-up-delayed">
                     Welcome Back
                   </h2>
-                  
+
                   <p className="text-gray-600 text-lg animate-slide-up-delayed-2">
                     Sign in to continue your educational journey
                   </p>
@@ -203,7 +203,7 @@ export default function LoginPage() {
                       {/* Light theme field background */}
                       <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                      
+
                       <input
                         type="email"
                         value={formData.email}
@@ -214,9 +214,9 @@ export default function LoginPage() {
                         placeholder="Enter your email"
                       />
                     </div>
-                    {/* FIX: Using a JS string in curly braces */}
+                    {/* FIX: Escaped the double quotes */}
                     <p className="text-xs text-gray-500 mt-3 ml-2">
-                      {'Use "student@university.edu" for student access or "prof@university.edu" for lecturer access'}
+                      Use &quot;student@university.edu&quot; for student access or &quot;prof@university.edu&quot; for lecturer access
                     </p>
                   </div>
 
@@ -229,7 +229,7 @@ export default function LoginPage() {
                       {/* Light theme field background */}
                       <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                      
+
                       <input
                         type="password"
                         value={formData.password}
@@ -282,7 +282,7 @@ export default function LoginPage() {
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 backdrop-blur-lg border border-blue-400/30 group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 transition-all duration-500 shadow-lg" />
                       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-all duration-500" />
                       <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 blur opacity-50 group-hover:opacity-70 transition-all duration-500" />
-                      
+
                       <div className="relative py-4 px-6 text-white font-bold text-lg group-hover:scale-[1.02] transition-transform duration-300">
                         {loading ? (
                           <div className="flex items-center justify-center">
@@ -330,8 +330,8 @@ export default function LoginPage() {
                 {/* Sign Up Link for light theme */}
                 <div className="mt-8 text-center animate-slide-up-delayed-8">
                   <p className="text-gray-600 font-medium">
-                    {/* FIX: Using a JS string in curly braces */}
-                    {"Don't have an account?"}{' '}
+                    {/* FIX: Escaped the apostrophe */}
+                    Don&apos;t have an account?{' '}
                     <Link href="/register" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300 hover:underline cursor-pointer">
                       Sign up for free
                     </Link>

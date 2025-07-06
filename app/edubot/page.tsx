@@ -69,7 +69,7 @@ export default function EdubotPage() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ 
+      setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
       })
@@ -80,18 +80,18 @@ export default function EdubotPage() {
 
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
-    
+
     if (!currentUser) {
       router.push('/login')
       return
     }
-    
+
     setUser(currentUser)
-    
+
     // Get greeting from CSS
     const botResponses = getDataFromCSS('--bot-responses')
     const greeting = botResponses.greeting || "Hello! I'm EduBot, your AI learning assistant."
-    
+
     const welcomeMessage: BotMessage = {
       id: 'welcome-msg',
       content: `Hello ${currentUser.firstName || currentUser.name}! 👋 ${greeting}`,
@@ -100,7 +100,7 @@ export default function EdubotPage() {
       isBot: true,
       suggestions: ['Study tips', 'Assignment help', 'Time management', 'Exam preparation']
     }
-    
+
     setMessages([welcomeMessage])
     setLoading(false)
   }, [router])
@@ -112,7 +112,7 @@ export default function EdubotPage() {
   const simulateBotResponse = (userMessage: string): BotMessage => {
     const lowerMessage = userMessage.toLowerCase()
     const botResponses = getDataFromCSS('--bot-responses')
-    
+
     let responseContent = "I understand you're asking about that topic. Let me help you with some guidance and suggestions."
     let suggestions: string[] = []
     let actions: BotAction[] = []
@@ -211,20 +211,21 @@ export default function EdubotPage() {
   // Quick actions and categories from CSS
   const quickActions = getDataFromCSS('--quick-actions')
   const categories = getDataFromCSS('--categories')
-  
-  const quickActionsArray = Object.entries(quickActions).map(([id, data]: [string, unknown]) => ({
+
+  // FIX: Add type assertion to the object returned by map to fix assignment error.
+  const quickActionsArray: QuickActionData[] = Object.entries(quickActions).map(([id, data]) => ({
     id,
     ...(data as Omit<QuickActionData, 'id'>)
-  }))
-  
-  const categoriesArray = Object.entries(categories).map(([id, data]: [string, unknown]) => ({
+  } as QuickActionData))
+
+  const categoriesArray: CategoryData[] = Object.entries(categories).map(([id, data]) => ({
     id,
     ...(data as Omit<CategoryData, 'id'>)
-  }))
+  } as CategoryData))
 
-  const filteredQuickActions = selectedCategory === 'all' 
-    ? quickActionsArray 
-    : quickActionsArray.filter((action: QuickActionData) => action.category === selectedCategory)
+  const filteredQuickActions = selectedCategory === 'all'
+    ? quickActionsArray
+    : quickActionsArray.filter(action => action.category === selectedCategory)
 
   if (loading) {
     return (
@@ -247,7 +248,7 @@ export default function EdubotPage() {
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 mock-data-container">
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <div 
+        <div
           className="absolute inset-0 opacity-20 transition-all duration-700 ease-out"
           style={{
             background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(168, 85, 247, 0.2) 0%, rgba(59, 130, 246, 0.15) 25%, transparent 50%)`
@@ -277,36 +278,36 @@ export default function EdubotPage() {
 
       {/* Chat Interface */}
       <div className="relative z-10 min-h-screen flex flex-col chat-container">
-        
+
         {/* Header */}
         <div className="chat-header px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link 
-                href={user.role === 'student' ? '/student/dashboard' : '/lecturer/dashboard'} 
+              <Link
+                href={user.role === 'student' ? '/student/dashboard' : '/lecturer/dashboard'}
                 className="back-button"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </Link>
-              
+
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bot-avatar rounded-xl flex items-center justify-center">
                   <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                
+
                 <div>
                   <h1 className="text-lg font-bold text-gray-900">EduBot AI Assistant</h1>
                   <p className="text-sm text-gray-600">Your personal learning companion</p>
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
-              <button 
+              <button
                 onClick={() => setShowQuickActions(!showQuickActions)}
                 className="header-button"
               >
@@ -335,7 +336,7 @@ export default function EdubotPage() {
                 </button>
               ))}
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {filteredQuickActions.map((action: QuickActionData, index: number) => (
                 <button
@@ -374,7 +375,7 @@ export default function EdubotPage() {
                     <div className="whitespace-pre-line text-sm leading-relaxed font-medium">
                       {message.content}
                     </div>
-                    
+
                     {message.suggestions && message.suggestions.length > 0 && (
                       <div className="mt-4 flex flex-wrap gap-2">
                         {message.suggestions.map((suggestion, index) => (
@@ -389,7 +390,7 @@ export default function EdubotPage() {
                         ))}
                       </div>
                     )}
-                    
+
                     {message.actions && message.actions.length > 0 && (
                       <div className="mt-4 space-y-2">
                         {message.actions.map((action, index) => (
@@ -403,7 +404,7 @@ export default function EdubotPage() {
                         ))}
                       </div>
                     )}
-                    
+
                     <div className="mt-3">
                       <p className="text-xs opacity-75 font-medium">
                         {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -414,7 +415,7 @@ export default function EdubotPage() {
               </div>
             </div>
           ))}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -436,8 +437,8 @@ export default function EdubotPage() {
                 Press Enter to send
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={handleSendMessage}
               disabled={!inputMessage.trim() || isTyping}
               className="send-button"
@@ -447,7 +448,7 @@ export default function EdubotPage() {
               </svg>
             </button>
           </div>
-          
+
           <div className="mt-3 text-xs text-gray-500 text-center font-medium">
             EduBot can help with studies, assignments, time management, career guidance, and more!
           </div>

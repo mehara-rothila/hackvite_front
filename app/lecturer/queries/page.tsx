@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { AuthService } from '../../../lib/auth'
 import { LecturerUser } from '../../../types'
+import './lecturer-queries.css'
 
 interface Query {
   id: string
@@ -26,7 +27,7 @@ interface Query {
   lastActivity: string
 }
 
-// Mock queries data (moved outside component to prevent re-creation on render)
+// Mock queries data
 const mockQueries: Query[] = [
   {
     id: 'query-001',
@@ -142,16 +143,28 @@ export default function LecturerQueries() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortBy, setSortBy] = useState('priority')
   const [selectedQueries, setSelectedQueries] = useState<string[]>([])
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const router = useRouter()
 
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
-    
+
     if (!currentUser || currentUser.role !== 'lecturer') {
       router.push('/login')
       return
     }
-    
+
     setUser(currentUser as LecturerUser)
     setQueries(mockQueries)
     setLoading(false)
@@ -166,7 +179,7 @@ export default function LecturerQueries() {
     const date = new Date(timestamp)
     const now = new Date()
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-    
+
     if (diffInHours < 1) {
       return 'Just now'
     } else if (diffInHours < 24) {
@@ -178,33 +191,33 @@ export default function LecturerQueries() {
     }
   }
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityBadgeClass = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-500 text-white'
-      case 'high': return 'bg-red-100 text-red-800'
-      case 'medium': return 'bg-yellow-100 text-yellow-800'
-      case 'low': return 'bg-green-100 text-green-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'urgent': return 'badge-urgent'
+      case 'high': return 'badge-high'
+      case 'medium': return 'badge-medium'
+      case 'low': return 'badge-low'
+      default: return 'badge-low'
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-orange-100 text-orange-800'
-      case 'in-progress': return 'bg-blue-100 text-blue-800'
-      case 'resolved': return 'bg-green-100 text-green-800'
-      case 'escalated': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'pending': return 'badge-pending'
+      case 'in-progress': return 'badge-in-progress'
+      case 'resolved': return 'badge-resolved'
+      case 'escalated': return 'badge-escalated'
+      default: return 'badge-pending'
     }
   }
 
-  const getCategoryColor = (category: string) => {
+  const getCategoryBadgeClass = (category: string) => {
     switch (category) {
-      case 'academic': return 'bg-purple-100 text-purple-800'
-      case 'technical': return 'bg-indigo-100 text-indigo-800'
-      case 'administrative': return 'bg-blue-100 text-blue-800'
-      case 'personal': return 'bg-pink-100 text-pink-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'academic': return 'badge-academic'
+      case 'technical': return 'badge-technical'
+      case 'administrative': return 'badge-administrative'
+      case 'personal': return 'badge-personal'
+      default: return 'badge-academic'
     }
   }
 
@@ -215,10 +228,10 @@ export default function LecturerQueries() {
                           query.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           query.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           query.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      
+
       const matchesFilter = selectedFilter === 'all' || query.status === selectedFilter
       const matchesCategory = selectedCategory === 'all' || query.category === selectedCategory
-      
+
       return matchesSearch && matchesFilter && matchesCategory
     })
     .sort((a, b) => {
@@ -238,14 +251,13 @@ export default function LecturerQueries() {
     })
 
   const handleBulkAction = (action: string) => {
-    // Mock bulk action handling
     console.log(`Performing ${action} on queries:`, selectedQueries)
     setSelectedQueries([])
   }
 
   const handleSelectQuery = (queryId: string) => {
-    setSelectedQueries(prev => 
-      prev.includes(queryId) 
+    setSelectedQueries(prev =>
+      prev.includes(queryId)
         ? prev.filter(id => id !== queryId)
         : [...prev, queryId]
     )
@@ -268,8 +280,8 @@ export default function LecturerQueries() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+        <div className="loading-spinner w-32 h-32"></div>
       </div>
     )
   }
@@ -277,30 +289,96 @@ export default function LecturerQueries() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Educational Background - SAME AS LOGIN */}
+      <div className="absolute inset-0 z-0">
+        {/* Dynamic mouse-following gradient */}
+        <div
+          className="absolute inset-0 opacity-20 transition-all duration-700 ease-out"
+          style={{
+            background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 25%, transparent 50%)`
+          }}
+        />
+
+        {/* Light colorful gradient meshes */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-purple-100/25 to-pink-100/30 animate-mesh-drift-1" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/25 via-violet-100/20 to-orange-100/25 animate-mesh-drift-2" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/30 via-purple-100/15 to-rose-100/30 animate-mesh-drift-3" />
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/20 via-transparent to-green-100/20 animate-mesh-drift-4" />
+      </div>
+
+      {/* Educational Equations - Academic/Query Management Context */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/8 left-1/12 text-2xl font-bold text-purple-500/60 animate-equation-float-1">
+          Q(s,a) = R(s,a) + γΣP(s&apos;|s,a)V(s&apos;)
+        </div>
+        <div className="absolute top-1/4 right-1/8 text-xl font-bold text-blue-500/60 animate-equation-float-2">
+          Response_Time = (Total_Time / Queries_Count)
+        </div>
+        <div className="absolute bottom-1/4 left-1/8 text-2xl font-bold text-emerald-500/60 animate-equation-float-3">
+          Priority = Urgency × Impact
+        </div>
+        <div className="absolute top-1/2 right-1/12 text-xl font-bold text-pink-500/60 animate-equation-float-4">
+          Satisfaction = Quality / Response_Time
+        </div>
+        <div className="absolute bottom-1/3 right-1/6 text-2xl font-bold text-orange-500/60 animate-equation-float-1">
+          Load_Balance = Queries / Faculty
+        </div>
+        <div className="absolute top-2/3 left-1/6 text-xl font-bold text-cyan-500/60 animate-equation-float-2">
+          Efficiency = Resolved / (Resolved + Pending)
+        </div>
+
+        {/* Knowledge Particles - Reduced opacity for dashboard */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className={`absolute w-2 h-2 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-sm`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${8 + Math.random() * 4}s`,
+              background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.6)', 'rgba(147, 51, 234, 0.6)', 'rgba(236, 72, 153, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(245, 158, 11, 0.6)', 'rgba(239, 68, 68, 0.6)'][i % 6]}, rgba(255,255,255,0.2))`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Floating Glass Orbs - More subtle for dashboard */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-16 left-16 w-60 h-60 bg-gradient-to-br from-purple-200/20 to-indigo-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-1 shadow-lg" />
+        <div className="absolute top-32 right-24 w-80 h-80 bg-gradient-to-br from-blue-200/15 to-cyan-200/10 rounded-full backdrop-blur-sm border border-blue-300/20 animate-glass-float-2 shadow-lg" />
+        <div className="absolute bottom-24 left-32 w-70 h-70 bg-gradient-to-br from-emerald-200/15 to-teal-200/10 rounded-full backdrop-blur-sm border border-emerald-300/20 animate-glass-float-3 shadow-lg" />
+        <div className="absolute bottom-16 right-16 w-50 h-50 bg-gradient-to-br from-pink-200/15 to-rose-200/10 rounded-full backdrop-blur-sm border border-pink-300/20 animate-glass-float-4 shadow-lg" />
+
+        <div className="absolute top-1/4 left-1/5 w-40 h-40 bg-gradient-to-br from-violet-200/15 to-purple-200/10 rounded-full backdrop-blur-sm border border-violet-300/20 animate-bubble-drift-1 shadow-md" />
+        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-gradient-to-br from-indigo-200/15 to-blue-200/10 rounded-full backdrop-blur-sm border border-indigo-300/20 animate-bubble-drift-2 shadow-md" />
+        <div className="absolute top-3/5 right-1/5 w-36 h-36 bg-gradient-to-br from-orange-200/15 to-yellow-200/10 rounded-full backdrop-blur-sm border border-orange-300/15 animate-bubble-drift-3 shadow-md" />
+      </div>
+
       {/* Navigation Header */}
-      <nav className="bg-white shadow-sm border-b border-gray-200">
+      <nav className="relative z-30 glass-nav">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/lecturer/dashboard" className="flex items-center">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center backdrop-blur-sm">
                   <span className="text-white font-bold text-sm">E</span>
                 </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">EduLink Pro</span>
+                <span className="ml-3 text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">EduLink Pro</span>
               </Link>
               <div className="ml-8">
-                <span className="text-sm text-gray-600">Query Management</span>
+                <span className="text-sm text-gray-600 font-medium">Query Management</span>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-700">
-                <span className="font-medium">{user.title} {user.lastName}</span>
+                <span className="font-semibold">{user.title} {user.lastName}</span>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-sm text-gray-600 hover:text-red-600 transition-colors"
+                className="text-sm text-gray-600 hover:text-red-600 transition-colors font-medium"
               >
                 Logout
               </button>
@@ -309,21 +387,24 @@ export default function LecturerQueries() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      {/* Main Content */}
+      <div className="relative z-20 max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="mb-8">
+        <div className="mb-8 animate-glass-fade-in">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Student Queries</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Student Queries
+              </h1>
+              <p className="text-gray-600 mt-1 font-medium">
                 {pendingCount} pending • {urgentCount} urgent • {todayCount} today
               </p>
             </div>
             <div className="flex space-x-3">
-              <button className="bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors">
+              <button className="glass-button-primary text-white px-6 py-3 rounded-xl font-semibold">
                 Create Announcement
               </button>
-              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+              <button className="glass-button-secondary px-6 py-3 rounded-xl font-semibold">
                 Export Data
               </button>
             </div>
@@ -331,58 +412,58 @@ export default function LecturerQueries() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 animate-slide-up-delayed">
+          <div className="stats-card rounded-2xl p-6">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                <span className="text-orange-600 text-lg">📥</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <span className="text-orange-600 text-2xl">📥</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Pending</p>
-                <p className="text-2xl font-semibold text-gray-900">{pendingCount}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                <span className="text-red-600 text-lg">🚨</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Urgent</p>
-                <p className="text-2xl font-semibold text-gray-900">{urgentCount}</p>
+                <p className="text-sm font-bold text-gray-500">Pending</p>
+                <p className="text-3xl font-bold text-gray-900">{pendingCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="stats-card rounded-2xl p-6">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-lg">📊</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <span className="text-red-600 text-2xl">🚨</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Today</p>
-                <p className="text-2xl font-semibold text-gray-900">{todayCount}</p>
+                <p className="text-sm font-bold text-gray-500">Urgent</p>
+                <p className="text-3xl font-bold text-gray-900">{urgentCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="stats-card rounded-2xl p-6">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-green-600 text-lg">⏱️</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <span className="text-blue-600 text-2xl">📊</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Avg Response</p>
-                <p className="text-2xl font-semibold text-gray-900">2.3h</p>
+                <p className="text-sm font-bold text-gray-500">Today</p>
+                <p className="text-3xl font-bold text-gray-900">{todayCount}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card rounded-2xl p-6">
+            <div className="flex items-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <span className="text-green-600 text-2xl">⏱️</span>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-bold text-gray-500">Avg Response</p>
+                <p className="text-3xl font-bold text-gray-900">2.3h</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="search-container rounded-2xl p-6 mb-6 animate-slide-up-delayed-2">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Input */}
             <div className="flex-1">
@@ -392,9 +473,9 @@ export default function LecturerQueries() {
                   placeholder="Search queries, students, courses, or tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="glass-input w-full pl-12 pr-4 py-3 rounded-xl focus:outline-none text-gray-700 font-medium placeholder-gray-500"
                 />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
                   <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
@@ -403,11 +484,11 @@ export default function LecturerQueries() {
             </div>
 
             {/* Filters */}
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <select
                 value={selectedFilter}
                 onChange={(e) => setSelectedFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="glass-input px-4 py-3 rounded-xl focus:outline-none font-medium text-gray-700"
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending ({queries.filter(q => q.status === 'pending').length})</option>
@@ -419,7 +500,7 @@ export default function LecturerQueries() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="glass-input px-4 py-3 rounded-xl focus:outline-none font-medium text-gray-700"
               >
                 <option value="all">All Categories</option>
                 <option value="academic">Academic</option>
@@ -431,7 +512,7 @@ export default function LecturerQueries() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="glass-input px-4 py-3 rounded-xl focus:outline-none font-medium text-gray-700"
               >
                 <option value="priority">Priority</option>
                 <option value="recent">Most Recent</option>
@@ -442,29 +523,25 @@ export default function LecturerQueries() {
           </div>
 
           {/* Quick Filters */}
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-3 mt-6">
             <button
               onClick={() => setSelectedFilter('pending')}
-              className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                selectedFilter === 'pending' 
-                  ? 'bg-orange-100 text-orange-800' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`filter-pill px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                selectedFilter === 'pending' ? 'active' : ''
               }`}
             >
               Pending ({pendingCount})
             </button>
             <button
               onClick={() => { setSelectedFilter('all'); setSelectedCategory('all'); setSortBy('priority'); }}
-              className="px-3 py-1 rounded-full text-sm bg-red-100 text-red-800 hover:bg-red-200 transition-colors"
+              className="filter-pill px-4 py-2 rounded-full text-sm font-semibold transition-all bg-gradient-to-r from-red-100 to-red-200 text-red-800 hover:from-red-200 hover:to-red-300"
             >
               Urgent ({urgentCount})
             </button>
             <button
               onClick={() => setSelectedCategory('technical')}
-              className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                selectedCategory === 'technical' 
-                  ? 'bg-indigo-100 text-indigo-800' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`filter-pill px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                selectedCategory === 'technical' ? 'active' : ''
               }`}
             >
               Technical Issues
@@ -474,35 +551,35 @@ export default function LecturerQueries() {
 
         {/* Bulk Actions */}
         {selectedQueries.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bulk-actions rounded-2xl p-4 mb-6 animate-slide-up-delayed-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <span className="text-sm font-medium text-blue-900">
+                <span className="text-sm font-bold text-blue-900">
                   {selectedQueries.length} queries selected
                 </span>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex space-x-3">
                 <button
                   onClick={() => handleBulkAction('mark-progress')}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors"
+                  className="glass-button-primary text-white px-4 py-2 rounded-lg text-sm font-semibold"
                 >
                   Mark In Progress
                 </button>
                 <button
                   onClick={() => handleBulkAction('assign-priority')}
-                  className="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700 transition-colors"
+                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-yellow-600 hover:to-yellow-700 transition-all"
                 >
                   Set Priority
                 </button>
                 <button
                   onClick={() => handleBulkAction('archive')}
-                  className="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700 transition-colors"
+                  className="glass-button-secondary px-4 py-2 rounded-lg text-sm font-semibold"
                 >
                   Archive
                 </button>
                 <button
                   onClick={() => setSelectedQueries([])}
-                  className="text-gray-600 hover:text-gray-800 px-2 py-1"
+                  className="text-gray-600 hover:text-gray-800 px-3 py-2 font-medium"
                 >
                   Cancel
                 </button>
@@ -512,9 +589,9 @@ export default function LecturerQueries() {
         )}
 
         {/* Queries List */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="glass-container rounded-2xl animate-slide-up-delayed-4">
           {/* Table Header */}
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="px-6 py-4 border-b border-white/30">
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -522,28 +599,28 @@ export default function LecturerQueries() {
                 onChange={handleSelectAll}
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
               />
-              <span className="ml-3 text-sm font-medium text-gray-700">
+              <span className="ml-3 text-sm font-bold text-gray-700">
                 Select All ({filteredQueries.length})
               </span>
             </div>
           </div>
 
           {filteredQueries.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="text-center py-16">
+              <div className="empty-state w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No queries found</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">No queries found</h3>
+              <p className="text-gray-600 font-medium">
                 {searchQuery ? 'Try adjusting your search or filter criteria' : 'No student queries match your current filters'}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-white/20">
               {filteredQueries.map((query) => (
-                <div key={query.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div key={query.id} className="query-item p-6">
                   <div className="flex items-start space-x-4">
                     <input
                       type="checkbox"
@@ -551,49 +628,49 @@ export default function LecturerQueries() {
                       onChange={() => handleSelectQuery(query.id)}
                       className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                     />
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <h3 className="text-lg font-medium text-gray-900">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <h3 className="text-lg font-bold text-gray-900">
                               {query.subject}
                             </h3>
-                            <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(query.priority)}`}>
+                            <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getPriorityBadgeClass(query.priority)}`}>
                               {query.priority}
                             </span>
-                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(query.status)}`}>
+                            <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getStatusBadgeClass(query.status)}`}>
                               {query.status}
                             </span>
-                            <span className={`px-2 py-1 text-xs rounded-full ${getCategoryColor(query.category)}`}>
+                            <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getCategoryBadgeClass(query.category)}`}>
                               {query.category}
                             </span>
                           </div>
-                          
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                            <span className="font-medium">{query.studentName}</span>
+
+                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
+                            <span className="font-bold">{query.studentName}</span>
                             <span>•</span>
-                            <span>{query.studentId}</span>
+                            <span className="font-medium">{query.studentId}</span>
                             <span>•</span>
-                            <span>{query.courseCode} - {query.courseName}</span>
+                            <span className="font-medium">{query.courseCode} - {query.courseName}</span>
                             <span>•</span>
-                            <span>{query.studentYear} Year</span>
+                            <span className="font-medium">{query.studentYear} Year</span>
                           </div>
-                          
-                          <p className="text-gray-700 mb-3 line-clamp-2">
+
+                          <p className="text-gray-700 mb-4 line-clamp-2 font-medium">
                             {query.content}
                           </p>
-                          
+
                           <div className="flex items-center space-x-4 text-sm">
-                            <div className="flex flex-wrap gap-1">
+                            <div className="flex flex-wrap gap-2">
                               {query.tags.map((tag, index) => (
-                                <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                                <span key={index} className="query-tag px-3 py-1 rounded-full text-xs font-semibold">
                                   #{tag}
                                 </span>
                               ))}
                             </div>
                             {query.attachments > 0 && (
-                              <div className="flex items-center text-gray-500">
+                              <div className="flex items-center text-gray-500 font-medium">
                                 <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                                 </svg>
@@ -602,24 +679,24 @@ export default function LecturerQueries() {
                             )}
                           </div>
                         </div>
-                        
-                        <div className="flex-shrink-0 flex flex-col items-end space-y-2">
-                          <span className="text-xs text-gray-500">
+
+                        <div className="flex-shrink-0 flex flex-col items-end space-y-3">
+                          <span className="text-xs text-gray-500 font-medium">
                             {formatTimestamp(query.timestamp)}
                           </span>
                           {query.responseTime && (
-                            <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                            <span className="text-xs text-green-700 bg-green-100/80 backdrop-blur-sm px-3 py-1 rounded-full font-semibold">
                               Responded in {query.responseTime}
                             </span>
                           )}
                           <div className="flex space-x-2">
                             <Link
                               href={`/lecturer/queries/${query.id}`}
-                              className="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700 transition-colors"
+                              className="glass-button-primary text-white px-4 py-2 rounded-lg text-sm font-semibold"
                             >
                               View Details
                             </Link>
-                            <button className="border border-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-50 transition-colors">
+                            <button className="glass-button-secondary px-4 py-2 rounded-lg text-sm font-semibold">
                               Quick Reply
                             </button>
                           </div>
@@ -635,7 +712,7 @@ export default function LecturerQueries() {
 
         {/* Results Summary */}
         {filteredQueries.length > 0 && (
-          <div className="mt-4 text-center text-sm text-gray-600">
+          <div className="mt-6 text-center text-sm text-gray-600 font-medium animate-slide-up-delayed-5">
             Showing {filteredQueries.length} of {queries.length} queries
             {searchQuery && ` for "${searchQuery}"`}
           </div>
@@ -643,30 +720,30 @@ export default function LecturerQueries() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+      <div className="md:hidden mobile-nav fixed bottom-0 left-0 right-0 z-40">
         <div className="grid grid-cols-4 py-2">
           <Link href="/lecturer/dashboard" className="flex flex-col items-center py-2 text-gray-600">
             <span className="text-lg">🏠</span>
-            <span className="text-xs">Home</span>
+            <span className="text-xs font-medium">Home</span>
           </Link>
           <Link href="/lecturer/queries" className="flex flex-col items-center py-2 text-purple-600">
             <div className="relative">
               <span className="text-lg">📥</span>
               {pendingCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
                   {pendingCount > 9 ? '9+' : pendingCount}
                 </span>
               )}
             </div>
-            <span className="text-xs">Queries</span>
+            <span className="text-xs font-medium">Queries</span>
           </Link>
           <Link href="/lecturer/appointments" className="flex flex-col items-center py-2 text-gray-600">
             <span className="text-lg">📅</span>
-            <span className="text-xs">Schedule</span>
+            <span className="text-xs font-medium">Schedule</span>
           </Link>
           <Link href="/lecturer/analytics" className="flex flex-col items-center py-2 text-gray-600">
             <span className="text-lg">📊</span>
-            <span className="text-xs">Analytics</span>
+            <span className="text-xs font-medium">Analytics</span>
           </Link>
         </div>
       </div>
