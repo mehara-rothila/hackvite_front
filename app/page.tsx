@@ -372,7 +372,7 @@ export default function LandingPage() {
               <div className="footer-bottom-content">
                 <div className="footer-legal">
                   <p className="footer-copy">
-                    © 2024 EduLink Pro. All rights reserved.
+                    © 2025 EduLink Pro. All rights reserved.
                   </p>
                   <div className="footer-legal-links">
                     <a href="#" className="footer-legal-link">Privacy Policy</a>
