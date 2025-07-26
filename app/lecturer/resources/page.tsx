@@ -95,6 +95,7 @@ const mockResources: Resource[] = [
 
 const categories = ['lecture-notes', 'assignments', 'readings', 'labs', 'exams', 'supplementary']
 const courses = ['CS101', 'CS201', 'MATH202', 'ENG110']
+const fileTypes = ['pdf', 'docx', 'pptx', 'xlsx', 'txt', 'zip']
 
 export default function LecturerResourcesPage() {
   const [resources, setResources] = useState<Resource[]>(mockResources)
@@ -102,6 +103,7 @@ export default function LecturerResourcesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [courseFilter, setCourseFilter] = useState('all')
   const [categoryFilter, setCategoryFilter] = useState('all')
+  const [showOnlyPublic, setShowOnlyPublic] = useState(false)
 
   // Upload form state
   const [newResource, setNewResource] = useState({
@@ -180,8 +182,9 @@ export default function LecturerResourcesPage() {
                          resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesCourse = courseFilter === 'all' || resource.course === courseFilter
     const matchesCategory = categoryFilter === 'all' || resource.category === categoryFilter
+    const matchesVisibility = !showOnlyPublic || resource.isPublic
     
-    return matchesSearch && matchesCourse && matchesCategory
+    return matchesSearch && matchesCourse && matchesCategory && matchesVisibility
   })
 
   const getCategoryColor = (category: string) => {
@@ -254,6 +257,16 @@ export default function LecturerResourcesPage() {
                   </option>
                 ))}
               </select>
+
+              <label className="flex items-center gap-2 px-4 py-2">
+                <input
+                  type="checkbox"
+                  checked={showOnlyPublic}
+                  onChange={(e) => setShowOnlyPublic(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">Public only</span>
+              </label>
             </div>
 
             {/* Upload Button */}
@@ -448,6 +461,9 @@ export default function LecturerResourcesPage() {
                       <span>Size: <span className="font-medium">{resource.fileSize}</span></span>
                       <span>Downloads: <span className="font-medium">{resource.downloadCount}</span></span>
                       <span>Uploaded: <span className="font-medium">{resource.uploadedAt}</span></span>
+                      {resource.version > 1 && (
+                        <span>Version: <span className="font-medium">{resource.version}</span></span>
+                      )}
                     </div>
 
                     {resource.tags.length > 0 && (
@@ -455,7 +471,7 @@ export default function LecturerResourcesPage() {
                         {resource.tags.map((tag, idx) => (
                           <span key={idx} className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
                             #{tag}
-                          </spzan>
+                          </span>
                         ))}
                       </div>
                     )}

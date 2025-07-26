@@ -1,392 +1,482 @@
 // app/lecturer/dashboard/page.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { AuthService } from '../../../lib/auth'
-import { LecturerUser } from '../../../types'
-import './lecturer-dashboard.css'
 
-// Type definitions for dashboard data
-interface DashboardStat {
-  value: number | string
-  label: string
-  icon: string
-  color: string
+interface LecturerStats {
+  totalQueries: number
+  pendingQueries: number
+  totalStudents: number
+  upcomingAppointments: number
+  publishedAnnouncements: number
+  avgResponseTime: string
 }
 
-interface RecentQuery {
+interface PendingQuery {
+  id: string
+  student: string
+  title: string
+  category: string
+  priority: 'low' | 'medium' | 'high'
+  course: string
+  submittedAt: string
+  urgencyScore: number
+}
+
+interface UpcomingAppointment {
+  id: string
   student: string
   subject: string
-  course: string
+  date: string
   time: string
-  priority: string
-  unread: boolean
+  location: string
+  type: 'office-hours' | 'consultation' | 'meeting'
 }
 
-interface QuickAction {
-  label: string
-  icon: string
-  color: string
-  href: string
-}
-
-interface ScheduleItem {
+interface RecentActivity {
+  id: string
+  type: 'query' | 'appointment' | 'message' | 'announcement'
+  student?: string
   title: string
-  time: string
-  status: string
-  color: string
+  description: string
+  timestamp: string
+  course?: string
 }
 
-interface WeeklyInsight {
-  label: string
-  value: string
-  highlight?: boolean
+// Mock data - in real app would come from API
+const mockStats: LecturerStats = {
+  totalQueries: 24,
+  pendingQueries: 6,
+  totalStudents: 89,
+  upcomingAppointments: 3,
+  publishedAnnouncements: 8,
+  avgResponseTime: '4.2 hours'
 }
+
+const mockPendingQueries: PendingQuery[] = [
+  {
+    id: '1',
+    student: 'Alice Johnson',
+    title: 'Question about Assignment 3 requirements',
+    category: 'Academic',
+    priority: 'high',
+    course: 'CS101',
+    submittedAt: '2025-07-26 09:30 AM',
+    urgencyScore: 8
+  },
+  {
+    id: '2',
+    student: 'Bob Smith',
+    title: 'Cannot access lab materials',
+    category: 'Technical',
+    priority: 'medium',
+    course: 'CS101',
+    submittedAt: '2025-07-26 11:15 AM',
+    urgencyScore: 6
+  },
+  {
+    id: '3',
+    student: 'Carol Davis',
+    title: 'Office hours availability',
+    category: 'Administrative',
+    priority: 'low',
+    course: 'General',
+    submittedAt: '2025-07-26 02:20 PM',
+    urgencyScore: 3
+  }
+]
+
+const mockUpcomingAppointments: UpcomingAppointment[] = [
+  {
+    id: '1',
+    student: 'David Wilson',
+    subject: 'Project guidance',
+    date: '2025-07-27',
+    time: '2:00 PM',
+    location: 'Office 201B',
+    type: 'consultation'
+  },
+  {
+    id: '2',
+    student: 'Emma Brown',
+    subject: 'Midterm preparation',
+    date: '2025-07-27',
+    time: '3:30 PM',
+    location: 'Office 201B',
+    type: 'office-hours'
+  },
+  {
+    id: '3',
+    student: 'Frank Lee',
+    subject: 'Research discussion',
+    date: '2025-07-28',
+    time: '10:00 AM',
+    location: 'Conference Room A',
+    type: 'meeting'
+  }
+]
+
+const mockRecentActivity: RecentActivity[] = [
+  {
+    id: '1',
+    type: 'query',
+    student: 'Alice Johnson',
+    title: 'New high-priority query submitted',
+    description: 'Student needs help with Assignment 3 requirements',
+    timestamp: '30 minutes ago',
+    course: 'CS101'
+  },
+  {
+    id: '2',
+    type: 'appointment',
+    student: 'David Wilson',
+    title: 'Appointment booked',
+    description: 'Student scheduled consultation for tomorrow',
+    timestamp: '2 hours ago'
+  },
+  {
+    id: '3',
+    type: 'message',
+    student: 'Sarah Kim',
+    title: 'New message received',
+    description: 'Follow-up question about lab assignment',
+    timestamp: '4 hours ago',
+    course: 'CS101'
+  },
+  {
+    id: '4',
+    type: 'announcement',
+    title: 'Announcement published',
+    description: 'Mid-term exam schedule announcement went live',
+    timestamp: '1 day ago',
+    course: 'CS101'
+  }
+]
 
 export default function LecturerDashboard() {
-  const [user, setUser] = useState<LecturerUser | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const router = useRouter()
-
-  // Get mock data from CSS custom properties
-  const getDataFromCSS = (property: string): Record<string, unknown> => {
-    try {
-      const cssData = getComputedStyle(document.documentElement).getPropertyValue(property)
-      return JSON.parse(cssData.replace(/\\'/g, "'"))
-    } catch {
-      return {}
-    }
-  }
+  const [stats, setStats] = useState<LecturerStats>(mockStats)
+  const [pendingQueries, setPendingQueries] = useState<PendingQuery[]>(mockPendingQueries)
+  const [upcomingAppointments, setUpcomingAppointments] = useState<UpcomingAppointment[]>(mockUpcomingAppointments)
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(mockRecentActivity)
+  const [currentTime, setCurrentTime] = useState<string>('')
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ 
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
-      })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    // Update current time
+    setCurrentTime(new Date().toLocaleString())
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString())
+    }, 1000)
+
+    return () => clearInterval(timer)
   }, [])
 
-  useEffect(() => {
-    const currentUser = AuthService.getCurrentUser()
-    
-    if (!currentUser) {
-      router.push('/login')
-      return
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'bg-red-100 text-red-800 border-l-red-500'
+      case 'medium': return 'bg-orange-100 text-orange-800 border-l-orange-500'
+      case 'low': return 'bg-green-100 text-green-800 border-l-green-500'
+      default: return 'bg-gray-100 text-gray-800 border-l-gray-500'
     }
-    
-    if (currentUser.role !== 'lecturer') {
-      router.push('/student/dashboard')
-      return
-    }
-    
-    setUser(currentUser as LecturerUser)
-    setLoading(false)
-  }, [router])
-
-  const handleLogout = () => {
-    AuthService.logout()
-    router.push('/')
   }
 
-  // Get data from CSS with proper typing
-  const dashboardStats = getDataFromCSS('--dashboard-stats') as Record<string, DashboardStat>
-  const recentQueries = getDataFromCSS('--recent-queries') as Record<string, RecentQuery>
-  const quickActions = getDataFromCSS('--quick-actions') as Record<string, QuickAction>
-  const scheduleItems = getDataFromCSS('--schedule-items') as Record<string, ScheduleItem>
-  const weeklyInsights = getDataFromCSS('--weekly-insights') as Record<string, WeeklyInsight>
-
-  const statsArray = Object.entries(dashboardStats).map(([key, data]) => ({
-    key,
-    ...data
-  }))
-
-  const queriesArray = Object.entries(recentQueries).map(([key, data]) => ({
-    key,
-    ...data
-  }))
-
-  const actionsArray = Object.entries(quickActions).map(([key, data]) => ({
-    key,
-    ...data
-  }))
-
-  const scheduleArray = Object.entries(scheduleItems).map(([key, data]) => ({
-    key,
-    ...data
-  }))
-
-  const insightsArray = Object.entries(weeklyInsights).map(([key, data]) => ({
-    key,
-    ...data
-  }))
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center relative overflow-hidden mock-data-container">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-100/40 via-blue-100/35 to-emerald-100/40 animate-mesh-drift-1" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/35 via-purple-100/30 to-orange-100/35 animate-mesh-drift-2" />
-        </div>
-        <div className="relative z-10">
-          <div className="loading-spinner w-16 h-16 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading Dashboard...</p>
-        </div>
-      </div>
-    )
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'query': return '❓'
+      case 'appointment': return '📅'
+      case 'message': return '💬'
+      case 'announcement': return '📢'
+      default: return '📄'
+    }
   }
 
-  if (!user) return null
+  const getAppointmentTypeColor = (type: string) => {
+    switch (type) {
+      case 'consultation': return 'bg-blue-100 text-blue-800'
+      case 'office-hours': return 'bg-green-100 text-green-800'
+      case 'meeting': return 'bg-purple-100 text-purple-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
 
   return (
-    <div className="lecturer-dashboard-container mock-data-container">
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div 
-          className="absolute inset-0 opacity-20 transition-all duration-700 ease-out"
-          style={{
-            background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(147, 51, 234, 0.2) 0%, rgba(59, 130, 246, 0.15) 25%, transparent 50%)`
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-100/40 via-blue-100/35 to-emerald-100/40 animate-mesh-drift-1" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/35 via-purple-100/30 to-orange-100/35 animate-mesh-drift-2" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-emerald-100/40 via-blue-100/25 to-purple-100/40 animate-mesh-drift-3" />
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/30 via-transparent to-purple-100/30 animate-mesh-drift-4" />
-      </div>
-
-      {/* Academic Equations & Particles */}
-      <div className="absolute inset-0 z-0 academic-equation-1 academic-equation-2 academic-equation-3 academic-equation-4 academic-equation-5 academic-equation-6">
-        <div className="academic-particles">
-          {[...Array(16)].map((_, i) => (
-            <div key={i} className="academic-particle" />
-          ))}
-        </div>
-      </div>
-
-      {/* Glass Orbs */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-purple-200/20 to-blue-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-1 shadow-lg" />
-        <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-blue-200/20 to-emerald-200/15 rounded-full backdrop-blur-sm border border-blue-300/30 animate-glass-float-2 shadow-lg" />
-        <div className="absolute bottom-24 left-32 w-88 h-88 bg-gradient-to-br from-emerald-200/20 to-purple-200/15 rounded-full backdrop-blur-sm border border-emerald-300/25 animate-glass-float-3 shadow-lg" />
-      </div>
-
-      {/* Navigation Header */}
-      <nav className="lecturer-nav">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center">
-                <div className="w-8 h-8 logo rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">E</span>
-                </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">EduLink Pro</span>
-              </Link>
-              <div className="ml-8">
-                <span className="text-sm text-gray-600 font-medium">Lecturer Portal</span>
-              </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, Dr. Johnson!</h1>
+              <p className="text-gray-600">Here's an overview of your teaching activities</p>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-700 font-medium">
-                Welcome, <span className="font-bold">{user.title} {user.lastName}</span>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="logout-btn text-sm text-gray-600"
-              >
-                Logout
-              </button>
+            <div className="text-right">
+              <div className="text-sm text-gray-500">Current time</div>
+              <div className="text-lg font-medium text-gray-900">{currentTime}</div>
             </div>
           </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <div className="lecturer-main-content max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        
-        {/* Welcome Section */}
-        <div className="lecturer-welcome mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, {user.title} {user.lastName}! 👨‍🏫
-          </h1>
-          <p className="text-gray-600 text-lg font-medium">
-            {user.department} • {user.university}
-            {user.specialization && ` • ${user.specialization}`}
-          </p>
-          {user.officeLocation && (
-            <p className="text-sm text-gray-500 mt-2 font-medium">
-              📍 Office: {user.officeLocation}
-            </p>
-          )}
         </div>
 
         {/* Quick Stats */}
-        <div className="stats-grid">
-          {statsArray.map((stat) => (
-            <div key={stat.key} className="stat-card">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className={`stat-icon ${stat.color}`}>
-                    <span>{stat.icon}</span>
-                  </div>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-bold text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
+          <Link href="/lecturer/queries" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-red-600">{stats.pendingQueries}</div>
+                <div className="text-sm text-gray-600">Pending Queries</div>
+                <div className="text-xs text-gray-500 mt-1">Need Response</div>
               </div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">⚠️</div>
             </div>
-          ))}
+          </Link>
+
+          <Link href="/lecturer/queries" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-blue-600">{stats.totalQueries}</div>
+                <div className="text-sm text-gray-600">Total Queries</div>
+                <div className="text-xs text-gray-500 mt-1">All time</div>
+              </div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">❓</div>
+            </div>
+          </Link>
+
+          <Link href="/lecturer/appointments" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-purple-600">{stats.upcomingAppointments}</div>
+                <div className="text-sm text-gray-600">Appointments</div>
+                <div className="text-xs text-gray-500 mt-1">This week</div>
+              </div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">📅</div>
+            </div>
+          </Link>
+
+          <Link href="/lecturer/announcements" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-green-600">{stats.publishedAnnouncements}</div>
+                <div className="text-sm text-gray-600">Announcements</div>
+                <div className="text-xs text-gray-500 mt-1">Published</div>
+              </div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">📢</div>
+            </div>
+          </Link>
+
+          <Link href="/lecturer/messages" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-indigo-600">{stats.totalStudents}</div>
+                <div className="text-sm text-gray-600">Students</div>
+                <div className="text-xs text-gray-500 mt-1">Total enrolled</div>
+              </div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">👥</div>
+            </div>
+          </Link>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-yellow-600">{stats.avgResponseTime}</div>
+                <div className="text-sm text-gray-600">Avg Response</div>
+                <div className="text-xs text-gray-500 mt-1">This month</div>
+              </div>
+              <div className="text-2xl">⏱️</div>
+            </div>
+          </div>
         </div>
 
-        {/* Main Dashboard Grid */}
-        <div className="dashboard-grid">
-          
-          {/* Recent Student Queries */}
-          <div className="glass-card">
-            <div className="glass-card-header">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-gray-900">Recent Student Queries</h2>
-                <span className="px-3 py-1 text-xs bg-red-100 text-red-800 rounded-full font-bold">
-                  {dashboardStats.pendingQueries?.value || 12} pending
-                </span>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Pending Queries - High Priority */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Pending Queries</h2>
+                  <p className="text-sm text-gray-500">Queries requiring your response</p>
+                </div>
+                <Link href="/lecturer/queries" className="text-sm text-blue-600 hover:text-blue-800">
+                  View All
+                </Link>
               </div>
-            </div>
-            <div className="glass-card-content">
+
               <div className="space-y-4">
-                {queriesArray.map((query) => (
-                  <div 
-                    key={query.key} 
-                    className={`query-item flex items-start space-x-3 ${query.unread ? 'unread' : 'read'}`}
+                {pendingQueries.map((query) => (
+                  <div
+                    key={query.id}
+                    className={`p-4 rounded-lg border-l-4 ${getPriorityColor(query.priority)}`}
                   >
-                    <div className="query-avatar">
-                      <span>
-                        {query.student.split(' ').map((n: string) => n[0]).join('')}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center space-x-2">
-                          <p className={`text-sm font-bold ${query.unread ? 'text-gray-900' : 'text-gray-700'}`}>
-                            {query.student}
-                          </p>
-                          <span className="text-xs text-gray-500 font-medium">• {query.course}</span>
-                          <span className={`priority-badge ${query.priority}`}>
-                            {query.priority}
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-medium text-gray-900">{query.title}</h3>
+                          <span className={`px-2 py-1 text-xs rounded ${getPriorityColor(query.priority).replace('border-l-', 'bg-').replace('border-l-', '')}`}>
+                            {query.priority.charAt(0).toUpperCase() + query.priority.slice(1)}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 font-medium">{query.time}</p>
+                        <div className="text-sm text-gray-600 mb-2">
+                          <span className="font-medium">{query.student}</span> • {query.course} • {query.category}
+                        </div>
+                        <div className="text-xs text-gray-500">{query.submittedAt}</div>
                       </div>
-                      <p className={`text-sm ${query.unread ? 'text-gray-900' : 'text-gray-600'} font-medium truncate`}>
-                        {query.subject}
-                      </p>
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/lecturer/queries/${query.id}`}
+                          className="bg-blue-50 text-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-100"
+                        >
+                          Respond
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-6">
-                <Link href="/lecturer/queries" className="view-all-link">
-                  View all queries →
+
+              {pendingQueries.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="text-4xl mb-4">✅</div>
+                  <div>All caught up! No pending queries.</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              <div className="space-y-3">
+                <Link
+                  href="/lecturer/announcements"
+                  className="block w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors text-center"
+                >
+                  📢 Create Announcement
+                </Link>
+                <Link
+                  href="/lecturer/queries"
+                  className="block w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors text-center"
+                >
+                  ❓ Review Queries
+                </Link>
+                <Link
+                  href="/lecturer/appointments"
+                  className="block w-full bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors text-center"
+                >
+                  📅 Manage Schedule
+                </Link>
+                <Link
+                  href="/lecturer/resources"
+                  className="block w-full bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 transition-colors text-center"
+                >
+                  📚 Upload Resources
                 </Link>
               </div>
             </div>
-          </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            
-            {/* Quick Actions */}
-            <div className="glass-card">
-              <div className="glass-card-header">
-                <h2 className="text-lg font-bold text-gray-900">Quick Actions</h2>
+            {/* Upcoming Appointments */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Today's Schedule</h3>
+                <Link href="/lecturer/appointments" className="text-sm text-blue-600 hover:text-blue-800">
+                  View All
+                </Link>
               </div>
-              <div className="glass-card-content space-y-3">
-                {actionsArray.map((action) => (
-                  <Link 
-                    key={action.key}
-                    href={action.href}
-                    className={`quick-action ${action.color}`}
-                  >
-                    <span className="text-lg mr-3">{action.icon}</span>
-                    <span className="text-sm font-bold">{action.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
 
-            {/* Today Schedule */}
-            <div className="glass-card">
-              <div className="glass-card-header">
-                <h2 className="text-lg font-bold text-gray-900">Today Schedule</h2>
-              </div>
-              <div className="glass-card-content">
+              {upcomingAppointments.length > 0 ? (
                 <div className="space-y-3">
-                  {scheduleArray.map((item) => (
-                    <div key={item.key} className={`schedule-item ${item.color}`}>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">{item.title}</p>
-                        <p className="text-xs text-gray-600 font-medium">{item.time}</p>
+                  {upcomingAppointments.slice(0, 3).map((appointment) => (
+                    <div key={appointment.id} className="p-3 bg-purple-50 rounded-lg">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="font-medium text-gray-900">{appointment.time}</div>
+                        <span className={`px-2 py-1 text-xs rounded ${getAppointmentTypeColor(appointment.type)}`}>
+                          {appointment.type.replace('-', ' ')}
+                        </span>
                       </div>
-                      <span className={`status-badge ${item.status.toLowerCase()}`}>
-                        {item.status}
-                      </span>
+                      <div className="text-sm text-gray-600">{appointment.student}</div>
+                      <div className="text-sm text-gray-600">{appointment.subject}</div>
+                      <div className="text-xs text-gray-500 mt-1">📍 {appointment.location}</div>
                     </div>
                   ))}
                 </div>
-                
-                <div className="mt-6">
-                  <Link href="/lecturer/appointments" className="view-all-link">
-                    View full schedule →
-                  </Link>
+              ) : (
+                <div className="text-center py-6 text-gray-500">
+                  <div className="text-3xl mb-2">📅</div>
+                  <div className="text-sm">No appointments today</div>
                 </div>
+              )}
+            </div>
+
+            {/* Course Overview */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">My Courses</h3>
+              <div className="space-y-3">
+                <Link
+                  href="/lecturer/resources?course=CS101"
+                  className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  <div className="font-medium text-blue-900">CS101</div>
+                  <div className="text-sm text-blue-600">65 students • 4 pending queries</div>
+                </Link>
+                <Link
+                  href="/lecturer/resources?course=CS201"
+                  className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                >
+                  <div className="font-medium text-green-900">CS201</div>
+                  <div className="text-sm text-green-600">24 students • 2 pending queries</div>
+                </Link>
               </div>
             </div>
 
-            {/* Weekly Insights */}
-            <div className="glass-card">
-              <div className="glass-card-header">
-                <h2 className="text-lg font-bold text-gray-900">This Week Insights</h2>
-              </div>
-              <div className="glass-card-content">
-                <div className="space-y-3">
-                  {insightsArray.map((insight) => (
-                    <div key={insight.key} className="insight-item">
-                      <span className="text-sm text-gray-600 font-medium">{insight.label}</span>
-                      <span className={`text-sm font-bold ${insight.highlight ? 'insight-value highlight' : 'text-gray-900'}`}>
-                        {insight.value}
-                      </span>
+            {/* Recent Activity */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+              <div className="space-y-3">
+                {recentActivity.slice(0, 4).map((activity) => (
+                  <div key={activity.id} className="flex items-start gap-3 p-2">
+                    <span className="text-lg">{getActivityIcon(activity.type)}</span>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900 text-sm">{activity.title}</div>
+                      <div className="text-xs text-gray-600">{activity.description}</div>
+                      <div className="text-xs text-gray-500 mt-1">{activity.timestamp}</div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Navigation for Mobile */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 mobile-nav">
-          <div className="grid grid-cols-4 py-2">
-            <Link href="/lecturer/dashboard" className="mobile-nav-item active">
-              <span className="text-lg">🏠</span>
-              <span className="text-xs font-medium">Home</span>
-            </Link>
-            <Link href="/lecturer/queries" className="mobile-nav-item">
-              <span className="text-lg">📥</span>
-              <span className="text-xs font-medium">Queries</span>
-            </Link>
-            <Link href="/lecturer/appointments" className="mobile-nav-item">
-              <span className="text-lg">📅</span>
-              <span className="text-xs font-medium">Schedule</span>
-            </Link>
-            <Link href="/lecturer/analytics" className="mobile-nav-item">
-              <span className="text-lg">📊</span>
-              <span className="text-xs font-medium">Analytics</span>
-            </Link>
+        {/* Teaching Analytics Section */}
+        <div className="mt-8">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Teaching Overview</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">92%</div>
+                <div className="text-sm text-gray-600">Query Resolution Rate</div>
+                <div className="text-xs text-gray-500 mt-1">This month</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">4.8</div>
+                <div className="text-sm text-gray-600">Average Rating</div>
+                <div className="text-xs text-gray-500 mt-1">Student feedback</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">156</div>
+                <div className="text-sm text-gray-600">Office Hours Attended</div>
+                <div className="text-xs text-gray-500 mt-1">This semester</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-3xl font-bold text-orange-600 mb-2">85%</div>
+                <div className="text-sm text-gray-600">Student Engagement</div>
+                <div className="text-xs text-gray-500 mt-1">Above average</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
