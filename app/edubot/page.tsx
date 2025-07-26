@@ -1,456 +1,417 @@
 // app/edubot/page.tsx
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { AuthService } from '../../lib/auth'
-import { User } from '../../types'
-import './edubot.css'
 
-interface BotAction {
-  label: string
-  action: string
-  data?: Record<string, unknown>
-}
-
-interface BotMessage {
+interface Message {
   id: string
   content: string
-  type: 'text' | 'suggestion' | 'action' | 'thinking'
+  sender: 'user' | 'bot'
   timestamp: string
-  isBot: boolean
+  type?: 'text' | 'quick-reply' | 'suggestion'
   suggestions?: string[]
-  actions?: BotAction[]
-  isTyping?: boolean
+  relatedLinks?: {
+    text: string
+    url: string
+    type: 'query' | 'appointment' | 'resource' | 'announcement'
+  }[]
 }
 
-// Add these new interfaces to fix the any types
-interface QuickActionData {
+interface QuickAction {
   id: string
-  title: string
-  description: string
-  prompt: string
+  text: string
   icon: string
-  category: string
-  [key: string]: unknown
+  action: string
 }
 
-interface CategoryData {
-  id: string
-  name: string
-  icon: string
-  [key: string]: unknown
+const quickActions: QuickAction[] = [
+  { id: '1', text: 'Assignment deadlines', icon: '📅', action: 'assignment_deadlines' },
+  { id: '2', text: 'Office hours', icon: '🕐', action: 'office_hours' },
+  { id: '3', text: 'Course materials', icon: '📚', action: 'course_materials' },
+  { id: '4', text: 'Exam information', icon: '📝', action: 'exam_info' },
+  { id: '5', text: 'Technical support', icon: '🔧', action: 'tech_support' },
+  { id: '6', text: 'Grading policy', icon: '📊', action: 'grading_policy' }
+]
+
+const commonQuestions = [
+  "What are the office hours for Dr. Sarah Johnson?",
+  "When is the next assignment due for CS101?",
+  "How do I submit my assignment?",
+  "What's the grading policy for this course?",
+  "Where can I find course materials?",
+  "How do I book an appointment with my lecturer?"
+]
+
+// Mock responses with realistic AI behavior
+const generateBotResponse = (userMessage: string): Message => {
+  const message = userMessage.toLowerCase()
+  
+  let content = ""
+  let suggestions: string[] = []
+  let relatedLinks: Message['relatedLinks'] = []
+
+  if (message.includes('office hours') || message.includes('office hour')) {
+    content = "Office hours for your lecturers are:\n\n📅 **Dr. Sarah Johnson (CS101):**\n• Monday & Wednesday: 2:00-4:00 PM\n• Friday: 10:00-12:00 PM\n• Location: Office 201B\n\n📅 **Prof. Michael Chen (MATH202):**\n• Tuesday & Thursday: 1:00-3:00 PM\n• Location: Office 301A\n\nYou can book appointments through the appointment system for guaranteed time slots!"
+    suggestions = ["Book an appointment", "View all lecturers", "Check availability"]
+    relatedLinks = [
+      { text: "Book Appointment", url: "/student/appointments", type: "appointment" },
+      { text: "Message Lecturer", url: "/student/messages", type: "query" }
+    ]
+  }
+  else if (message.includes('assignment') && (message.includes('deadline') || message.includes('due'))) {
+    content = "Here are the upcoming assignment deadlines:\n\n📋 **CS101 - Introduction to Programming:**\n• Assignment 3: July 30, 2025 (11:59 PM)\n• Lab Report 4: August 2, 2025 (5:00 PM)\n\n📋 **MATH202 - Calculus II:**\n• Problem Set 5: August 1, 2025 (11:59 PM)\n• Midterm Project: August 5, 2025 (11:59 PM)\n\nRemember to submit through the course portal before the deadline!"
+    suggestions = ["View course resources", "Ask about extensions", "Check submission format"]
+    relatedLinks = [
+      { text: "Course Resources", url: "/student/resources", type: "resource" },
+      { text: "Submit Query about Assignment", url: "/student/queries", type: "query" }
+    ]
+  }
+  else if (message.includes('grading') || message.includes('grade')) {
+    content = "Here's the grading policy information:\n\n📊 **CS101 Grading Breakdown:**\n• Assignments: 40%\n• Labs: 20%\n• Midterm Exam: 20%\n• Final Project: 20%\n\n📊 **MATH202 Grading Breakdown:**\n• Problem Sets: 30%\n• Quizzes: 20%\n• Midterm: 25%\n• Final Exam: 25%\n\nGrades are updated weekly. Late submissions have a 10% penalty per day."
+    suggestions = ["Check my grades", "Late submission policy", "Grade appeal process"]
+  }
+  else if (message.includes('submit') || message.includes('submission')) {
+    content = "Here's how to submit your assignments:\n\n📤 **Submission Process:**\n1. Go to Course Resources section\n2. Find your course (CS101, MATH202, etc.)\n3. Click on the assignment link\n4. Upload your file (PDF preferred)\n5. Add any comments if needed\n6. Click 'Submit'\n\n⚠️ **Important:**\n• Submit before the deadline\n• Check file format requirements\n• Keep a backup copy\n• You'll receive a confirmation email"
+    suggestions = ["View submission formats", "Check deadline", "Technical help"]
+    relatedLinks = [
+      { text: "Course Resources", url: "/student/resources", type: "resource" },
+      { text: "Technical Support Query", url: "/student/queries", type: "query" }
+    ]
+  }
+  else if (message.includes('course material') || message.includes('materials') || message.includes('resources')) {
+    content = "You can find all course materials in the Resources section:\n\n📚 **Available Resources:**\n• Lecture notes and slides\n• Assignment instructions\n• Lab materials\n• Reading materials\n• Example codes and solutions\n• Study guides\n\nMaterials are organized by course and updated regularly by your lecturers."
+    suggestions = ["Browse resources", "Search specific topic", "Download materials"]
+    relatedLinks = [
+      { text: "View All Resources", url: "/student/resources", type: "resource" }
+    ]
+  }
+  else if (message.includes('exam') || message.includes('test') || message.includes('midterm') || message.includes('final')) {
+    content = "Here's exam information for your courses:\n\n📝 **Upcoming Exams:**\n\n**CS101 Midterm:**\n• Date: August 8, 2025\n• Time: 2:00-4:00 PM\n• Location: Hall A\n• Covers: Chapters 1-6\n\n**MATH202 Quiz:**\n• Date: July 30, 2025\n• Time: During class\n• Covers: Integration techniques\n\nStudy materials and practice exams are available in the resources section!"
+    suggestions = ["View study materials", "Book review session", "Exam format"]
+    relatedLinks = [
+      { text: "Study Materials", url: "/student/resources", type: "resource" },
+      { text: "Book Review Session", url: "/student/appointments", type: "appointment" }
+    ]
+  }
+  else if (message.includes('appointment') || message.includes('book') || message.includes('schedule')) {
+    content = "To book an appointment with your lecturer:\n\n📅 **Appointment Booking:**\n1. Go to 'Appointments' section\n2. Select your lecturer\n3. Choose available time slot\n4. Fill in appointment details\n5. Submit request\n\nYour lecturer will confirm within 24 hours. You can also check their office hours for drop-in visits!"
+    suggestions = ["Book now", "View office hours", "Check my appointments"]
+    relatedLinks = [
+      { text: "Book Appointment", url: "/student/appointments", type: "appointment" }
+    ]
+  }
+  else if (message.includes('technical') || message.includes('problem') || message.includes('issue') || message.includes('help')) {
+    content = "For technical support:\n\n🔧 **Common Solutions:**\n• Clear browser cache and cookies\n• Try a different browser\n• Check internet connection\n• Disable browser extensions\n\n**Still having issues?**\nSubmit a technical support query with details about:\n• What you were trying to do\n• Error messages you see\n• Browser and device type\n\nOur IT team responds within 2 hours during business hours."
+    suggestions = ["Submit tech query", "Browser troubleshooting", "Contact IT directly"]
+    relatedLinks = [
+      { text: "Submit Technical Query", url: "/student/queries", type: "query" }
+    ]
+  }
+  else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+    content = "Hello! 👋 I'm EduBot, your AI assistant for academic support.\n\nI can help you with:\n• Assignment deadlines and submission\n• Office hours and appointments\n• Course materials and resources\n• Exam information\n• Technical support\n• General academic questions\n\nWhat would you like to know today?"
+    suggestions = ["Show assignment deadlines", "Find office hours", "View course materials"]
+  }
+  else {
+    // Generic helpful response
+    content = "I understand you're asking about: \"" + userMessage + "\"\n\nI'm here to help! I can assist you with:\n\n📚 **Academic Support:**\n• Assignment deadlines and requirements\n• Course materials and resources\n• Exam schedules and study materials\n\n👥 **Communication:**\n• Lecturer office hours\n• Booking appointments\n• Submitting queries\n\n🔧 **Technical Help:**\n• Platform navigation\n• Submission processes\n• Troubleshooting\n\nCould you be more specific about what you need help with?"
+    suggestions = ["Assignment help", "Contact lecturer", "Technical support"]
+    relatedLinks = [
+      { text: "Submit Detailed Query", url: "/student/queries", type: "query" },
+      { text: "Browse Resources", url: "/student/resources", type: "resource" }
+    ]
+  }
+
+  return {
+    id: Date.now().toString(),
+    content,
+    sender: 'bot',
+    timestamp: new Date().toLocaleString(),
+    type: 'text',
+    suggestions,
+    relatedLinks
+  }
 }
 
-export default function EdubotPage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [messages, setMessages] = useState<BotMessage[]>([])
+export default function EduBotPage() {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: "Hello! 👋 I'm EduBot, your AI assistant. I'm here to help you with academic questions, course information, and university services.\n\nHow can I assist you today?",
+      sender: 'bot',
+      timestamp: new Date().toLocaleString(),
+      type: 'text',
+      suggestions: ["Show my courses", "Assignment deadlines", "Office hours", "Course materials"]
+    }
+  ])
   const [inputMessage, setInputMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState('all')
-  const [showQuickActions, setShowQuickActions] = useState(true)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const router = useRouter()
 
-  // Get mock data from CSS custom properties
-  const getDataFromCSS = (property: string) => {
-    try {
-      const cssData = getComputedStyle(document.documentElement).getPropertyValue(property)
-      return JSON.parse(cssData.replace(/\\n/g, '\n'))
-    } catch {
-      return {}
-    }
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
-      })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
-
-  useEffect(() => {
-    const currentUser = AuthService.getCurrentUser()
-
-    if (!currentUser) {
-      router.push('/login')
-      return
-    }
-
-    setUser(currentUser)
-
-    // Get greeting from CSS
-    const botResponses = getDataFromCSS('--bot-responses')
-    const greeting = botResponses.greeting || "Hello! I'm EduBot, your AI learning assistant."
-
-    const welcomeMessage: BotMessage = {
-      id: 'welcome-msg',
-      content: `Hello ${currentUser.firstName || currentUser.name}! 👋 ${greeting}`,
-      type: 'text',
-      timestamp: new Date().toISOString(),
-      isBot: true,
-      suggestions: ['Study tips', 'Assignment help', 'Time management', 'Exam preparation']
-    }
-
-    setMessages([welcomeMessage])
-    setLoading(false)
-  }, [router])
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    scrollToBottom()
   }, [messages])
 
-  const simulateBotResponse = (userMessage: string): BotMessage => {
-    const lowerMessage = userMessage.toLowerCase()
-    const botResponses = getDataFromCSS('--bot-responses')
+  const handleSendMessage = async (messageText?: string) => {
+    const text = messageText || inputMessage.trim()
+    if (!text) return
 
-    let responseContent = "I understand you're asking about that topic. Let me help you with some guidance and suggestions."
-    let suggestions: string[] = []
-    let actions: BotAction[] = []
-
-    if (lowerMessage.includes('study') || lowerMessage.includes('learn')) {
-      responseContent = botResponses['study-help'] || responseContent
-      suggestions = ['Create study schedule', 'Note-taking tips', 'Memory techniques', 'Study groups']
-      actions = [
-        { label: 'Create Study Plan', action: 'create-study-plan' },
-        { label: 'Find Study Resources', action: 'find-resources' }
-      ]
-    } else if (lowerMessage.includes('assignment') || lowerMessage.includes('project')) {
-      responseContent = botResponses['assignment-guidance'] || responseContent
-      suggestions = ['Research tips', 'Writing guidelines', 'Citation help', 'Time planning']
-      actions = [
-        { label: 'Assignment Planner', action: 'assignment-planner' },
-        { label: 'Find Resources', action: 'research-help' }
-      ]
-    } else if (lowerMessage.includes('schedule') || lowerMessage.includes('time') || lowerMessage.includes('manage')) {
-      responseContent = botResponses['schedule-help'] || responseContent
-      suggestions = ['Daily schedule', 'Weekly planner', 'Priority matrix', 'Break reminders']
-    } else if (lowerMessage.includes('exam') || lowerMessage.includes('test') || lowerMessage.includes('prep')) {
-      responseContent = botResponses['exam-prep'] || responseContent
-      suggestions = ['Practice tests', 'Study techniques', 'Memory aids', 'Exam anxiety']
-    }
-
-    return {
-      id: `bot-msg-${Date.now()}`,
-      content: responseContent,
-      type: 'text',
-      timestamp: new Date().toISOString(),
-      isBot: true,
-      suggestions,
-      actions
-    }
-  }
-
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return
-
-    const userMessage: BotMessage = {
-      id: `user-msg-${Date.now()}`,
-      content: inputMessage.trim(),
-      type: 'text',
-      timestamp: new Date().toISOString(),
-      isBot: false
+    // Add user message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: text,
+      sender: 'user',
+      timestamp: new Date().toLocaleString(),
+      type: 'text'
     }
 
     setMessages(prev => [...prev, userMessage])
     setInputMessage('')
-    setShowQuickActions(false)
-
-    const typingMessage: BotMessage = {
-      id: 'typing-indicator',
-      content: '',
-      type: 'thinking',
-      timestamp: new Date().toISOString(),
-      isBot: true,
-      isTyping: true
-    }
-
-    setMessages(prev => [...prev, typingMessage])
     setIsTyping(true)
 
+    // Simulate AI thinking time
     setTimeout(() => {
-      setMessages(prev => prev.filter(msg => msg.id !== 'typing-indicator'))
-      setIsTyping(false)
-
-      const botResponse = simulateBotResponse(userMessage.content)
+      const botResponse = generateBotResponse(text)
       setMessages(prev => [...prev, botResponse])
-    }, 1500 + Math.random() * 1000)
+      setIsTyping(false)
+    }, 1000 + Math.random() * 1000) // 1-2 seconds delay
   }
 
-  const handleQuickAction = (prompt: string) => {
-    setInputMessage(prompt)
-    setShowQuickActions(false)
-    setTimeout(() => handleSendMessage(), 100)
+  const handleQuickAction = (action: string) => {
+    const actionMessages: Record<string, string> = {
+      'assignment_deadlines': 'What are the upcoming assignment deadlines?',
+      'office_hours': 'What are the office hours for my lecturers?',
+      'course_materials': 'Where can I find course materials?',
+      'exam_info': 'When are the upcoming exams?',
+      'tech_support': 'I need technical support help',
+      'grading_policy': 'What is the grading policy?'
+    }
+    
+    const message = actionMessages[action]
+    if (message) {
+      handleSendMessage(message)
+    }
   }
 
   const handleSuggestionClick = (suggestion: string) => {
-    setInputMessage(suggestion)
-    inputRef.current?.focus()
+    handleSendMessage(suggestion)
   }
 
-  const handleActionClick = (action: BotAction) => {
-    const actionMessage: BotMessage = {
-      id: `action-msg-${Date.now()}`,
-      content: `Great! I'm setting up ${action.label.toLowerCase()} for you. This feature will be available soon!`,
-      type: 'action',
-      timestamp: new Date().toISOString(),
-      isBot: true
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSendMessage()
     }
-    setMessages(prev => [...prev, actionMessage])
   }
-
-  // Quick actions and categories from CSS
-  const quickActions = getDataFromCSS('--quick-actions')
-  const categories = getDataFromCSS('--categories')
-
-  // FIX: Add type assertion to the object returned by map to fix assignment error.
-  const quickActionsArray: QuickActionData[] = Object.entries(quickActions).map(([id, data]) => ({
-    id,
-    ...(data as Omit<QuickActionData, 'id'>)
-  } as QuickActionData))
-
-  const categoriesArray: CategoryData[] = Object.entries(categories).map(([id, data]) => ({
-    id,
-    ...(data as Omit<CategoryData, 'id'>)
-  } as CategoryData))
-
-  const filteredQuickActions = selectedCategory === 'all'
-    ? quickActionsArray
-    : quickActionsArray.filter(action => action.category === selectedCategory)
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center relative overflow-hidden mock-data-container">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
-        </div>
-        <div className="relative z-10">
-          <div className="loading-spinner w-16 h-16 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading EduBot...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!user) return null
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 mock-data-container">
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 opacity-20 transition-all duration-700 ease-out"
-          style={{
-            background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(168, 85, 247, 0.2) 0%, rgba(59, 130, 246, 0.15) 25%, transparent 50%)`
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/40 via-purple-100/25 to-rose-100/40 animate-mesh-drift-3" />
-        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/30 via-transparent to-green-100/30 animate-mesh-drift-4" />
-      </div>
-
-      {/* AI Equations & Particles */}
-      <div className="absolute inset-0 z-0 ai-equation-1 ai-equation-2 ai-equation-3 ai-equation-4 ai-equation-5 ai-equation-6">
-        <div className="ai-particles">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="ai-particle" />
-          ))}
-        </div>
-      </div>
-
-      {/* Glass Orbs */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-16 left-16 w-64 h-64 bg-gradient-to-br from-purple-200/20 to-blue-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-1 shadow-lg" />
-        <div className="absolute top-32 right-24 w-80 h-80 bg-gradient-to-br from-blue-200/20 to-cyan-200/15 rounded-full backdrop-blur-sm border border-blue-300/30 animate-glass-float-2 shadow-lg" />
-        <div className="absolute bottom-24 left-32 w-72 h-72 bg-gradient-to-br from-emerald-200/20 to-teal-200/15 rounded-full backdrop-blur-sm border border-emerald-300/25 animate-glass-float-3 shadow-lg" />
-      </div>
-
-      {/* Chat Interface */}
-      <div className="relative z-10 min-h-screen flex flex-col chat-container">
-
-        {/* Header */}
-        <div className="chat-header px-4 py-3">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link
-                href={user.role === 'student' ? '/student/dashboard' : '/lecturer/dashboard'}
-                className="back-button"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </Link>
-
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bot-avatar rounded-xl flex items-center justify-center">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-
-                <div>
-                  <h1 className="text-lg font-bold text-gray-900">EduBot AI Assistant</h1>
-                  <p className="text-sm text-gray-600">Your personal learning companion</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-xl">🤖</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">EduBot</h1>
+                <p className="text-sm text-gray-600">Your AI Academic Assistant</p>
               </div>
             </div>
-
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowQuickActions(!showQuickActions)}
-                className="header-button"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </button>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+              <span className="text-sm text-gray-600">Online</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Quick Actions */}
-        {showQuickActions && (
-          <div className="quick-actions-panel p-4">
-            <h3 className="text-sm font-bold text-gray-700 mb-3">Quick Actions</h3>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {categoriesArray.map((category: CategoryData) => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`category-button px-3 py-2 rounded-full text-sm font-medium ${
-                    selectedCategory === category.id ? 'active' : ''
-                  }`}
-                >
-                  {category.icon} {category.name}
-                </button>
-              ))}
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Quick Actions Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              <div className="space-y-2">
+                {quickActions.map((action) => (
+                  <button
+                    key={action.id}
+                    onClick={() => handleQuickAction(action.action)}
+                    className="w-full text-left p-3 rounded-lg bg-gray-50 hover:bg-blue-50 hover:text-blue-700 transition-colors flex items-center gap-3"
+                  >
+                    <span className="text-lg">{action.icon}</span>
+                    <span className="text-sm font-medium">{action.text}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {filteredQuickActions.map((action: QuickActionData, index: number) => (
-                <button
-                  key={action.id}
-                  onClick={() => handleQuickAction(action.prompt)}
-                  className="quick-action-card p-3 rounded-xl text-left animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xl">{action.icon}</span>
-                    <h4 className="font-bold text-gray-900 text-sm">{action.title}</h4>
-                  </div>
-                  <p className="text-xs text-gray-600 leading-relaxed">{action.description}</p>
-                </button>
-              ))}
+            <div className="bg-white rounded-lg shadow-sm p-4">
+              <h3 className="font-semibold text-gray-900 mb-4">Common Questions</h3>
+              <div className="space-y-2">
+                {commonQuestions.slice(0, 4).map((question, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSendMessage(question)}
+                    className="w-full text-left p-2 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                  >
+                    "{question}"
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 messages-area">
-          {messages.map((message) => (
-            <div key={message.id} className={`message-container flex ${message.isBot ? 'justify-start' : 'justify-end'}`}>
-              <div className={message.isBot ? 'bot-message' : 'user-message'}>
-                {message.isTyping ? (
-                  <div className="typing-indicator flex items-center space-x-3">
-                    <div className="typing-dots">
-                      <div className="typing-dot"></div>
-                      <div className="typing-dot"></div>
-                      <div className="typing-dot"></div>
+          {/* Chat Interface */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-lg shadow-sm h-[600px] flex flex-col">
+              {/* Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`max-w-xs lg:max-w-md ${
+                      message.sender === 'user'
+                        ? 'bg-blue-600 text-white rounded-lg rounded-br-sm'
+                        : 'bg-gray-100 text-gray-900 rounded-lg rounded-bl-sm'
+                    } px-4 py-2`}>
+                      {message.sender === 'bot' && (
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">🤖</span>
+                          <span className="text-xs font-medium">EduBot</span>
+                        </div>
+                      )}
+                      
+                      <div className="text-sm whitespace-pre-line">
+                        {message.content}
+                      </div>
+                      
+                      {message.suggestions && message.suggestions.length > 0 && (
+                        <div className="mt-3 space-y-1">
+                          {message.suggestions.map((suggestion, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="block w-full text-left text-xs bg-white bg-opacity-20 hover:bg-opacity-30 px-2 py-1 rounded transition-colors"
+                            >
+                              💡 {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {message.relatedLinks && message.relatedLinks.length > 0 && (
+                        <div className="mt-3 space-y-1">
+                          {message.relatedLinks.map((link, idx) => (
+                            <Link
+                              key={idx}
+                              href={link.url}
+                              className="block text-xs text-blue-300 hover:text-blue-100 underline"
+                            >
+                              🔗 {link.text}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <div className={`text-xs mt-1 ${
+                        message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
+                        {message.timestamp}
+                      </div>
                     </div>
-                    <span className="text-sm text-gray-500 font-medium">EduBot is thinking...</span>
                   </div>
-                ) : (
-                  <>
-                    <div className="whitespace-pre-line text-sm leading-relaxed font-medium">
-                      {message.content}
-                    </div>
+                ))}
 
-                    {message.suggestions && message.suggestions.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {message.suggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            onClick={() => handleSuggestionClick(suggestion)}
-                            className="suggestion-pill"
-                            style={{ animationDelay: `${index * 0.1}s` }}
-                          >
-                            {suggestion}
-                          </button>
-                        ))}
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 text-gray-900 rounded-lg rounded-bl-sm px-4 py-2 max-w-xs">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">🤖</span>
+                        <span className="text-xs font-medium">EduBot</span>
                       </div>
-                    )}
-
-                    {message.actions && message.actions.length > 0 && (
-                      <div className="mt-4 space-y-2">
-                        {message.actions.map((action, index) => (
-                          <button
-                            key={index}
-                            onClick={() => handleActionClick(action)}
-                            className="action-button"
-                          >
-                            {action.label}
-                          </button>
-                        ))}
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <span className="text-xs text-gray-500 ml-2">Thinking...</span>
                       </div>
-                    )}
-
-                    <div className="mt-3">
-                      <p className="text-xs opacity-75 font-medium">
-                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
                     </div>
-                  </>
+                  </div>
                 )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input Area */}
+              <div className="border-t p-4">
+                <div className="flex gap-2">
+                  <textarea
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask me anything about your courses, assignments, or university services..."
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    rows={2}
+                    disabled={isTyping}
+                  />
+                  <button
+                    onClick={() => handleSendMessage()}
+                    disabled={!inputMessage.trim() || isTyping}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Send
+                  </button>
+                </div>
+                
+                <div className="mt-2 text-xs text-gray-500">
+                  Press Enter to send, Shift+Enter for new line
+                </div>
               </div>
             </div>
-          ))}
-
-          <div ref={messagesEndRef} />
+          </div>
         </div>
 
-        {/* Input */}
-        <div className="input-container p-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-1 relative">
-              <input
-                ref={inputRef}
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                placeholder="Ask me anything about your studies..."
-                className="message-input"
-                disabled={isTyping}
-              />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-400 hidden sm:block">
-                Press Enter to send
-              </div>
+        {/* Help Section */}
+        <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">What can EduBot help you with?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <h3 className="font-medium text-blue-900 mb-2">📚 Academic Support</h3>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Assignment deadlines & requirements</li>
+                <li>• Course materials & resources</li>
+                <li>• Exam schedules & study guides</li>
+                <li>• Grading policies & criteria</li>
+              </ul>
             </div>
-
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputMessage.trim() || isTyping}
-              className="send-button"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="mt-3 text-xs text-gray-500 text-center font-medium">
-            EduBot can help with studies, assignments, time management, career guidance, and more!
+            
+            <div className="p-4 bg-green-50 rounded-lg">
+              <h3 className="font-medium text-green-900 mb-2">👥 Communication</h3>
+              <ul className="text-sm text-green-800 space-y-1">
+                <li>• Lecturer office hours</li>
+                <li>• Booking appointments</li>
+                <li>• Submitting queries</li>
+                <li>• Contact information</li>
+              </ul>
+            </div>
+            
+            <div className="p-4 bg-purple-50 rounded-lg">
+              <h3 className="font-medium text-purple-900 mb-2">🔧 Technical Help</h3>
+              <ul className="text-sm text-purple-800 space-y-1">
+                <li>• Platform navigation</li>
+                <li>• Submission processes</li>
+                <li>• Troubleshooting issues</li>
+                <li>• Account management</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
