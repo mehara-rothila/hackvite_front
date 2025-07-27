@@ -1,4 +1,4 @@
-// app/student/messages/page.tsx
+// app/student/messages/page.tsx - UPDATED WITH PROPER NAVIGATION
 'use client'
 
 import { useState } from 'react'
@@ -147,17 +147,7 @@ export default function StudentMessagesPage() {
   const [typeFilter, setTypeFilter] = useState('All')
   const [priorityFilter, setPriorityFilter] = useState('All')
   const [showOnlyUnread, setShowOnlyUnread] = useState(false)
-  const [showComposeModal, setShowComposeModal] = useState(false)
   const [replyText, setReplyText] = useState('')
-
-  // Compose form state
-  const [composeForm, setComposeForm] = useState({
-    lecturer: '',
-    subject: '',
-    content: '',
-    course: '',
-    priority: 'medium' as const
-  })
 
   const handleViewMessage = (message: Message) => {
     setSelectedMessage(message)
@@ -191,34 +181,6 @@ export default function StudentMessagesPage() {
     })
 
     setReplyText('')
-  }
-
-  const handleComposeMessage = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      lecturer: composeForm.lecturer,
-      lecturerAvatar: '👨‍🏫',
-      subject: composeForm.subject,
-      lastMessage: composeForm.content.substring(0, 50) + '...',
-      lastMessageTime: new Date().toLocaleString(),
-      unreadCount: 0,
-      isRead: true,
-      course: composeForm.course,
-      messageType: 'general',
-      priority: composeForm.priority
-    }
-
-    setMessages([newMessage, ...messages])
-    setComposeForm({
-      lecturer: '',
-      subject: '',
-      content: '',
-      course: '',
-      priority: 'medium'
-    })
-    setShowComposeModal(false)
   }
 
   const handleMarkAllAsRead = () => {
@@ -291,22 +253,66 @@ export default function StudentMessagesPage() {
           </div>
         </div>
 
+        {/* NEW - Navigation Links */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Link href="/messages/new" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="text-center">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">✉️</div>
+              <div className="font-medium text-gray-900">Compose Message</div>
+              <div className="text-sm text-gray-600">Start new conversation</div>
+            </div>
+          </Link>
+          
+          <Link href="/messages/search" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="text-center">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">🔍</div>
+              <div className="font-medium text-gray-900">Search Messages</div>
+              <div className="text-sm text-gray-600">Find conversations</div>
+            </div>
+          </Link>
+          
+          <Link href="/student/lecturers" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="text-center">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👩‍🏫</div>
+              <div className="font-medium text-gray-900">Find Lecturers</div>
+              <div className="text-sm text-gray-600">Browse faculty directory</div>
+            </div>
+          </Link>
+          
+          <Link href="/messages/drafts" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="text-center">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</div>
+              <div className="font-medium text-gray-900">Draft Messages</div>
+              <div className="text-sm text-gray-600">Continue writing</div>
+            </div>
+          </Link>
+        </div>
+
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Messages List */}
           <div className="lg:col-span-2">
-            {/* Filters & Actions */}
+            {/* Filters & Actions - UPDATED WITH NEW LINKS */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
                   {/* Search */}
-                  <input
-                    type="text"
-                    placeholder="Search messages..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder="Search messages..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <Link 
+                      href="/messages/search"
+                      className="absolute right-2 top-2 text-gray-400 hover:text-blue-600"
+                      title="Advanced Search"
+                    >
+                      🔍
+                    </Link>
+                  </div>
                   
                   {/* Filters */}
                   <select
@@ -340,14 +346,14 @@ export default function StudentMessagesPage() {
                   </label>
                 </div>
 
-                {/* Actions */}
+                {/* Actions - UPDATED WITH NEW COMPOSE LINK */}
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setShowComposeModal(true)}
+                  <Link
+                    href="/messages/new"
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     ✉️ Compose
-                  </button>
+                  </Link>
                   {unreadCount > 0 && (
                     <button
                       onClick={handleMarkAllAsRead}
@@ -365,12 +371,12 @@ export default function StudentMessagesPage() {
               {filteredMessages.length === 0 ? (
                 <div className="bg-white rounded-lg shadow-sm p-8 text-center">
                   <div className="text-gray-500 mb-4">No messages found</div>
-                  <button
-                    onClick={() => setShowComposeModal(true)}
+                  <Link
+                    href="/messages/new"
                     className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
                   >
                     Send Your First Message
-                  </button>
+                  </Link>
                 </div>
               ) : (
                 filteredMessages.map((message) => (
@@ -497,107 +503,25 @@ export default function StudentMessagesPage() {
             ) : (
               <div className="p-8 text-center text-gray-500">
                 <div className="text-4xl mb-4">💬</div>
-                <div>Select a message to view the conversation</div>
+                <div className="mb-4">Select a message to view the conversation</div>
+                <div className="space-y-2">
+                  <Link
+                    href="/messages/new"
+                    className="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  >
+                    ✉️ Compose New Message
+                  </Link>
+                  <Link
+                    href="/student/lecturers"
+                    className="block bg-gray-50 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 border"
+                  >
+                    👩‍🏫 Find Lecturers
+                  </Link>
+                </div>
               </div>
             )}
           </div>
         </div>
-
-        {/* Compose Message Modal */}
-        {showComposeModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-              <h2 className="text-2xl font-bold mb-6">Compose New Message</h2>
-              
-              <form onSubmit={handleComposeMessage} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Lecturer</label>
-                    <select
-                      required
-                      value={composeForm.lecturer}
-                      onChange={(e) => setComposeForm({...composeForm, lecturer: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select lecturer</option>
-                      <option value="Dr. Sarah Johnson">Dr. Sarah Johnson</option>
-                      <option value="Prof. Michael Chen">Prof. Michael Chen</option>
-                      <option value="Dr. Emily Roberts">Dr. Emily Roberts</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
-                    <select
-                      required
-                      value={composeForm.course}
-                      onChange={(e) => setComposeForm({...composeForm, course: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select course</option>
-                      <option value="CS101">CS101</option>
-                      <option value="MATH202">MATH202</option>
-                      <option value="ENG110">ENG110</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                  <input
-                    type="text"
-                    required
-                    value={composeForm.subject}
-                    onChange={(e) => setComposeForm({...composeForm, subject: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="Message subject"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <textarea
-                    required
-                    rows={5}
-                    value={composeForm.content}
-                    onChange={(e) => setComposeForm({...composeForm, content: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="Type your message..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                  <select
-                    value={composeForm.priority}
-                    onChange={(e) => setComposeForm({...composeForm, priority: e.target.value as any})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
-                </div>
-
-                <div className="flex gap-4 pt-4">
-                  <button
-                    type="submit"
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-                  >
-                    Send Message
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowComposeModal(false)}
-                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

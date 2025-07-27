@@ -1,4 +1,4 @@
-// app/student/dashboard/page.tsx
+// app/student/dashboard/page.tsx - UPDATED WITH PROPER NAVIGATION
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -10,6 +10,7 @@ interface DashboardStats {
   unreadAnnouncements: number
   upcomingAppointments: number
   unreadMessages: number
+  enrolledCourses: number
 }
 
 interface RecentActivity {
@@ -38,7 +39,8 @@ const mockStats: DashboardStats = {
   pendingQueries: 2,
   unreadAnnouncements: 3,
   upcomingAppointments: 1,
-  unreadMessages: 5
+  unreadMessages: 5,
+  enrolledCourses: 3
 }
 
 const mockRecentActivity: RecentActivity[] = [
@@ -144,8 +146,8 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+        {/* Quick Stats - UPDATED WITH PROPER LINKS */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
           <Link href="/student/queries" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between">
               <div>
@@ -179,7 +181,7 @@ export default function StudentDashboard() {
             </div>
           </Link>
 
-          <Link href="/student/conversations" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+          <Link href="/student/messages" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xl font-bold text-yellow-600">{stats.unreadMessages}</div>
@@ -189,13 +191,24 @@ export default function StudentDashboard() {
             </div>
           </Link>
 
+          {/* NEW - Link to Student Courses */}
+          <Link href="/student/courses" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-indigo-600">{stats.enrolledCourses}</div>
+                <div className="text-sm text-gray-600">My Courses</div>
+              </div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">📚</div>
+            </div>
+          </Link>
+
           <Link href="/student/resources" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold text-indigo-600">24</div>
+                <div className="text-2xl font-bold text-red-600">24</div>
                 <div className="text-sm text-gray-600">Course Resources</div>
               </div>
-              <div className="text-2xl group-hover:scale-110 transition-transform">📚</div>
+              <div className="text-2xl group-hover:scale-110 transition-transform">📋</div>
             </div>
           </Link>
         </div>
@@ -249,7 +262,7 @@ export default function StudentDashboard() {
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            {/* Quick Actions */}
+            {/* Quick Actions - UPDATED WITH NEW LINKS */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
@@ -271,11 +284,47 @@ export default function StudentDashboard() {
                 >
                   🤖 Ask EduBot
                 </Link>
+                {/* NEW - Message Compose Link */}
                 <Link
-                  href="/student/conversations"
+                  href="/messages/new"
                   className="block w-full bg-yellow-600 text-white px-4 py-3 rounded-lg hover:bg-yellow-700 transition-colors text-center"
                 >
                   💬 New Message
+                </Link>
+              </div>
+            </div>
+
+            {/* NEW - Navigation Links */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Navigation</h3>
+              <div className="space-y-2">
+                <Link
+                  href="/student/courses"
+                  className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  <div className="font-medium text-blue-900">📚 My Courses</div>
+                  <div className="text-sm text-blue-600">View enrolled courses</div>
+                </Link>
+                <Link
+                  href="/student/lecturers"
+                  className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                >
+                  <div className="font-medium text-green-900">👩‍🏫 Find Lecturers</div>
+                  <div className="text-sm text-green-600">Browse faculty directory</div>
+                </Link>
+                <Link
+                  href="/courses"
+                  className="block p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                >
+                  <div className="font-medium text-purple-900">🔍 Browse Courses</div>
+                  <div className="text-sm text-purple-600">Explore course catalog</div>
+                </Link>
+                <Link
+                  href="/messages/search"
+                  className="block p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
+                >
+                  <div className="font-medium text-orange-900">🔍 Search Messages</div>
+                  <div className="text-sm text-orange-600">Find past conversations</div>
                 </Link>
               </div>
             </div>
@@ -325,35 +374,43 @@ export default function StudentDashboard() {
               )}
             </div>
 
-            {/* Course Quick Access */}
+            {/* Course Quick Access - UPDATED WITH PROPER LINKS */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">My Courses</h3>
               <div className="space-y-2">
                 <Link
-                  href="/student/resources?course=CS101"
+                  href="/courses/1"
                   className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                 >
                   <div className="font-medium text-blue-900">CS101</div>
                   <div className="text-sm text-blue-600">Introduction to Programming</div>
                 </Link>
                 <Link
-                  href="/student/resources?course=MATH202"
+                  href="/courses/3"
                   className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                 >
                   <div className="font-medium text-green-900">MATH202</div>
                   <div className="text-sm text-green-600">Calculus II</div>
                 </Link>
                 <Link
-                  href="/student/resources?course=ENG110"
+                  href="/courses/4"
                   className="block p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
                 >
                   <div className="font-medium text-purple-900">ENG110</div>
                   <div className="text-sm text-purple-600">Academic Writing</div>
                 </Link>
+                <div className="pt-2 border-t">
+                  <Link
+                    href="/student/courses"
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    View All My Courses →
+                  </Link>
+                </div>
               </div>
             </div>
 
-            {/* Help & Support */}
+            {/* Help & Support - UPDATED WITH NEW LINKS */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
               <div className="space-y-3">
@@ -378,6 +435,18 @@ export default function StudentDashboard() {
                     <div>
                       <div className="font-medium text-gray-900">Submit Query</div>
                       <div className="text-sm text-gray-600">Get help from lecturers</div>
+                    </div>
+                  </div>
+                </Link>
+                <Link
+                  href="/student/lecturers"
+                  className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <span>👩‍🏫</span>
+                    <div>
+                      <div className="font-medium text-gray-900">Contact Lecturer</div>
+                      <div className="text-sm text-gray-600">Browse lecturer directory</div>
                     </div>
                   </div>
                 </Link>
