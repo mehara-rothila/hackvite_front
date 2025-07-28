@@ -1,7 +1,7 @@
 // app/messages/new/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -107,6 +107,7 @@ const mockCourses: Course[] = [
 export default function NewMessagePage() {
   const router = useRouter()
   const [userRole] = useState<'student' | 'lecturer'>('student') // Would come from auth context
+  const [draftsCount, setDraftsCount] = useState(0) // Add state for drafts count
   
   const [formData, setFormData] = useState({
     recipientType: 'lecturer' as 'lecturer' | 'student',
@@ -122,6 +123,14 @@ export default function NewMessagePage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [showRecipientList, setShowRecipientList] = useState(false)
   const [isDraftSaved, setIsDraftSaved] = useState(false)
+
+  // Load drafts count on client-side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const drafts = JSON.parse(localStorage.getItem('messageDrafts') || '[]')
+      setDraftsCount(drafts.length)
+    }
+  }, [])
 
   // Filter recipients based on search
   const getFilteredRecipients = () => {
@@ -159,18 +168,21 @@ export default function NewMessagePage() {
   }
 
   const handleSaveDraft = () => {
-    // Save to drafts (localStorage for now)
-    const drafts = JSON.parse(localStorage.getItem('messageDrafts') || '[]')
-    const draft = {
-      id: Date.now().toString(),
-      ...formData,
-      savedAt: new Date().toISOString(),
-      senderRole: userRole
+    if (typeof window !== 'undefined') {
+      // Save to drafts (localStorage for now)
+      const drafts = JSON.parse(localStorage.getItem('messageDrafts') || '[]')
+      const draft = {
+        id: Date.now().toString(),
+        ...formData,
+        savedAt: new Date().toISOString(),
+        senderRole: userRole
+      }
+      drafts.push(draft)
+      localStorage.setItem('messageDrafts', JSON.stringify(drafts))
+      setDraftsCount(drafts.length) // Update count
+      setIsDraftSaved(true)
+      setTimeout(() => setIsDraftSaved(false), 3000)
     }
-    drafts.push(draft)
-    localStorage.setItem('messageDrafts', JSON.stringify(drafts))
-    setIsDraftSaved(true)
-    setTimeout(() => setIsDraftSaved(false), 3000)
   }
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -182,24 +194,26 @@ export default function NewMessagePage() {
       return
     }
 
-    // In real app, this would send via API
-    const newMessage = {
-      id: Date.now().toString(),
-      ...formData,
-      sentAt: new Date().toISOString(),
-      senderRole: userRole,
-      status: 'sent'
+    if (typeof window !== 'undefined') {
+      // In real app, this would send via API
+      const newMessage = {
+        id: Date.now().toString(),
+        ...formData,
+        sentAt: new Date().toISOString(),
+        senderRole: userRole,
+        status: 'sent'
+      }
+
+      // Store in sent messages
+      const sentMessages = JSON.parse(localStorage.getItem('sentMessages') || '[]')
+      sentMessages.push(newMessage)
+      localStorage.setItem('sentMessages', JSON.stringify(sentMessages))
+
+      alert('Message sent successfully!')
+      
+      // Navigate back to messages
+      router.push(userRole === 'student' ? '/student/messages' : '/lecturer/messages')
     }
-
-    // Store in sent messages
-    const sentMessages = JSON.parse(localStorage.getItem('sentMessages') || '[]')
-    sentMessages.push(newMessage)
-    localStorage.setItem('sentMessages', JSON.stringify(sentMessages))
-
-    alert('Message sent successfully!')
-    
-    // Navigate back to messages
-    router.push(userRole === 'student' ? '/student/messages' : '/lecturer/messages')
   }
 
   const filteredRecipients = getFilteredRecipients()
@@ -239,9 +253,7 @@ export default function NewMessagePage() {
             <div className="text-sm text-gray-600">Courses</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-orange-600">
-              {JSON.parse(localStorage.getItem('messageDrafts') || '[]').length}
-            </div>
+            <div className="text-2xl font-bold text-orange-600">{draftsCount}</div>
             <div className="text-sm text-gray-600">Saved Drafts</div>
           </div>
         </div>
