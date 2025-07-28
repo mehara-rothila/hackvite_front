@@ -1,4 +1,4 @@
-// app/student/settings/page.tsx - ENHANCED WITH DASHBOARD STYLES
+// app/student/settings/page.tsx - LINTING ERRORS FIXED
 'use client'
 
 import { useState } from 'react'
@@ -67,43 +67,59 @@ const mockPreferences: PreferenceSettings = { language: 'en', timezone: 'America
 const mockSecurity: SecuritySettings = { twoFactorEnabled: false, sessionTimeout: 60, loginNotifications: true, deviceManagement: true }
 
 export default function StudentSettingsPage() {
-  // --- State and Handlers (Unchanged) ---
   const [activeTab, setActiveTab] = useState('notifications')
   const [notifications, setNotifications] = useState<NotificationSettings>(mockNotifications)
   const [privacy, setPrivacy] = useState<PrivacySettings>(mockPrivacy)
   const [preferences, setPreferences] = useState<PreferenceSettings>(mockPreferences)
   const [security, setSecurity] = useState<SecuritySettings>(mockSecurity)
   const [hasChanges, setHasChanges] = useState(false)
+  const [modal, setModal] = useState<{ type: 'confirm' | 'alert'; message: string; onConfirm?: () => void; } | null>(null);
 
+  // --- Handlers ---
   const handleNotificationChange = (category: keyof NotificationSettings, setting: string, value: boolean) => {
     setNotifications(prev => ({ ...prev, [category]: { ...prev[category], [setting]: value } }))
     setHasChanges(true)
   }
-  const handlePrivacyChange = (setting: keyof PrivacySettings, value: any) => {
+
+  // FIX: Replaced 'any' with a specific type derived from the interface.
+  const handlePrivacyChange = (setting: keyof PrivacySettings, value: PrivacySettings[keyof PrivacySettings]) => {
     setPrivacy(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
-  const handlePreferenceChange = (setting: keyof PreferenceSettings, value: any) => {
+
+  // FIX: Replaced 'any' with a specific type derived from the interface.
+  const handlePreferenceChange = (setting: keyof PreferenceSettings, value: PreferenceSettings[keyof PreferenceSettings]) => {
     setPreferences(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
-  const handleSecurityChange = (setting: keyof SecuritySettings, value: any) => {
+
+  // FIX: Replaced 'any' with a specific type derived from the interface.
+  const handleSecurityChange = (setting: keyof SecuritySettings, value: SecuritySettings[keyof SecuritySettings]) => {
     setSecurity(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
+
+  // FIX: Replaced alert() with a custom modal.
   const handleSaveSettings = () => {
     console.log('Saving settings:', { notifications, privacy, preferences, security })
     setHasChanges(false)
-    alert('Settings saved successfully!')
+    setModal({ type: 'alert', message: 'Settings saved successfully!' });
   }
+
+  // FIX: Replaced confirm() with a custom modal.
   const handleResetToDefaults = () => {
-    if (confirm('Are you sure you want to reset all settings to defaults? This cannot be undone.')) {
-      setNotifications(mockNotifications)
-      setPrivacy(mockPrivacy)
-      setPreferences(mockPreferences)
-      setSecurity(mockSecurity)
-      setHasChanges(true)
-    }
+    setModal({
+      type: 'confirm',
+      message: 'Are you sure you want to reset all settings to defaults? This cannot be undone.',
+      onConfirm: () => {
+        setNotifications(mockNotifications)
+        setPrivacy(mockPrivacy)
+        setPreferences(mockPreferences)
+        setSecurity(mockSecurity)
+        setHasChanges(true)
+        setModal(null)
+      }
+    });
   }
 
   const tabs = [
@@ -329,7 +345,7 @@ export default function StudentSettingsPage() {
                       <div className="p-4 glass-activity-card rounded-lg">
                         <label className="font-medium text-gray-900">Profile Visibility</label>
                         <p className="text-sm text-gray-600 mb-2">Who can see your profile information</p>
-                        <select value={privacy.profileVisibility} onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value)} className={selectStyles}>
+                        <select value={privacy.profileVisibility} onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value as PrivacySettings['profileVisibility'])} className={selectStyles}>
                           <option value="public">Public - Anyone can see your profile</option>
                           <option value="university">University Only - Only university members</option>
                           <option value="private">Private - Only you can see your profile</option>
@@ -380,7 +396,7 @@ export default function StudentSettingsPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
-                        <select value={preferences.theme} onChange={(e) => handlePreferenceChange('theme', e.target.value)} className={selectStyles}>
+                        <select value={preferences.theme} onChange={(e) => handlePreferenceChange('theme', e.target.value as PreferenceSettings['theme'])} className={selectStyles}>
                           <option value="light">Light</option>
                           <option value="dark">Dark</option>
                           <option value="auto">Auto (System)</option>
@@ -463,7 +479,7 @@ export default function StudentSettingsPage() {
                   <div className="text-sm text-gray-600">Return to your dashboard</div>
                 </div>
               </Link>
-              <button onClick={() => alert('Help and support system would be implemented here')} className="block group w-full">
+              <button onClick={() => setModal({ type: 'alert', message: 'The help and support system will be implemented in a future update.' })} className="block group w-full">
                 <div className="glass-sidebar-card rounded-2xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl h-full">
                   <div className="text-4xl mb-2">❓</div>
                   <div className="font-medium text-gray-900">Help & Support</div>
@@ -485,6 +501,35 @@ export default function StudentSettingsPage() {
                   </button>
                 </div>
               </div>
+            )}
+
+            {/* Modal for Alerts and Confirmations */}
+            {modal && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center animate-glass-fade-in">
+                    <div className="glass-card rounded-2xl p-6 w-full max-w-sm text-center">
+                        <h3 className="text-lg font-bold text-gray-900 mb-4">{modal.type === 'confirm' ? 'Confirm Action' : 'Notification'}</h3>
+                        <p className="text-gray-600 mb-6">{modal.message}</p>
+                        <div className="flex justify-center gap-4">
+                            {modal.type === 'confirm' && (
+                                <button
+                                    onClick={() => setModal(null)}
+                                    className="bg-white/70 text-gray-700 px-5 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50"
+                                >
+                                    Cancel
+                                </button>
+                            )}
+                            <button
+                                onClick={() => {
+                                    if (modal.onConfirm) modal.onConfirm();
+                                    else setModal(null);
+                                }}
+                                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-5 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                            >
+                                {modal.type === 'confirm' ? 'Confirm' : 'OK'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
           </div>
         </div>

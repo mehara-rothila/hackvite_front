@@ -1,4 +1,4 @@
-// app/student/queries/[id]/page.tsx - ENHANCED WITH DASHBOARD STYLES
+// app/student/queries/[id]/page.tsx - LINTING ERRORS FIXED
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -86,7 +86,8 @@ export default function QueryDetailsPage() {
         <div className="max-w-4xl mx-auto">
           <div className="glass-card rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Query Not Found</h2>
-            <p className="text-gray-600 mb-6">The query you're looking for doesn't exist or you don't have permission to view it.</p>
+            {/* FIX: Replaced ' with &apos; to fix react/no-unescaped-entities error */}
+            <p className="text-gray-600 mb-6">The query you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view it.</p>
             <Link href="/student/queries" className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold">
               Back to Queries
             </Link>

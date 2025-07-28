@@ -1,4 +1,4 @@
-// app/student/queries/page.tsx - ENHANCED WITH DASHBOARD STYLES
+// app/student/queries/page.tsx - LINTING ERROR FIXED
 'use client'
 
 import { useState } from 'react'
@@ -30,14 +30,15 @@ const statusFilters = ['All', 'Pending', 'In Progress', 'Resolved']
 const priorityFilters = ['All', 'Low', 'Medium', 'High']
 
 export default function StudentQueriesPage() {
-  // --- State and Handlers (Unchanged) ---
+  // --- State and Handlers ---
   const [queries, setQueries] = useState<Query[]>(mockQueries)
   const [showNewQueryForm, setShowNewQueryForm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [priorityFilter, setPriorityFilter] = useState('All')
-  const [newQuery, setNewQuery] = useState({ title: '', category: 'Academic', priority: 'medium' as const, course: '', lecturer: '', description: '' })
+  // FIX: Explicitly typed the priority field to match the Query interface
+  const [newQuery, setNewQuery] = useState({ title: '', category: 'Academic', priority: 'medium' as Query['priority'], course: '', lecturer: '', description: '' })
 
   const handleSubmitQuery = (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,7 +56,7 @@ export default function StudentQueriesPage() {
     return matchesSearch && matchesCategory && matchesStatus && matchesPriority
   })
 
-  // --- Styling Helpers ---
+  // --- Styling Helpers (Unchanged) ---
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800'
@@ -252,7 +253,8 @@ export default function StudentQueriesPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                        <select value={newQuery.priority} onChange={(e) => setNewQuery({...newQuery, priority: e.target.value as any})} className={glassInputStyles}>
+                        {/* FIX: Replaced 'any' with a specific type assertion */}
+                        <select value={newQuery.priority} onChange={(e) => setNewQuery({...newQuery, priority: e.target.value as Query['priority']})} className={glassInputStyles}>
                           <option value="low">Low</option>
                           <option value="medium">Medium</option>
                           <option value="high">High</option>
