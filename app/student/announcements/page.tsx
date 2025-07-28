@@ -1,7 +1,7 @@
 // app/student/announcements/page.tsx - ENHANCED WITH DASHBOARD STYLES
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 interface Announcement {

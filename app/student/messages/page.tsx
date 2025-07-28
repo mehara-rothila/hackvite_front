@@ -1,4 +1,4 @@
-// app/student/messages/page.tsx - ENHANCED WITH DASHBOARD STYLES
+// app/student/messages/page.tsx - LINTING ERRORS FIXED
 'use client'
 
 import { useState } from 'react'
@@ -380,6 +380,8 @@ export default function StudentMessagesPage() {
                       <input type="text" placeholder="Search messages..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={glassInputStyles} />
                       <select value={lecturerFilter} onChange={(e) => setLecturerFilter(e.target.value)} className={glassInputStyles}>{lecturers.map(lecturer => (<option key={lecturer} value={lecturer}>{lecturer}</option>))}</select>
                       <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={glassInputStyles}>{messageTypes.map(type => (<option key={type} value={type}>{type}</option>))}</select>
+                      {/* FIX: Added priority filter dropdown */}
+                      <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)} className={glassInputStyles}>{priorities.map(priority => (<option key={priority} value={priority}>{priority}</option>))}</select>
                       <label className="flex items-center gap-2 px-4 py-2 glass-activity-card rounded-lg cursor-pointer"><input type="checkbox" checked={showOnlyUnread} onChange={(e) => setShowOnlyUnread(e.target.checked)} className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" /><span className="text-sm text-gray-700 font-medium">Unread only</span></label>
                     </div>
                     <div className="flex gap-2">

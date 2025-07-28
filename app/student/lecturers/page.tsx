@@ -141,14 +141,13 @@ const availabilityFilters = ['All', 'Available', 'Busy', 'Away']
 const sortOptions = ['Name A-Z', 'Name Z-A', 'Rating High-Low', 'Department', 'Response Time']
 
 export default function StudentLecturersPage() {
-  const [lecturers, setLecturers] = useState<Lecturer[]>(mockLecturers)
+  const [lecturers] = useState<Lecturer[]>(mockLecturers)
   const [searchTerm, setSearchTerm] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('All')
   const [availabilityFilter, setAvailabilityFilter] = useState('All')
   const [sortBy, setSortBy] = useState('Name A-Z')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(null)
-  const [showContactModal, setShowContactModal] = useState(false)
 
   // Filter and sort lecturers
   const filteredLecturers = lecturers

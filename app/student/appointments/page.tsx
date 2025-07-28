@@ -1,10 +1,11 @@
-// app/student/appointments/page.tsx - ENHANCED WITH DASHBOARD STYLES
+// app/student/appointments/page.tsx - LINTING ERRORS FIXED
 'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
+// --- Interfaces (Unchanged) ---
 interface Appointment {
   id: string
   lecturer: string
@@ -30,9 +31,10 @@ interface TimeSlot {
   duration: number
   available: boolean
   location: string
-  type: string
+  type: 'office-hours' | 'consultation' | 'project-discussion' | 'exam-review'
 }
 
+// --- Mock Data (Unchanged) ---
 const mockAppointments: Appointment[] = [
   {
     id: '1',
@@ -81,46 +83,10 @@ const mockAppointments: Appointment[] = [
 ]
 
 const mockAvailableSlots: TimeSlot[] = [
-  {
-    id: 'slot1',
-    lecturer: 'Dr. Sarah Johnson',
-    date: '2025-07-29',
-    time: '09:00',
-    duration: 30,
-    available: true,
-    location: 'Office 201B',
-    type: 'office-hours'
-  },
-  {
-    id: 'slot2',
-    lecturer: 'Dr. Sarah Johnson',
-    date: '2025-07-29',
-    time: '09:30',
-    duration: 30,
-    available: true,
-    location: 'Office 201B',
-    type: 'office-hours'
-  },
-  {
-    id: 'slot3',
-    lecturer: 'Prof. Michael Chen',
-    date: '2025-07-30',
-    time: '14:00',
-    duration: 45,
-    available: true,
-    location: 'Office 301A',
-    type: 'consultation'
-  },
-  {
-    id: 'slot4',
-    lecturer: 'Dr. Emily Roberts',
-    date: '2025-07-30',
-    time: '11:00',
-    duration: 30,
-    available: true,
-    location: 'Office 105C',
-    type: 'office-hours'
-  }
+  { id: 'slot1', lecturer: 'Dr. Sarah Johnson', date: '2025-07-29', time: '09:00', duration: 30, available: true, location: 'Office 201B', type: 'office-hours' },
+  { id: 'slot2', lecturer: 'Dr. Sarah Johnson', date: '2025-07-29', time: '09:30', duration: 30, available: true, location: 'Office 201B', type: 'office-hours' },
+  { id: 'slot3', lecturer: 'Prof. Michael Chen', date: '2025-07-30', time: '14:00', duration: 45, available: true, location: 'Office 301A', type: 'consultation' },
+  { id: 'slot4', lecturer: 'Dr. Emily Roberts', date: '2025-07-30', time: '11:00', duration: 30, available: true, location: 'Office 105C', type: 'office-hours' }
 ]
 
 const lecturers = ['All', 'Dr. Sarah Johnson', 'Prof. Michael Chen', 'Dr. Emily Roberts']
@@ -136,12 +102,12 @@ export default function StudentAppointmentsPage() {
   const [lecturerFilter, setLecturerFilter] = useState(searchParams?.get('lecturer') || 'All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [typeFilter, setTypeFilter] = useState('All')
+  const [modal, setModal] = useState<{ type: 'confirm' | 'alert'; message: string; onConfirm?: () => void; } | null>(null);
 
-  // Booking form state
   const [bookingForm, setBookingForm] = useState({
     subject: '',
     description: '',
-    type: 'office-hours' as const
+    type: 'office-hours' as Appointment['type']
   })
 
   useEffect(() => {
@@ -155,7 +121,8 @@ export default function StudentAppointmentsPage() {
     setBookingForm({
       subject: '',
       description: '',
-      type: slot.type as any
+      // FIX: Replaced 'any' with a specific type assertion
+      type: slot.type as Appointment['type']
     })
     setShowBookingForm(true)
   }
@@ -182,22 +149,29 @@ export default function StudentAppointmentsPage() {
     setShowBookingForm(false)
     setSelectedSlot(null)
     setBookingForm({ subject: '', description: '', type: 'office-hours' })
+    setModal({ type: 'alert', message: 'Appointment booked successfully! It is now pending confirmation.' });
   }
 
   const handleCancelAppointment = (appointmentId: string) => {
-    if (confirm('Are you sure you want to cancel this appointment?')) {
-      setAppointments(appointments.map(apt => apt.id === appointmentId ? { ...apt, status: 'cancelled' as const } : apt))
-    }
+    setModal({
+        type: 'confirm',
+        message: 'Are you sure you want to cancel this appointment?',
+        onConfirm: () => {
+            setAppointments(appointments.map(apt => apt.id === appointmentId ? { ...apt, status: 'cancelled' as const } : apt));
+            setModal(null);
+        }
+    });
   }
 
-  const handleRescheduleAppointment = (appointmentId: string) => {
-    alert('Reschedule functionality would be implemented here')
+  // FIX: Removed unused 'appointmentId' parameter and replaced alert with a modal
+  const handleRescheduleAppointment = () => {
+    setModal({ type: 'alert', message: 'Reschedule functionality will be implemented in a future update.' });
   }
 
   const filteredAppointments = appointments.filter(appointment => {
     const matchesLecturer = lecturerFilter === 'All' || appointment.lecturer === lecturerFilter
     const matchesStatus = statusFilter === 'All' || appointment.status === statusFilter.toLowerCase()
-    const matchesType = typeFilter === 'All' || appointment.type === typeFilter.toLowerCase().replace(' ', '-')
+    const matchesType = typeFilter === 'All' || appointment.type === typeFilter.toLowerCase().replace(' ', '-') as Appointment['type']
     return matchesLecturer && matchesStatus && matchesType
   })
 
@@ -416,7 +390,7 @@ export default function StudentAppointmentsPage() {
                       <div className="flex flex-col gap-2 w-full lg:w-auto flex-shrink-0">
                         {appointment.status === 'confirmed' && new Date(`${appointment.date} ${appointment.time}`) > new Date() && (
                           <>
-                            <button onClick={() => handleRescheduleAppointment(appointment.id)} className="bg-blue-100/80 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium">📅 Reschedule</button>
+                            <button onClick={() => handleRescheduleAppointment()} className="bg-blue-100/80 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium">📅 Reschedule</button>
                             <button onClick={() => handleCancelAppointment(appointment.id)} className="bg-red-100/80 text-red-700 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">❌ Cancel</button>
                           </>
                         )}
@@ -461,7 +435,7 @@ export default function StudentAppointmentsPage() {
                       <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20"><h3 className="font-medium text-blue-900">Selected Time Slot</h3><div className="text-sm text-blue-800">{selectedSlot.lecturer} - {selectedSlot.date} at {selectedSlot.time} ({selectedSlot.duration} minutes)</div><div className="text-sm text-blue-600">{selectedSlot.location}</div></div>
                       <div><label className="block text-sm font-medium text-gray-700 mb-1">Subject</label><input type="text" required value={bookingForm.subject} onChange={(e) => setBookingForm({...bookingForm, subject: e.target.value})} className={glassInputStyles} placeholder="Brief subject for your appointment" /></div>
                       <div><label className="block text-sm font-medium text-gray-700 mb-1">Description</label><textarea rows={4} value={bookingForm.description} onChange={(e) => setBookingForm({...bookingForm, description: e.target.value})} className={glassInputStyles} placeholder="Please describe what you'd like to discuss..." /></div>
-                      <div><label className="block text-sm font-medium text-gray-700 mb-1">Appointment Type</label><select value={bookingForm.type} onChange={(e) => setBookingForm({...bookingForm, type: e.target.value as any})} className={glassInputStyles}><option value="office-hours">Office Hours</option><option value="consultation">Consultation</option><option value="project-discussion">Project Discussion</option><option value="exam-review">Exam Review</option></select></div>
+                      <div><label className="block text-sm font-medium text-gray-700 mb-1">Appointment Type</label><select value={bookingForm.type} onChange={(e) => setBookingForm({...bookingForm, type: e.target.value as Appointment['type']})} className={glassInputStyles}><option value="office-hours">Office Hours</option><option value="consultation">Consultation</option><option value="project-discussion">Project Discussion</option><option value="exam-review">Exam Review</option></select></div>
                       <div className="flex flex-wrap gap-4 pt-4 border-t border-white/30">
                         <button type="submit" className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold">Confirm Booking</button>
                         <button type="button" onClick={() => setSelectedSlot(null)} className="bg-white/70 text-gray-700 px-6 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50 font-semibold">← Back to Slots</button>
@@ -471,6 +445,35 @@ export default function StudentAppointmentsPage() {
                   )}
                 </div>
               </div>
+            )}
+
+            {/* Modal for Alerts and Confirmations */}
+            {modal && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center animate-glass-fade-in">
+                    <div className="glass-card rounded-2xl p-6 w-full max-w-sm text-center">
+                        <h3 className="text-lg font-bold text-gray-900 mb-4">{modal.type === 'confirm' ? 'Confirm Action' : 'Notification'}</h3>
+                        <p className="text-gray-600 mb-6">{modal.message}</p>
+                        <div className="flex justify-center gap-4">
+                            {modal.type === 'confirm' && (
+                                <button
+                                    onClick={() => setModal(null)}
+                                    className="bg-white/70 text-gray-700 px-5 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50"
+                                >
+                                    Cancel
+                                </button>
+                            )}
+                            <button
+                                onClick={() => {
+                                    if (modal.onConfirm) modal.onConfirm();
+                                    else setModal(null);
+                                }}
+                                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-5 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                            >
+                                {modal.type === 'confirm' ? 'Confirm' : 'OK'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
           </div>
         </div>

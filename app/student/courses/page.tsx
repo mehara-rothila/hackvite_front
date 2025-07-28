@@ -40,7 +40,7 @@ const sortOptions = ['Course Code', 'Course Name', 'Next Class', 'Grade', 'Credi
 
 export default function StudentCoursesPage() {
   // --- State and Handlers (Unchanged) ---
-  const [courses, setCourses] = useState<EnrolledCourse[]>(mockEnrolledCourses)
+  const [courses] = useState<EnrolledCourse[]>(mockEnrolledCourses)
   const [searchTerm, setSearchTerm] = useState('')
   const [semesterFilter, setSemesterFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')

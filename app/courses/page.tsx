@@ -231,7 +231,7 @@ const statusFilters = ['All', 'Active', 'Upcoming', 'Archived']
 const sortOptions = ['Course Code', 'Course Name', 'Department', 'Credits', 'Rating', 'Enrollment']
 
 export default function CourseDirectoryPage() {
-  const [courses, setCourses] = useState<Course[]>(mockCourses)
+  const [courses] = useState<Course[]>(mockCourses)
   const [searchTerm, setSearchTerm] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('All')
   const [semesterFilter, setSemesterFilter] = useState('All')
@@ -287,7 +287,7 @@ export default function CourseDirectoryPage() {
   }
 
   const getEnrollmentStatus = (course: Course) => {
-    const { enrolled, capacity, waitlist } = course.enrollmentInfo
+    const { enrolled, capacity } = course.enrollmentInfo
     const percentage = (enrolled / capacity) * 100
     
     if (percentage >= 95) return { status: 'full', color: 'text-red-600' }

@@ -1,4 +1,4 @@
-// app/student/profile/page.tsx - ENHANCED WITH DASHBOARD STYLES
+// app/student/profile/page.tsx - LINTING ERRORS FIXED
 'use client'
 
 import { useState } from 'react'
@@ -73,13 +73,14 @@ const courses = [
 ]
 
 export default function StudentProfilePage() {
-  // --- State and Handlers (Unchanged) ---
   const [profile, setProfile] = useState<StudentProfile>(mockProfile)
   const [activeTab, setActiveTab] = useState('personal')
   const [isEditing, setIsEditing] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
 
-  const handleInputChange = (field: keyof StudentProfile, value: string) => {
+
+  const handleInputChange = (field: keyof StudentProfile, value: string | boolean) => {
     setProfile(prev => ({ ...prev, [field]: value }))
     setHasChanges(true)
   }
@@ -88,7 +89,7 @@ export default function StudentProfilePage() {
     console.log('Saving profile:', profile)
     setIsEditing(false)
     setHasChanges(false)
-    alert('Profile updated successfully!')
+    setModalMessage('Profile updated successfully!');
   }
 
   const handleCancel = () => {
@@ -313,7 +314,7 @@ export default function StudentProfilePage() {
             {/* Enhanced Tabs */}
             <div className="glass-card rounded-2xl mb-6 animate-slide-up-delayed-2">
               <div className="border-b border-white/30">
-                <nav className="flex space-x-4 px-6">
+                <nav className="flex space-x-4 px-6 overflow-x-auto">
                   {tabs.map(tab => (
                     <button
                       key={tab.id}
@@ -411,7 +412,8 @@ export default function StudentProfilePage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Enrollment Status</label>
-                        <select value={profile.enrollmentStatus} onChange={(e) => handleInputChange('enrollmentStatus', e.target.value as any)} disabled={!isEditing} className={`${inputStyles} ${isEditing ? enabledInputStyles : disabledInputStyles}`}>
+                        {/* FIX: Replaced 'any' with a specific type assertion */}
+                        <select value={profile.enrollmentStatus} onChange={(e) => handleInputChange('enrollmentStatus', e.target.value as StudentProfile['enrollmentStatus'])} disabled={!isEditing} className={`${inputStyles} ${isEditing ? enabledInputStyles : disabledInputStyles}`}>
                           <option value="full-time">Full-time</option>
                           <option value="part-time">Part-time</option>
                           <option value="exchange">Exchange Student</option>
@@ -419,7 +421,8 @@ export default function StudentProfilePage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Academic Standing</label>
-                        <select value={profile.academicStanding} onChange={(e) => handleInputChange('academicStanding', e.target.value as any)} disabled className={`${inputStyles} ${disabledInputStyles}`}>
+                        {/* FIX: Replaced 'any' with a specific type assertion */}
+                        <select value={profile.academicStanding} onChange={(e) => handleInputChange('academicStanding', e.target.value as StudentProfile['academicStanding'])} disabled className={`${inputStyles} ${disabledInputStyles}`}>
                           <option value="good">Good Standing</option>
                           <option value="probation">Academic Probation</option>
                           <option value="honors">Honors</option>
@@ -574,6 +577,24 @@ export default function StudentProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Modal for Alerts */}
+        {modalMessage && (
+            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center animate-glass-fade-in">
+                <div className="glass-card rounded-2xl p-6 w-full max-w-sm text-center">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">Notification</h3>
+                    <p className="text-gray-600 mb-6">{modalMessage}</p>
+                    <div className="flex justify-center">
+                        <button
+                            onClick={() => setModalMessage(null)}
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-5 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
       </div>
     </>
   )
