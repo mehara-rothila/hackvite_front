@@ -1,4 +1,4 @@
-// app/student/dashboard/page.tsx - LAYOUT RE-ORDERED, STYLES & CONTENT PRESERVED
+// app/student/dashboard/page.tsx - LINTING ERRORS FIXED
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -93,9 +93,11 @@ const mockUpcomingAppointments: UpcomingAppointment[] = [
 ]
 
 export default function StudentDashboard() {
-  const [stats, setStats] = useState<DashboardStats>(mockStats)
-  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(mockRecentActivity)
-  const [upcomingAppointments, setUpcomingAppointments] = useState<UpcomingAppointment[]>(mockUpcomingAppointments)
+  // FIX: Removed unused state setters (setStats, setRecentActivity, setUpcomingAppointments)
+  // The state is initialized with mock data and never updated, so the setters are not needed.
+  const [stats] = useState<DashboardStats>(mockStats)
+  const [recentActivity] = useState<RecentActivity[]>(mockRecentActivity)
+  const [upcomingAppointments] = useState<UpcomingAppointment[]>(mockUpcomingAppointments)
   const [currentTime, setCurrentTime] = useState<string>('')
 
   useEffect(() => {
@@ -283,7 +285,8 @@ export default function StudentDashboard() {
                           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-clean-shadow">
                             Welcome back, Student!
                           </h1>
-                          <p className="text-gray-600 text-sm font-medium">Here's what's happening with your studies today.</p>
+                          {/* FIX: Replaced ' with &apos; to fix react/no-unescaped-entities error */}
+                          <p className="text-gray-600 text-sm font-medium">Here&apos;s what&apos;s happening with your studies today.</p>
                         </div>
                       </div>
                       <div className="glass-activity-card rounded-xl p-3 text-center min-w-[180px]">
