@@ -398,7 +398,7 @@ export default function CourseDetailPage() {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Not Found</h2>
-            <p className="text-gray-600 mb-6">The course you're looking for doesn't exist or you don't have permission to view it.</p>
+            <p className="text-gray-600 mb-6">The course you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view it.</p>
             <Link href="/courses" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
               Back to Courses
             </Link>
@@ -520,7 +520,7 @@ export default function CourseDetailPage() {
               ].map(tab => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
+                  onClick={() => setActiveTab(tab.key as typeof activeTab)}
                   className={`py-4 px-2 text-sm font-medium border-b-2 flex items-center gap-2 ${
                     activeTab === tab.key
                       ? 'border-blue-500 text-blue-600'

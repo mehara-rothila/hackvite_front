@@ -154,22 +154,22 @@ export default function LecturerSettingsPage() {
     setHasChanges(true)
   }
 
-  const handlePrivacyChange = (setting: keyof PrivacySettings, value: any) => {
+  const handlePrivacyChange = (setting: keyof PrivacySettings, value: PrivacySettings[keyof PrivacySettings]) => {
     setPrivacy(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
 
-  const handlePreferenceChange = (setting: keyof PreferenceSettings, value: any) => {
+  const handlePreferenceChange = (setting: keyof PreferenceSettings, value: PreferenceSettings[keyof PreferenceSettings]) => {
     setPreferences(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
 
-  const handleSecurityChange = (setting: keyof SecuritySettings, value: any) => {
+  const handleSecurityChange = (setting: keyof SecuritySettings, value: SecuritySettings[keyof SecuritySettings]) => {
     setSecurity(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
 
-  const handleTeachingChange = (setting: keyof TeachingSettings, value: any) => {
+  const handleTeachingChange = (setting: keyof TeachingSettings, value: TeachingSettings[keyof TeachingSettings]) => {
     setTeaching(prev => ({ ...prev, [setting]: value }))
     setHasChanges(true)
   }
@@ -300,7 +300,7 @@ export default function LecturerSettingsPage() {
                             {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                           </div>
                           <div className="text-sm text-gray-600">
-                            Show browser popup notifications when you're online
+                            Show browser popup notifications when you&apos;re online
                           </div>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
@@ -361,7 +361,7 @@ export default function LecturerSettingsPage() {
                     </div>
                     <select
                       value={privacy.profileVisibility}
-                      onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value)}
+                      onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value as PrivacySettings['profileVisibility'])}
                       className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="public">Public - Anyone can see your profile</option>
@@ -523,7 +523,7 @@ export default function LecturerSettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Time Format</label>
                     <select
                       value={preferences.timeFormat}
-                      onChange={(e) => handlePreferenceChange('timeFormat', e.target.value)}
+                      onChange={(e) => handlePreferenceChange('timeFormat', e.target.value as PreferenceSettings['timeFormat'])}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="12h">12-hour (AM/PM)</option>
@@ -535,7 +535,7 @@ export default function LecturerSettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
                     <select
                       value={preferences.theme}
-                      onChange={(e) => handlePreferenceChange('theme', e.target.value)}
+                      onChange={(e) => handlePreferenceChange('theme', e.target.value as PreferenceSettings['theme'])}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="light">Light</option>
@@ -548,7 +548,7 @@ export default function LecturerSettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Dashboard Layout</label>
                     <select
                       value={preferences.dashboardLayout}
-                      onChange={(e) => handlePreferenceChange('dashboardLayout', e.target.value)}
+                      onChange={(e) => handlePreferenceChange('dashboardLayout', e.target.value as PreferenceSettings['dashboardLayout'])}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="grid">Grid View</option>

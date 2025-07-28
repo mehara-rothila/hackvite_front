@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 interface ArchivedMessage {
   id: string
@@ -232,7 +231,6 @@ const mockArchivedMessages: ArchivedMessage[] = [
 ]
 
 export default function ArchivedMessagesPage() {
-  const router = useRouter()
   const [archivedMessages, setArchivedMessages] = useState<ArchivedMessage[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')

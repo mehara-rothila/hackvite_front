@@ -260,7 +260,7 @@ export default function EduBotPage() {
                     onClick={() => handleSendMessage(question)}
                     className="w-full text-left p-2 text-xs text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                   >
-                    "{question}"
+                    &quot;{question}&quot;
                   </button>
                 ))}
               </div>

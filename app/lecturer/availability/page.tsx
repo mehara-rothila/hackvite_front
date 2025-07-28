@@ -2,7 +2,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 
 interface AvailabilitySlot {
   id: string
@@ -108,9 +107,11 @@ const mockUnavailable: UnavailablePeriod[] = [
   }
 ]
 
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-const slotTypes = ['office-hours', 'consultation', 'open', 'blocked']
+const daysOfWeek: AvailabilitySlot['day'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const slotTypes: AvailabilitySlot['type'][] = ['office-hours', 'consultation', 'open', 'blocked']
 const locations = ['Office 201B', 'Conference Room A', 'Library Study Room', 'Online (Zoom)']
+const unavailableTypes: UnavailablePeriod['type'][] = ['vacation', 'conference', 'meeting', 'sick', 'other'];
+
 
 export default function LecturerAvailabilityPage() {
   const [availability, setAvailability] = useState<AvailabilitySlot[]>(mockAvailability)
@@ -143,10 +144,10 @@ export default function LecturerAvailabilityPage() {
     e.preventDefault()
     const slot: AvailabilitySlot = {
       id: Date.now().toString(),
-      day: newSlot.day as any,
+      day: newSlot.day!,
       startTime: newSlot.startTime!,
       endTime: newSlot.endTime!,
-      type: newSlot.type as any,
+      type: newSlot.type!,
       location: newSlot.location!,
       maxBookings: newSlot.maxBookings!,
       currentBookings: 0,
@@ -180,7 +181,7 @@ export default function LecturerAvailabilityPage() {
       startDate: newUnavailable.startDate!,
       endDate: newUnavailable.endDate!,
       reason: newUnavailable.reason!,
-      type: newUnavailable.type as any
+      type: newUnavailable.type!
     }
     
     setUnavailablePeriods([...unavailablePeriods, period])
@@ -268,7 +269,7 @@ export default function LecturerAvailabilityPage() {
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="text-2xl font-bold text-orange-600">
-              {Math.round((totalBookings / maxCapacity) * 100) || 0}%
+              {maxCapacity > 0 ? Math.round((totalBookings / maxCapacity) * 100) : 0}%
             </div>
             <div className="text-sm text-gray-600">Utilization Rate</div>
           </div>
@@ -435,7 +436,7 @@ export default function LecturerAvailabilityPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Day</label>
                     <select
                       value={newSlot.day}
-                      onChange={(e) => setNewSlot({...newSlot, day: e.target.value as any})}
+                      onChange={(e) => setNewSlot({...newSlot, day: e.target.value as AvailabilitySlot['day']})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {daysOfWeek.map(day => (
@@ -448,7 +449,7 @@ export default function LecturerAvailabilityPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
                     <select
                       value={newSlot.type}
-                      onChange={(e) => setNewSlot({...newSlot, type: e.target.value as any})}
+                      onChange={(e) => setNewSlot({...newSlot, type: e.target.value as AvailabilitySlot['type']})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {slotTypes.map(type => (
@@ -594,14 +595,12 @@ export default function LecturerAvailabilityPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
                   <select
                     value={newUnavailable.type}
-                    onChange={(e) => setNewUnavailable({...newUnavailable, type: e.target.value as any})}
+                    onChange={(e) => setNewUnavailable({...newUnavailable, type: e.target.value as UnavailablePeriod['type']})}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="vacation">Vacation</option>
-                    <option value="conference">Conference</option>
-                    <option value="meeting">Meeting</option>
-                    <option value="sick">Sick Leave</option>
-                    <option value="other">Other</option>
+                    {unavailableTypes.map(type => (
+                      <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
+                    ))}
                   </select>
                 </div>
 

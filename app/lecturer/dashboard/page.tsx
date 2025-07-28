@@ -155,10 +155,10 @@ const mockRecentActivity: RecentActivity[] = [
 ]
 
 export default function LecturerDashboard() {
-  const [stats, setStats] = useState<LecturerStats>(mockStats)
-  const [pendingQueries, setPendingQueries] = useState<PendingQuery[]>(mockPendingQueries)
-  const [upcomingAppointments, setUpcomingAppointments] = useState<UpcomingAppointment[]>(mockUpcomingAppointments)
-  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(mockRecentActivity)
+  const [stats] = useState<LecturerStats>(mockStats)
+  const [pendingQueries] = useState<PendingQuery[]>(mockPendingQueries)
+  const [upcomingAppointments] = useState<UpcomingAppointment[]>(mockUpcomingAppointments)
+  const [recentActivity] = useState<RecentActivity[]>(mockRecentActivity)
   const [currentTime, setCurrentTime] = useState<string>('')
 
   useEffect(() => {
@@ -207,7 +207,7 @@ export default function LecturerDashboard() {
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, Dr. Johnson!</h1>
-              <p className="text-gray-600">Here's an overview of your teaching activities</p>
+              <p className="text-gray-600">Here&apos;s an overview of your teaching activities</p>
             </div>
             <div className="text-right">
               <div className="text-sm text-gray-500">Current time</div>
@@ -377,7 +377,7 @@ export default function LecturerDashboard() {
             {/* Upcoming Appointments */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Today's Schedule</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Today&apos;s Schedule</h3>
                 <Link href="/lecturer/appointments" className="text-sm text-blue-600 hover:text-blue-800">
                   View All
                 </Link>

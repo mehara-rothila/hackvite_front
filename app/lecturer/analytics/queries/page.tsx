@@ -437,7 +437,7 @@ export default function LecturerAnalyticsQueriesPage() {
               ].map(tab => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveSection(tab.key as any)}
+                  onClick={() => setActiveSection(tab.key as 'overview' | 'trends' | 'engagement' | 'improvement')}
                   className={`py-4 px-2 text-sm font-medium border-b-2 flex items-center gap-2 ${
                     activeSection === tab.key
                       ? 'border-blue-500 text-blue-600'

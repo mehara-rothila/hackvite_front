@@ -268,12 +268,14 @@ export default function CourseMessagesPage() {
         role: 'student',
         avatar: '👤'
       },
-      recipient: newMessage.recipient === 'lecturer' ? (course?.lecturer || { id: '', name: '', avatar: '' }) as any : {
-        id: 'class',
-        name: `${course?.code} Class`,
-        role: 'student' as const,
-        avatar: '👥'
-      },
+      recipient: newMessage.recipient === 'lecturer' 
+        ? { ...(course?.lecturer || { id: '', name: '', avatar: '' }), role: 'lecturer' as const }
+        : {
+            id: 'class',
+            name: `${course?.code} Class`,
+            role: 'student' as const,
+            avatar: '👥'
+          },
       subject: newMessage.subject,
       content: newMessage.content,
       timestamp: new Date().toLocaleString(),
@@ -348,7 +350,7 @@ export default function CourseMessagesPage() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Not Found</h2>
-            <p className="text-gray-600 mb-6">The course you're looking for doesn't exist or you don't have permission to view it.</p>
+            <p className="text-gray-600 mb-6">The course you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view it.</p>
             <Link href="/courses" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
               Back to Courses
             </Link>
@@ -455,7 +457,7 @@ export default function CourseMessagesPage() {
               <div className="text-gray-500 mb-4">No messages found</div>
               <div className="text-sm text-gray-400">
                 {showOnlyUnread 
-                  ? "You're all caught up! No unread messages in this course." 
+                  ? "You&apos;re all caught up! No unread messages in this course." 
                   : "Try adjusting your search or filter criteria"
                 }
               </div>
@@ -568,7 +570,7 @@ export default function CourseMessagesPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <select
                       value={newMessage.category}
-                      onChange={(e) => setNewMessage({...newMessage, category: e.target.value as any})}
+                      onChange={(e) => setNewMessage({...newMessage, category: e.target.value as typeof newMessage.category})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="general">General</option>
@@ -585,7 +587,7 @@ export default function CourseMessagesPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
                     <select
                       value={newMessage.priority}
-                      onChange={(e) => setNewMessage({...newMessage, priority: e.target.value as any})}
+                      onChange={(e) => setNewMessage({...newMessage, priority: e.target.value as typeof newMessage.priority})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="normal">Normal</option>

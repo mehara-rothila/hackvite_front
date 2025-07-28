@@ -397,11 +397,22 @@ const mockEngagementData: EngagementMetrics = {
   }
 }
 
+type ActiveTab = 'overview' | 'attendance' | 'participation' | 'digital' | 'insights' | 'trends';
+
+const TABS: { key: ActiveTab; label: string; icon: string }[] = [
+  { key: 'overview', label: 'Overview', icon: '📊' },
+  { key: 'attendance', label: 'Attendance', icon: '✅' },
+  { key: 'participation', label: 'Participation', icon: '🙋' },
+  { key: 'digital', label: 'Digital Activity', icon: '💻' },
+  { key: 'insights', label: 'Student Insights', icon: '👥' },
+  { key: 'trends', label: 'Time Trends', icon: '📈' }
+];
+
 export default function EngagementAnalyticsPage() {
   const [analytics] = useState<EngagementMetrics>(mockEngagementData)
   const [timeRange, setTimeRange] = useState('Last 30 days')
   const [selectedCourse, setSelectedCourse] = useState('All Courses')
-  const [activeTab, setActiveTab] = useState<'overview' | 'attendance' | 'participation' | 'digital' | 'insights' | 'trends'>('overview')
+  const [activeTab, setActiveTab] = useState<ActiveTab>('overview')
 
   const getStatusColor = (value: number, thresholds: { good: number; warning: number }) => {
     if (value >= thresholds.good) return 'text-green-600'
@@ -525,17 +536,10 @@ export default function EngagementAnalyticsPage() {
         <div className="bg-white rounded-lg shadow-sm mb-6">
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
-              {[
-                { key: 'overview', label: 'Overview', icon: '📊' },
-                { key: 'attendance', label: 'Attendance', icon: '✅' },
-                { key: 'participation', label: 'Participation', icon: '🙋' },
-                { key: 'digital', label: 'Digital Activity', icon: '💻' },
-                { key: 'insights', label: 'Student Insights', icon: '👥' },
-                { key: 'trends', label: 'Time Trends', icon: '📈' }
-              ].map(tab => (
+              {TABS.map(tab => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
+                  onClick={() => setActiveTab(tab.key)}
                   className={`py-4 px-2 text-sm font-medium border-b-2 flex items-center gap-2 ${
                     activeTab === tab.key
                       ? 'border-blue-500 text-blue-600'
