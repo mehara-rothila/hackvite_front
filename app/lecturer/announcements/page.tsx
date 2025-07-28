@@ -92,9 +92,9 @@ export default function LecturerAnnouncementsPage() {
   const [newAnnouncement, setNewAnnouncement] = useState({
     title: '',
     content: '',
-    type: 'general' as const,
-    priority: 'medium' as const,
-    targetAudience: 'all' as const,
+    type: 'general' as 'general' | 'urgent' | 'course' | 'schedule' | 'system',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    targetAudience: 'all' as 'all' | 'course-specific' | 'year-specific',
     course: '',
     yearLevel: '',
     expiresAt: '',

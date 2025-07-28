@@ -416,7 +416,7 @@ export default function LecturerProfilePage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
                     <select
                       value={profile.employmentType}
-                      onChange={(e) => handleInputChange('employmentType', e.target.value as any)}
+                      onChange={(e) => handleInputChange('employmentType', e.target.value as LecturerProfile['employmentType'])}
                       disabled={!isEditing}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
                     >
@@ -430,7 +430,7 @@ export default function LecturerProfilePage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select
                       value={profile.status}
-                      onChange={(e) => handleInputChange('status', e.target.value as any)}
+                      onChange={(e) => handleInputChange('status', e.target.value as LecturerProfile['status'])}
                       disabled={!isEditing}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
                     >

@@ -1,7 +1,7 @@
-// app/student/appointments/page.tsx - LINTING ERRORS FIXED
+// app/student/appointments/page.tsx - FIXED WITH SUSPENSE
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
@@ -93,7 +93,8 @@ const lecturers = ['All', 'Dr. Sarah Johnson', 'Prof. Michael Chen', 'Dr. Emily 
 const appointmentTypes = ['All', 'Office Hours', 'Consultation', 'Project Discussion', 'Exam Review']
 const statusFilters = ['All', 'Pending', 'Confirmed', 'Cancelled', 'Completed']
 
-export default function StudentAppointmentsPage() {
+// Separate the component that uses useSearchParams
+function AppointmentsContent() {
   const searchParams = useSearchParams()
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>(mockAvailableSlots)
@@ -121,7 +122,6 @@ export default function StudentAppointmentsPage() {
     setBookingForm({
       subject: '',
       description: '',
-      // FIX: Replaced 'any' with a specific type assertion
       type: slot.type as Appointment['type']
     })
     setShowBookingForm(true)
@@ -163,7 +163,6 @@ export default function StudentAppointmentsPage() {
     });
   }
 
-  // FIX: Removed unused 'appointmentId' parameter and replaced alert with a modal
   const handleRescheduleAppointment = () => {
     setModal({ type: 'alert', message: 'Reschedule functionality will be implemented in a future update.' });
   }
@@ -479,5 +478,27 @@ export default function StudentAppointmentsPage() {
         </div>
       </div>
     </>
+  )
+}
+
+// Loading component
+function AppointmentsLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="glass-card rounded-2xl p-8 text-center">
+        <div className="text-4xl mb-4">📅</div>
+        <div className="text-lg font-semibold text-gray-900 mb-2">Loading Appointments...</div>
+        <div className="text-gray-600">Please wait while we fetch your data.</div>
+      </div>
+    </div>
+  )
+}
+
+// Main page component with Suspense wrapper
+export default function StudentAppointmentsPage() {
+  return (
+    <Suspense fallback={<AppointmentsLoading />}>
+      <AppointmentsContent />
+    </Suspense>
   )
 }

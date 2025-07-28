@@ -1,7 +1,7 @@
 // app/student/resources/page.tsx - ENHANCED WITH DASHBOARD STYLES
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
@@ -38,7 +38,8 @@ const mockResources: Resource[] = [
 const categories = ['lecture-notes', 'assignments', 'readings', 'labs', 'exams', 'supplementary']
 const courses = ['CS101', 'MATH202', 'ENG110']
 
-export default function StudentResourcesPage() {
+// Separate component that uses useSearchParams
+function ResourcesContent() {
   // --- State and Handlers (Unchanged) ---
   const searchParams = useSearchParams()
   const [resources, setResources] = useState<Resource[]>(mockResources)
@@ -426,5 +427,27 @@ export default function StudentResourcesPage() {
         </div>
       </div>
     </>
+  )
+}
+
+// Loading component
+function ResourcesLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="glass-card rounded-2xl p-8 text-center">
+        <div className="text-4xl mb-4">📚</div>
+        <div className="text-lg font-semibold text-gray-900 mb-2">Loading Resources...</div>
+        <div className="text-gray-600">Please wait while we fetch your course materials.</div>
+      </div>
+    </div>
+  )
+}
+
+// Main export with Suspense wrapper
+export default function StudentResourcesPage() {
+  return (
+    <Suspense fallback={<ResourcesLoading />}>
+      <ResourcesContent />
+    </Suspense>
   )
 }

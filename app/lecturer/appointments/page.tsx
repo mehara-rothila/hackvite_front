@@ -161,7 +161,7 @@ export default function LecturerAppointmentsPage() {
     location: 'Office 201B',
     type: 'office-hours',
     isRecurring: false,
-    recurringPattern: 'weekly' as const
+    recurringPattern: 'weekly' as 'weekly' | 'biweekly' | 'monthly'
   })
 
   const handleStatusChange = (appointmentId: string, newStatus: Appointment['status']) => {
@@ -180,7 +180,7 @@ export default function LecturerAppointmentsPage() {
     ))
   }
 
-  const handleRescheduleAppointment = (appointmentId: string) => {
+  const handleRescheduleAppointment = () => {
     // In real app, this would open a reschedule modal
     alert('Reschedule functionality would be implemented here')
   }
@@ -456,7 +456,7 @@ export default function LecturerAppointmentsPage() {
                         {appointment.status === 'confirmed' && new Date(`${appointment.date} ${appointment.time}`) > new Date() && (
                           <>
                             <button
-                              onClick={() => handleRescheduleAppointment(appointment.id)}
+                              onClick={handleRescheduleAppointment}
                               className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors text-sm"
                             >
                               📅 Reschedule
@@ -684,7 +684,7 @@ export default function LecturerAppointmentsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Recurring Pattern</label>
                     <select
                       value={newSlot.recurringPattern}
-                      onChange={(e) => setNewSlot({...newSlot, recurringPattern: e.target.value as any})}
+                      onChange={(e) => setNewSlot({...newSlot, recurringPattern: e.target.value as 'weekly' | 'biweekly' | 'monthly'})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="weekly">Weekly</option>

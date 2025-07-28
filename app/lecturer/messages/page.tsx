@@ -144,7 +144,6 @@ const mockThreads: Record<string, MessageThread> = {
 }
 
 const courses = ['All', 'CS101', 'CS201', 'MATH202']
-const messageTypes = ['All', 'Academic', 'Administrative', 'General']
 const priorities = ['All', 'High', 'Medium', 'Low']
 const statusFilters = ['All', 'Active', 'Resolved', 'Archived']
 
@@ -154,7 +153,7 @@ export default function LecturerMessagesPage() {
   const [selectedThread, setSelectedThread] = useState<MessageThread | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [courseFilter, setCourseFilter] = useState('All')
-  const [typeFilter, setTypeFilter] = useState('All')
+  const [typeFilter] = useState('All')
   const [priorityFilter, setPriorityFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [showOnlyUnread, setShowOnlyUnread] = useState(false)

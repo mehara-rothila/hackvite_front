@@ -174,7 +174,7 @@ const statuses = ['All', 'Active', 'Upcoming', 'Completed']
 const departments = ['All', 'Computer Science', 'Mathematics', 'Physics']
 
 export default function LecturerCoursesPage() {
-  const [courses, setCourses] = useState<Course[]>(mockCourses)
+  const [courses] = useState<Course[]>(mockCourses)
   const [searchTerm, setSearchTerm] = useState('')
   const [semesterFilter, setSemesterFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
