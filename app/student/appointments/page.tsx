@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
-// --- Interfaces (Unchanged) ---
 interface Appointment {
   id: string
   lecturer: string
@@ -14,7 +13,7 @@ interface Appointment {
   description: string
   date: string
   time: string
-  duration: number
+  duration: number // minutes
   location: string
   type: 'office-hours' | 'consultation' | 'project-discussion' | 'exam-review'
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
@@ -34,17 +33,94 @@ interface TimeSlot {
   type: string
 }
 
-// --- Mock Data (Unchanged) ---
 const mockAppointments: Appointment[] = [
-  { id: '1', lecturer: 'Dr. Sarah Johnson', lecturerEmail: 'sarah.johnson@university.edu', subject: 'Assignment 3 Discussion', description: 'Need help understanding the sorting algorithm requirements', date: '2025-07-28', time: '14:00', duration: 30, location: 'Office 201B', type: 'office-hours', status: 'confirmed', notes: 'Bring your code and any specific questions', bookedAt: '2025-07-26 10:30' },
-  { id: '2', lecturer: 'Prof. Michael Chen', lecturerEmail: 'michael.chen@university.edu', subject: 'Calculus Review Session', description: 'Review derivatives and integration techniques', date: '2025-07-29', time: '10:00', duration: 45, location: 'Office 301A', type: 'consultation', status: 'pending', bookedAt: '2025-07-26 15:20' },
-  { id: '3', lecturer: 'Dr. Sarah Johnson', lecturerEmail: 'sarah.johnson@university.edu', subject: 'Project Proposal Review', description: 'Final project proposal discussion and feedback', date: '2025-07-25', time: '16:00', duration: 30, location: 'Office 201B', type: 'project-discussion', status: 'completed', notes: 'Great proposal! Make sure to include the testing plan.', bookedAt: '2025-07-23 09:15' }
+  {
+    id: '1',
+    lecturer: 'Dr. Sarah Johnson',
+    lecturerEmail: 'sarah.johnson@university.edu',
+    subject: 'Assignment 3 Discussion',
+    description: 'Need help understanding the sorting algorithm requirements',
+    date: '2025-07-28',
+    time: '14:00',
+    duration: 30,
+    location: 'Office 201B',
+    type: 'office-hours',
+    status: 'confirmed',
+    notes: 'Bring your code and any specific questions',
+    bookedAt: '2025-07-26 10:30'
+  },
+  {
+    id: '2',
+    lecturer: 'Prof. Michael Chen',
+    lecturerEmail: 'michael.chen@university.edu',
+    subject: 'Calculus Review Session',
+    description: 'Review derivatives and integration techniques',
+    date: '2025-07-29',
+    time: '10:00',
+    duration: 45,
+    location: 'Office 301A',
+    type: 'consultation',
+    status: 'pending',
+    bookedAt: '2025-07-26 15:20'
+  },
+  {
+    id: '3',
+    lecturer: 'Dr. Sarah Johnson',
+    lecturerEmail: 'sarah.johnson@university.edu',
+    subject: 'Project Proposal Review',
+    description: 'Final project proposal discussion and feedback',
+    date: '2025-07-25',
+    time: '16:00',
+    duration: 30,
+    location: 'Office 201B',
+    type: 'project-discussion',
+    status: 'completed',
+    notes: 'Great proposal! Make sure to include the testing plan.',
+    bookedAt: '2025-07-23 09:15'
+  }
 ]
+
 const mockAvailableSlots: TimeSlot[] = [
-  { id: 'slot1', lecturer: 'Dr. Sarah Johnson', date: '2025-07-29', time: '09:00', duration: 30, available: true, location: 'Office 201B', type: 'office-hours' },
-  { id: 'slot2', lecturer: 'Dr. Sarah Johnson', date: '2025-07-29', time: '09:30', duration: 30, available: true, location: 'Office 201B', type: 'office-hours' },
-  { id: 'slot3', lecturer: 'Prof. Michael Chen', date: '2025-07-30', time: '14:00', duration: 45, available: true, location: 'Office 301A', type: 'consultation' },
-  { id: 'slot4', lecturer: 'Dr. Emily Roberts', date: '2025-07-30', time: '11:00', duration: 30, available: true, location: 'Office 105C', type: 'office-hours' }
+  {
+    id: 'slot1',
+    lecturer: 'Dr. Sarah Johnson',
+    date: '2025-07-29',
+    time: '09:00',
+    duration: 30,
+    available: true,
+    location: 'Office 201B',
+    type: 'office-hours'
+  },
+  {
+    id: 'slot2',
+    lecturer: 'Dr. Sarah Johnson',
+    date: '2025-07-29',
+    time: '09:30',
+    duration: 30,
+    available: true,
+    location: 'Office 201B',
+    type: 'office-hours'
+  },
+  {
+    id: 'slot3',
+    lecturer: 'Prof. Michael Chen',
+    date: '2025-07-30',
+    time: '14:00',
+    duration: 45,
+    available: true,
+    location: 'Office 301A',
+    type: 'consultation'
+  },
+  {
+    id: 'slot4',
+    lecturer: 'Dr. Emily Roberts',
+    date: '2025-07-30',
+    time: '11:00',
+    duration: 30,
+    available: true,
+    location: 'Office 105C',
+    type: 'office-hours'
+  }
 ]
 
 const lecturers = ['All', 'Dr. Sarah Johnson', 'Prof. Michael Chen', 'Dr. Emily Roberts']
@@ -52,7 +128,6 @@ const appointmentTypes = ['All', 'Office Hours', 'Consultation', 'Project Discus
 const statusFilters = ['All', 'Pending', 'Confirmed', 'Cancelled', 'Completed']
 
 export default function StudentAppointmentsPage() {
-  // --- State and Handlers (Unchanged) ---
   const searchParams = useSearchParams()
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>(mockAvailableSlots)
@@ -61,7 +136,13 @@ export default function StudentAppointmentsPage() {
   const [lecturerFilter, setLecturerFilter] = useState(searchParams?.get('lecturer') || 'All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [typeFilter, setTypeFilter] = useState('All')
-  const [bookingForm, setBookingForm] = useState({ subject: '', description: '', type: 'office-hours' as const })
+
+  // Booking form state
+  const [bookingForm, setBookingForm] = useState({
+    subject: '',
+    description: '',
+    type: 'office-hours' as const
+  })
 
   useEffect(() => {
     if (searchParams?.get('lecturer')) {
@@ -71,14 +152,31 @@ export default function StudentAppointmentsPage() {
 
   const handleBookAppointment = (slot: TimeSlot) => {
     setSelectedSlot(slot)
-    setBookingForm({ subject: '', description: '', type: slot.type as any })
+    setBookingForm({
+      subject: '',
+      description: '',
+      type: slot.type as any
+    })
     setShowBookingForm(true)
   }
 
   const handleSubmitBooking = (e: React.FormEvent) => {
     e.preventDefault()
     if (!selectedSlot) return
-    const newAppointment: Appointment = { id: Date.now().toString(), lecturer: selectedSlot.lecturer, lecturerEmail: `${selectedSlot.lecturer.toLowerCase().replace(/\s+/g, '.')}@university.edu`, subject: bookingForm.subject, description: bookingForm.description, date: selectedSlot.date, time: selectedSlot.time, duration: selectedSlot.duration, location: selectedSlot.location, type: bookingForm.type, status: 'pending', bookedAt: new Date().toLocaleString() }
+    const newAppointment: Appointment = {
+      id: Date.now().toString(),
+      lecturer: selectedSlot.lecturer,
+      lecturerEmail: `${selectedSlot.lecturer.toLowerCase().replace(/\s+/g, '.')}@university.edu`,
+      subject: bookingForm.subject,
+      description: bookingForm.description,
+      date: selectedSlot.date,
+      time: selectedSlot.time,
+      duration: selectedSlot.duration,
+      location: selectedSlot.location,
+      type: bookingForm.type,
+      status: 'pending',
+      bookedAt: new Date().toLocaleString()
+    }
     setAppointments([newAppointment, ...appointments])
     setAvailableSlots(availableSlots.filter(slot => slot.id !== selectedSlot.id))
     setShowBookingForm(false)
@@ -103,12 +201,8 @@ export default function StudentAppointmentsPage() {
     return matchesLecturer && matchesStatus && matchesType
   })
 
-  const filteredSlots = availableSlots.filter(slot => {
-    const matchesLecturer = lecturerFilter === 'All' || slot.lecturer === lecturerFilter
-    return matchesLecturer && slot.available
-  })
+  const filteredSlots = availableSlots.filter(slot => (lecturerFilter === 'All' || slot.lecturer === lecturerFilter) && slot.available)
 
-  // --- Styling Helpers ---
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800'
@@ -118,6 +212,7 @@ export default function StudentAppointmentsPage() {
       default: return 'bg-gray-100 text-gray-800'
     }
   }
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'office-hours': return 'bg-blue-100 text-blue-800'
@@ -127,8 +222,9 @@ export default function StudentAppointmentsPage() {
       default: return 'bg-gray-100 text-gray-800'
     }
   }
+
   const upcomingAppointments = appointments.filter(apt => (apt.status === 'confirmed' || apt.status === 'pending') && new Date(`${apt.date} ${apt.time}`) > new Date())
-  const glassInputStyles = "w-full px-4 py-2 border rounded-lg transition-all duration-300 focus:ring-2 focus:ring-blue-500 bg-white/60 border-gray-300/70 focus:bg-white/80"
+  const glassInputStyles = "w-full px-4 py-2 border rounded-lg transition-all duration-300 focus:ring-2 focus:ring-blue-500 bg-white/60 border-gray-300/70 focus:bg-white/80 text-gray-800"
 
   return (
     <>
@@ -255,65 +351,52 @@ export default function StudentAppointmentsPage() {
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="mb-8 animate-glass-fade-in">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">📅</div>
-                <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-clean-shadow mb-1">My Appointments</h1>
-                  <p className="text-gray-600">Book and manage your appointments with lecturers</p>
+              <div className="relative group">
+                <div className="absolute -inset-2 bg-gradient-to-r from-blue-300/20 via-purple-300/30 to-pink-300/20 rounded-2xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-1000 animate-aurora-glow" />
+                <div className="relative glass-card rounded-2xl p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">📅</div>
+                    <div>
+                      <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-clean-shadow mb-1">My Appointments</h1>
+                      <p className="text-gray-600">Book and manage your appointments with lecturers</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed">
-                <div className="text-3xl font-bold text-blue-600">{upcomingAppointments.length}</div>
-                <div className="text-sm text-blue-800 font-semibold">Upcoming</div>
-              </div>
-              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed-2">
-                <div className="text-3xl font-bold text-yellow-600">{appointments.filter(apt => apt.status === 'pending').length}</div>
-                <div className="text-sm text-yellow-800 font-semibold">Pending Confirmation</div>
-              </div>
-              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed-3">
-                <div className="text-3xl font-bold text-green-600">{appointments.filter(apt => apt.status === 'completed').length}</div>
-                <div className="text-sm text-green-800 font-semibold">Completed</div>
-              </div>
-              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed-4">
-                <div className="text-3xl font-bold text-purple-600">{availableSlots.length}</div>
-                <div className="text-sm text-purple-800 font-semibold">Available Slots</div>
-              </div>
+              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed"><div className="text-3xl font-bold text-blue-600">{upcomingAppointments.length}</div><div className="text-sm text-blue-800 font-semibold">Upcoming</div></div>
+              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed-2"><div className="text-3xl font-bold text-yellow-600">{appointments.filter(apt => apt.status === 'pending').length}</div><div className="text-sm text-yellow-800 font-semibold">Pending Confirmation</div></div>
+              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed-3"><div className="text-3xl font-bold text-green-600">{appointments.filter(apt => apt.status === 'completed').length}</div><div className="text-sm text-green-800 font-semibold">Completed</div></div>
+              <div className="glass-stat-card p-4 rounded-xl animate-slide-up-delayed-4"><div className="text-3xl font-bold text-purple-600">{availableSlots.length}</div><div className="text-sm text-purple-800 font-semibold">Available Slots</div></div>
             </div>
 
-            {/* Filters & Actions */}
+            {/* Filters */}
             <div className="glass-card rounded-2xl p-6 mb-6 animate-slide-up-delayed-2">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <select value={lecturerFilter} onChange={(e) => setLecturerFilter(e.target.value)} className={glassInputStyles}>
-                  {lecturers.map(lecturer => (<option key={lecturer} value={lecturer}>{lecturer}</option>))}
-                </select>
-                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={glassInputStyles}>
-                  {statusFilters.map(status => (<option key={status} value={status}>{status}</option>))}
-                </select>
-                <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={glassInputStyles}>
-                  {appointmentTypes.map(type => (<option key={type} value={type}>{type}</option>))}
-                </select>
-                <button onClick={() => setShowBookingForm(true)} className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold">
-                  + Book New
-                </button>
+              <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                  <select value={lecturerFilter} onChange={(e) => setLecturerFilter(e.target.value)} className={glassInputStyles}>{lecturers.map(lecturer => (<option key={lecturer} value={lecturer}>{lecturer}</option>))}</select>
+                  <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={glassInputStyles}>{statusFilters.map(status => (<option key={status} value={status}>{status}</option>))}</select>
+                  <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={glassInputStyles}>{appointmentTypes.map(type => (<option key={type} value={type}>{type}</option>))}</select>
+                </div>
+                <button onClick={() => setShowBookingForm(true)} className="px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">Book New Appointment</button>
               </div>
             </div>
 
             {/* Appointments List */}
             <div className="space-y-4">
               {filteredAppointments.length === 0 ? (
-                <div className="glass-card rounded-2xl p-12 text-center animate-slide-up-delayed-2">
+                <div className="glass-card rounded-2xl p-12 text-center">
                   <div className="text-6xl mb-4">🗓️</div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">No Appointments Found</h3>
                   <p className="text-gray-600 mb-6">Try adjusting your filters or book a new appointment.</p>
-                  <button onClick={() => setShowBookingForm(true)} className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold">Book Your First Appointment</button>
+                  <button onClick={() => setShowBookingForm(true)} className="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-600 transition-colors shadow-md">Book Your First Appointment</button>
                 </div>
               ) : (
                 filteredAppointments.map((appointment) => (
-                  <div key={appointment.id} className="glass-card rounded-2xl p-6 hover:shadow-xl transition-shadow">
+                  <div key={appointment.id} className="glass-activity-card rounded-lg p-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -321,14 +404,14 @@ export default function StudentAppointmentsPage() {
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(appointment.status)}`}>{appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</span>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(appointment.type)}`}>{appointment.type.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
                         </div>
-                        <div className="text-gray-600 mb-3">{appointment.description}</div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-500">
-                          <div><span className="font-medium">Lecturer:</span><br />{appointment.lecturer}</div>
-                          <div><span className="font-medium">Date & Time:</span><br />{appointment.date} at {appointment.time}</div>
-                          <div><span className="font-medium">Duration:</span><br />{appointment.duration} minutes</div>
-                          <div><span className="font-medium">Location:</span><br />{appointment.location}</div>
+                        <p className="text-gray-700 mb-4">{appointment.description}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
+                          <div><strong className="text-gray-800">Lecturer:</strong><br />{appointment.lecturer}</div>
+                          <div><strong className="text-gray-800">Date & Time:</strong><br />{appointment.date} at {appointment.time}</div>
+                          <div><strong className="text-gray-800">Duration:</strong><br />{appointment.duration} minutes</div>
+                          <div><strong className="text-gray-800">Location:</strong><br />{appointment.location}</div>
                         </div>
-                        {appointment.notes && (<div className="mt-3 p-3 glass-activity-card rounded-lg"><div className="text-sm font-medium text-blue-900">Notes:</div><div className="text-sm text-blue-800">{appointment.notes}</div></div>)}
+                        {appointment.notes && (<div className="mt-4 p-3 bg-blue-500/10 rounded-lg"><div className="text-sm font-medium text-blue-900">Notes:</div><div className="text-sm text-blue-800">{appointment.notes}</div></div>)}
                       </div>
                       <div className="flex flex-col gap-2 w-full lg:w-auto flex-shrink-0">
                         {appointment.status === 'confirmed' && new Date(`${appointment.date} ${appointment.time}`) > new Date() && (
@@ -337,6 +420,7 @@ export default function StudentAppointmentsPage() {
                             <button onClick={() => handleCancelAppointment(appointment.id)} className="bg-red-100/80 text-red-700 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">❌ Cancel</button>
                           </>
                         )}
+                        {appointment.status === 'pending' && (<div className="text-xs text-yellow-700 font-semibold text-center p-2 bg-yellow-100/80 rounded-lg">Waiting for confirmation</div>)}
                         <Link href={`mailto:${appointment.lecturerEmail}?subject=Re: ${appointment.subject}`} className="bg-green-100/80 text-green-700 px-4 py-2 rounded-lg hover:bg-green-100 transition-colors text-sm text-center font-medium">✉️ Email Lecturer</Link>
                         {appointment.meetingLink && (<a href={appointment.meetingLink} target="_blank" rel="noopener noreferrer" className="bg-purple-100/80 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-100 transition-colors text-sm text-center font-medium">🎥 Join Meeting</a>)}
                       </div>
@@ -350,17 +434,17 @@ export default function StudentAppointmentsPage() {
             {showBookingForm && (
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-glass-fade-in">
                 <div className="glass-card rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Book New Appointment</h2>
+                  <h2 className="text-2xl font-bold mb-6 text-gray-900">Book New Appointment</h2>
                   {!selectedSlot ? (
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Available Time Slots</h3>
+                      <h3 className="text-lg font-semibold mb-4 text-gray-800">Available Time Slots</h3>
                       <div className="space-y-3 mb-6">
                         {filteredSlots.map((slot) => (
-                          <div key={slot.id} className="p-4 glass-activity-card rounded-lg hover:shadow-md transition-shadow">
-                            <div className="flex items-center justify-between">
+                          <div key={slot.id} className="glass-activity-card p-4 rounded-lg hover:shadow-md transition-shadow">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                               <div>
                                 <div className="font-medium text-gray-900">{slot.lecturer}</div>
-                                <div className="text-sm text-gray-600">{slot.date} at {slot.time} ({slot.duration} minutes)</div>
+                                <div className="text-sm text-gray-600">{slot.date} at {slot.time} ({slot.duration} mins)</div>
                                 <div className="text-sm text-gray-500">{slot.location}</div>
                                 <span className={`inline-block mt-1 px-2 py-1 rounded text-xs ${getTypeColor(slot.type)}`}>{slot.type.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
                               </div>
@@ -370,39 +454,21 @@ export default function StudentAppointmentsPage() {
                         ))}
                       </div>
                       {filteredSlots.length === 0 && (<div className="text-center py-8 text-gray-500"><div className="text-4xl mb-4">📅</div><div>No available slots found</div><div className="text-sm text-gray-400 mt-2">Try adjusting your lecturer filter</div></div>)}
+                      <div className="flex justify-end pt-4 border-t border-white/30"><button onClick={() => setShowBookingForm(false)} className="bg-white/70 text-gray-700 px-6 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50 font-semibold">Close</button></div>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmitBooking} className="space-y-6">
-                      <div className="p-4 glass-activity-card rounded-lg bg-blue-500/10 border border-blue-500/20">
-                        <h3 className="font-medium text-blue-900">Selected Time Slot</h3>
-                        <div className="text-sm text-blue-800">{selectedSlot.lecturer} - {selectedSlot.date} at {selectedSlot.time} ({selectedSlot.duration} minutes)</div>
-                        <div className="text-sm text-blue-600">{selectedSlot.location}</div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                        <input type="text" required value={bookingForm.subject} onChange={(e) => setBookingForm({...bookingForm, subject: e.target.value})} className={glassInputStyles} placeholder="Brief subject for your appointment" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea rows={4} value={bookingForm.description} onChange={(e) => setBookingForm({...bookingForm, description: e.target.value})} className={glassInputStyles} placeholder="Please describe what you'd like to discuss" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Appointment Type</label>
-                        <select value={bookingForm.type} onChange={(e) => setBookingForm({...bookingForm, type: e.target.value as any})} className={glassInputStyles}>
-                          <option value="office-hours">Office Hours</option>
-                          <option value="consultation">Consultation</option>
-                          <option value="project-discussion">Project Discussion</option>
-                          <option value="exam-review">Exam Review</option>
-                        </select>
-                      </div>
-                      <div className="flex gap-4 pt-4">
-                        <button type="submit" className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold">Book Appointment</button>
-                        <button type="button" onClick={() => { setSelectedSlot(null); setShowBookingForm(false); }} className="bg-white/70 text-gray-700 px-6 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50 font-semibold">Cancel</button>
-                        <button type="button" onClick={() => setSelectedSlot(null)} className="bg-gray-200/70 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors font-semibold">← Back to Slots</button>
+                      <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20"><h3 className="font-medium text-blue-900">Selected Time Slot</h3><div className="text-sm text-blue-800">{selectedSlot.lecturer} - {selectedSlot.date} at {selectedSlot.time} ({selectedSlot.duration} minutes)</div><div className="text-sm text-blue-600">{selectedSlot.location}</div></div>
+                      <div><label className="block text-sm font-medium text-gray-700 mb-1">Subject</label><input type="text" required value={bookingForm.subject} onChange={(e) => setBookingForm({...bookingForm, subject: e.target.value})} className={glassInputStyles} placeholder="Brief subject for your appointment" /></div>
+                      <div><label className="block text-sm font-medium text-gray-700 mb-1">Description</label><textarea rows={4} value={bookingForm.description} onChange={(e) => setBookingForm({...bookingForm, description: e.target.value})} className={glassInputStyles} placeholder="Please describe what you'd like to discuss..." /></div>
+                      <div><label className="block text-sm font-medium text-gray-700 mb-1">Appointment Type</label><select value={bookingForm.type} onChange={(e) => setBookingForm({...bookingForm, type: e.target.value as any})} className={glassInputStyles}><option value="office-hours">Office Hours</option><option value="consultation">Consultation</option><option value="project-discussion">Project Discussion</option><option value="exam-review">Exam Review</option></select></div>
+                      <div className="flex flex-wrap gap-4 pt-4 border-t border-white/30">
+                        <button type="submit" className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold">Confirm Booking</button>
+                        <button type="button" onClick={() => setSelectedSlot(null)} className="bg-white/70 text-gray-700 px-6 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50 font-semibold">← Back to Slots</button>
+                        <button type="button" onClick={() => { setSelectedSlot(null); setShowBookingForm(false); }} className="bg-red-100/80 text-red-700 px-6 py-2 rounded-lg hover:bg-red-100 transition-colors font-semibold ml-auto">Cancel</button>
                       </div>
                     </form>
                   )}
-                  {!selectedSlot && (<div className="flex justify-end pt-4 border-t border-white/30"><button onClick={() => setShowBookingForm(false)} className="bg-white/70 text-gray-700 px-6 py-2 rounded-lg hover:bg-white/90 transition-colors shadow-sm border border-gray-300/50 font-semibold">Close</button></div>)}
                 </div>
               </div>
             )}
