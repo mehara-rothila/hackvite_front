@@ -2,7 +2,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 
 interface Announcement {
   id: string
@@ -274,7 +273,7 @@ export default function LecturerAnnouncementsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
                     <select
                       value={newAnnouncement.type}
-                      onChange={(e) => setNewAnnouncement({...newAnnouncement, type: e.target.value as any})}
+                      onChange={(e) => setNewAnnouncement({...newAnnouncement, type: e.target.value as typeof newAnnouncement.type})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {announcementTypes.map(type => (
@@ -289,7 +288,7 @@ export default function LecturerAnnouncementsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
                     <select
                       value={newAnnouncement.priority}
-                      onChange={(e) => setNewAnnouncement({...newAnnouncement, priority: e.target.value as any})}
+                      onChange={(e) => setNewAnnouncement({...newAnnouncement, priority: e.target.value as typeof newAnnouncement.priority})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {priorities.map(priority => (
@@ -304,7 +303,7 @@ export default function LecturerAnnouncementsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Target Audience</label>
                     <select
                       value={newAnnouncement.targetAudience}
-                      onChange={(e) => setNewAnnouncement({...newAnnouncement, targetAudience: e.target.value as any})}
+                      onChange={(e) => setNewAnnouncement({...newAnnouncement, targetAudience: e.target.value as typeof newAnnouncement.targetAudience})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {audiences.map(audience => (

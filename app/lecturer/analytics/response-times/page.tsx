@@ -208,11 +208,20 @@ const mockResponseTimeAnalytics: ResponseTimeAnalytics = {
   ]
 }
 
+type ActiveSection = 'overview' | 'patterns' | 'breakdown' | 'improvement';
+
+const TABS: { key: ActiveSection; label: string; icon: string }[] = [
+  { key: 'overview', label: 'Time Distribution', icon: '⏱️' },
+  { key: 'patterns', label: 'Time Patterns', icon: '📅' },
+  { key: 'breakdown', label: 'Category Breakdown', icon: '📊' },
+  { key: 'improvement', label: 'Improvement Areas', icon: '🎯' }
+];
+
 export default function LecturerAnalyticsResponseTimesPage() {
   const [analytics] = useState<ResponseTimeAnalytics>(mockResponseTimeAnalytics)
   const [timeRange, setTimeRange] = useState('Last 30 days')
   const [selectedCourse, setSelectedCourse] = useState('All Courses')
-  const [activeSection, setActiveSection] = useState<'overview' | 'patterns' | 'breakdown' | 'improvement'>('overview')
+  const [activeSection, setActiveSection] = useState<ActiveSection>('overview')
 
   const formatTime = (hours: number) => {
     if (hours < 1) return `${Math.round(hours * 60)}m`
@@ -394,15 +403,10 @@ export default function LecturerAnalyticsResponseTimesPage() {
         <div className="bg-white rounded-lg shadow-sm mb-6">
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
-              {[
-                { key: 'overview', label: 'Time Distribution', icon: '⏱️' },
-                { key: 'patterns', label: 'Time Patterns', icon: '📅' },
-                { key: 'breakdown', label: 'Category Breakdown', icon: '📊' },
-                { key: 'improvement', label: 'Improvement Areas', icon: '🎯' }
-              ].map(tab => (
+              {TABS.map(tab => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveSection(tab.key as any)}
+                  onClick={() => setActiveSection(tab.key)}
                   className={`py-4 px-2 text-sm font-medium border-b-2 flex items-center gap-2 ${
                     activeSection === tab.key
                       ? 'border-blue-500 text-blue-600'
