@@ -144,7 +144,7 @@ export default function LecturerAnnouncementsPage() {
 
   // --- Helper Functions for Styling ---
   const getTagColor = (type: 'type' | 'priority' | 'status', value: string) => {
-    const colors = {
+    const colors: { [key: string]: { [key: string]: string } } = {
       type: { urgent: 'bg-red-500/20 text-red-700', course: 'bg-blue-500/20 text-blue-700', schedule: 'bg-purple-500/20 text-purple-700', system: 'bg-gray-500/20 text-gray-700', default: 'bg-green-500/20 text-green-700' },
       priority: { high: 'bg-red-500/20 text-red-700', medium: 'bg-orange-500/20 text-orange-700', low: 'bg-green-500/20 text-green-700', default: 'bg-gray-500/20 text-gray-700' },
       status: { published: 'bg-green-500/20 text-green-700', draft: 'bg-yellow-500/20 text-yellow-700', expired: 'bg-gray-500/20 text-gray-700', default: 'bg-gray-500/20 text-gray-700' }
@@ -530,5 +530,4 @@ export default function LecturerAnnouncementsPage() {
         </div>
       </div>
     </>
-  )
-}
+  
