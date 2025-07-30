@@ -35,15 +35,15 @@ interface UpcomingAppointment {
   type: 'office-hours' | 'consultation' | 'meeting'
 }
 
-interface RecentActivity {
-  id:string
-  type: 'query' | 'appointment' | 'message' | 'announcement'
-  student?: string
-  title: string
-  description: string
-  timestamp: string
-  course?: string
-}
+// interface RecentActivity {
+//   id:string
+//   type: 'query' | 'appointment' | 'message' | 'announcement'
+//   student?: string
+//   title: string
+//   description: string
+//   timestamp: string
+//   course?: string
+// }
 
 // --- Mock Data (Unchanged) ---
 const mockStats: LecturerStats = {
@@ -118,48 +118,48 @@ const mockUpcomingAppointments: UpcomingAppointment[] = [
   }
 ]
 
-const mockRecentActivity: RecentActivity[] = [
-  {
-    id: '1',
-    type: 'query',
-    student: 'Alice Johnson',
-    title: 'New high-priority query submitted',
-    description: 'Student needs help with Assignment 3 requirements',
-    timestamp: '30 minutes ago',
-    course: 'CS101'
-  },
-  {
-    id: '2',
-    type: 'appointment',
-    student: 'David Wilson',
-    title: 'Appointment booked',
-    description: 'Student scheduled consultation for tomorrow',
-    timestamp: '2 hours ago'
-  },
-  {
-    id: '3',
-    type: 'message',
-    student: 'Sarah Kim',
-    title: 'New message received',
-    description: 'Follow-up question about lab assignment',
-    timestamp: '4 hours ago',
-    course: 'CS101'
-  },
-  {
-    id: '4',
-    type: 'announcement',
-    title: 'Announcement published',
-    description: 'Mid-term exam schedule announcement went live',
-    timestamp: '1 day ago',
-    course: 'CS101'
-  }
-]
+// const mockRecentActivity: RecentActivity[] = [
+//   {
+//     id: '1',
+//     type: 'query',
+//     student: 'Alice Johnson',
+//     title: 'New high-priority query submitted',
+//     description: 'Student needs help with Assignment 3 requirements',
+//     timestamp: '30 minutes ago',
+//     course: 'CS101'
+//   },
+//   {
+//     id: '2',
+//     type: 'appointment',
+//     student: 'David Wilson',
+//     title: 'Appointment booked',
+//     description: 'Student scheduled consultation for tomorrow',
+//     timestamp: '2 hours ago'
+//   },
+//   {
+//     id: '3',
+//     type: 'message',
+//     student: 'Sarah Kim',
+//     title: 'New message received',
+//     description: 'Follow-up question about lab assignment',
+//     timestamp: '4 hours ago',
+//     course: 'CS101'
+//   },
+//   {
+//     id: '4',
+//     type: 'announcement',
+//     title: 'Announcement published',
+//     description: 'Mid-term exam schedule announcement went live',
+//     timestamp: '1 day ago',
+//     course: 'CS101'
+//   }
+// ]
 
 export default function LecturerDashboard() {
   const [stats] = useState<LecturerStats>(mockStats)
   const [pendingQueries] = useState<PendingQuery[]>(mockPendingQueries)
   const [upcomingAppointments] = useState<UpcomingAppointment[]>(mockUpcomingAppointments)
-  const [recentActivity] = useState<RecentActivity[]>(mockRecentActivity)
+  // const [recentActivity] = useState<RecentActivity[]>(mockRecentActivity)
   const [currentTime, setCurrentTime] = useState<string>('')
 
   useEffect(() => {
@@ -182,20 +182,20 @@ export default function LecturerDashboard() {
     }
   }
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'query': 
-        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-      case 'announcement': 
-        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      case 'appointment': 
-        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-      case 'message': 
-        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-      default: 
-        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-    }
-  }
+  // const getActivityIcon = (type: string) => {
+  //   switch (type) {
+  //     case 'query': 
+  //       return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+  //     case 'announcement': 
+  //       return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+  //     case 'appointment': 
+  //       return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+  //     case 'message': 
+  //       return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+  //     default: 
+  //       return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+  //   }
+  // }
 
   const getAppointmentTypeColor = (type: string) => {
     switch (type) {
@@ -398,7 +398,7 @@ export default function LecturerDashboard() {
                           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-clean-shadow">
                             Welcome back, Dr. Johnson!
                           </h1>
-                          <p className="text-gray-600 text-sm font-medium">Here's an overview of your teaching activities.</p>
+                          <p className="text-gray-600 text-sm font-medium">Here&apos;s an overview of your teaching activities.</p>
                         </div>
                       </div>
                       <div className="glass-activity-card rounded-xl p-3 text-center min-w-[180px]">
@@ -529,7 +529,7 @@ export default function LecturerDashboard() {
                 {/* Upcoming Appointments */}
                 <div className="glass-sidebar-card rounded-xl p-4">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-gray-900">Today's Schedule</h3>
+                    <h3 className="text-lg font-bold text-gray-900">Today&apos;s Schedule</h3>
                     <Link href="/lecturer/appointments" className="text-sm text-blue-600 hover:text-blue-800 font-semibold">View All</Link>
                   </div>
                   {upcomingAppointments.length > 0 ? (
