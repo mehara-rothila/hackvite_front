@@ -81,7 +81,7 @@ export default function LecturerConversationsPage() {
 
   // --- Helper Functions for Styling ---
   const getTagColor = (type: 'type' | 'priority' | 'status', value: string) => {
-    const colors = {
+    const colors: { [key: string]: { [key: string]: string } } = {
       type: { academic: 'bg-blue-500/20 text-blue-700', administrative: 'bg-purple-500/20 text-purple-700', general: 'bg-green-500/20 text-green-700', default: 'bg-gray-500/20 text-gray-700' },
       priority: { high: 'bg-red-500/20 text-red-700', medium: 'bg-orange-500/20 text-orange-700', low: 'bg-green-500/20 text-green-700', default: 'bg-gray-500/20 text-gray-700' },
       status: { active: 'bg-blue-500/20 text-blue-700', resolved: 'bg-green-500/20 text-green-700', archived: 'bg-gray-500/20 text-gray-700', default: 'bg-gray-500/20 text-gray-700' }

@@ -1,9 +1,9 @@
-// app/lecturer/students/page.tsx
+// app/lecturer/students/page.tsx - ENHANCED WITH GLASSMORPHISM & VECTOR ICONS
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 
+// --- Interfaces (Unchanged) ---
 interface Student {
   id: string
   name: string
@@ -37,6 +37,7 @@ interface Student {
   parentalAccess: boolean
 }
 
+// --- Mock Data (Unchanged) ---
 const mockStudents: Student[] = [
   {
     id: '1',
@@ -166,12 +167,12 @@ export default function LecturerStudentsPage() {
   const [statusFilter, setStatusFilter] = useState('All')
   const [courseFilter, setCourseFilter] = useState('All')
   const [sortBy, setSortBy] = useState('Name A-Z')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [showNotesModal, setShowNotesModal] = useState(false)
   const [editingNotes, setEditingNotes] = useState('')
 
-  // Filter and sort students
+  // Filter and sort students (Unchanged logic)
   const filteredStudents = students
     .filter(student => {
       const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -198,12 +199,13 @@ export default function LecturerStudentsPage() {
       }
     })
 
+  // Helper functions (Unchanged logic)
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'good-standing': return 'bg-green-100 text-green-800'
-      case 'honors': return 'bg-purple-100 text-purple-800'
-      case 'probation': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'good-standing': return 'bg-green-100 text-green-800 border-green-200'
+      case 'honors': return 'bg-purple-100 text-purple-800 border-purple-200'
+      case 'probation': return 'bg-red-100 text-red-800 border-red-200'
+      default: return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
 
@@ -243,537 +245,363 @@ export default function LecturerStudentsPage() {
     return 'text-red-600'
   }
 
+  const quickStats = [
+    { label: 'Total Students', value: students.length, color: 'blue' },
+    { label: 'Good Standing', value: students.filter(s => s.academicStatus === 'good-standing').length, color: 'green' },
+    { label: 'Honors', value: students.filter(s => s.academicStatus === 'honors').length, color: 'purple' },
+    { label: 'On Probation', value: students.filter(s => s.academicStatus === 'probation').length, color: 'red' },
+    { label: 'Average GPA', value: (students.reduce((sum, s) => sum + s.gpa, 0) / students.length).toFixed(2), color: 'orange' },
+    { label: 'Total Enrollments', value: students.reduce((sum, s) => sum + s.enrolledCourses.length, 0), color: 'cyan' },
+  ]
+  
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Student Directory</h1>
-          <p className="text-gray-600">View and manage your students</p>
+    <>
+      {/* --- START: Global Styles & Animations (Copied from Dashboards) --- */}
+      <style jsx global>{`
+        /* All the animations from the login page */
+        @keyframes mesh-drift-1 { 0%, 100% { transform: rotate(0deg) scale(1) translate(0, 0); } 33% { transform: rotate(120deg) scale(1.1) translate(20px, -20px); } 66% { transform: rotate(240deg) scale(0.9) translate(-20px, 20px); } }
+        .animate-mesh-drift-1 { animation: mesh-drift-1 40s ease-in-out infinite; }
+        @keyframes mesh-drift-2 { 0%, 100% { transform: rotate(0deg) scale(1) translate(0, 0); } 25% { transform: rotate(90deg) scale(1.2) translate(-30px, 10px); } 50% { transform: rotate(180deg) scale(0.8) translate(10px, -30px); } 75% { transform: rotate(270deg) scale(1.1) translate(20px, 20px); } }
+        .animate-mesh-drift-2 { animation: mesh-drift-2 50s ease-in-out infinite; }
+        @keyframes mesh-drift-3 { 0%, 100% { transform: rotate(0deg) scale(1) translate(0, 0); } 50% { transform: rotate(180deg) scale(1.3) translate(-10px, 10px); } }
+        .animate-mesh-drift-3 { animation: mesh-drift-3 35s ease-in-out infinite; }
+        @keyframes equation-float-1 { 0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.8; } 25% { transform: translateY(-30px) translateX(20px) rotate(5deg); opacity: 1; } 50% { transform: translateY(-15px) translateX(40px) rotate(-3deg); opacity: 0.7; } 75% { transform: translateY(-25px) translateX(10px) rotate(7deg); opacity: 0.9; } }
+        .animate-equation-float-1 { animation: equation-float-1 12s ease-in-out infinite; }
+        @keyframes particle-drift-1 { 0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.6; } 25% { transform: translateY(-120px) translateX(80px) rotate(90deg); opacity: 0.9; } 50% { transform: translateY(-80px) translateX(160px) rotate(180deg); opacity: 0.7; } 75% { transform: translateY(-200px) translateX(40px) rotate(270deg); opacity: 1; } }
+        .animate-particle-drift-1 { animation: particle-drift-1 15s ease-in-out infinite; }
+        @keyframes glass-float-1 { 0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); } 25% { transform: translate(30px, -50px) rotate(90deg) scale(1.1); } 50% { transform: translate(-20px, -30px) rotate(180deg) scale(0.9); } 75% { transform: translate(-40px, 40px) rotate(270deg) scale(1.05); } }
+        .animate-glass-float-1 { animation: glass-float-1 45s ease-in-out infinite; }
+        @keyframes aurora-glow { 0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); } 25% { opacity: 0.8; transform: scale(1.05) rotate(90deg); } 50% { opacity: 0.4; transform: scale(0.95) rotate(180deg); } 75% { opacity: 0.9; transform: scale(1.1) rotate(270deg); } }
+        .animate-aurora-glow { animation: aurora-glow 8s ease-in-out infinite; }
+        @keyframes glass-fade-in { 0% { opacity: 0; transform: translateY(30px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .animate-glass-fade-in { animation: glass-fade-in 1.2s ease-out forwards; }
+        @keyframes slide-up-delayed { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up-delayed { animation: slide-up-delayed 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .animate-slide-up-delayed-2 { animation: slide-up-delayed 0.8s ease-out 0.4s forwards; opacity: 0; }
+        .animate-slide-up-delayed-3 { animation: slide-up-delayed 0.8s ease-out 0.6s forwards; opacity: 0; }
+        .animate-slide-up-delayed-4 { animation: slide-up-delayed 0.8s ease-out 0.8s forwards; opacity: 0; }
+        @keyframes float-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .animate-float-up { animation: float-up 0.7s ease-out forwards; }
+        
+        /* Enhanced Glassmorphism Card Styles */
+        .glass-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5)); 
+          backdrop-filter: blur(40px) saturate(120%); 
+          border: 1px solid rgba(255, 255, 255, 0.9); 
+          box-shadow: 
+            0 12px 40px rgba(31, 38, 135, 0.2), 
+            0 0 0 1px rgba(255, 255, 255, 0.6) inset, 
+            0 4px 16px rgba(255, 255, 255, 0.8) inset;
+        }
+        .glass-stat-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.4)); 
+          backdrop-filter: blur(32px) saturate(110%); 
+          border: 1px solid rgba(255, 255, 255, 0.85); 
+          box-shadow: 
+            0 8px 32px rgba(31, 38, 135, 0.15), 
+            0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+            0 2px 12px rgba(255, 255, 255, 0.9) inset; 
+        }
+        .glass-activity-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3)); 
+          backdrop-filter: blur(28px) saturate(105%); 
+          border: 1px solid rgba(255, 255, 255, 0.75); 
+          box-shadow: 
+            0 6px 24px rgba(31, 38, 135, 0.12), 
+            0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+            0 1px 8px rgba(255, 255, 255, 0.7) inset; 
+        }
+        .glass-premium-card {
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.55)); 
+          backdrop-filter: blur(44px) saturate(125%); 
+          border: 1px solid rgba(255, 255, 255, 0.95); 
+          box-shadow: 
+            0 16px 48px rgba(31, 38, 135, 0.25), 
+            0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+            0 6px 20px rgba(255, 255, 255, 0.95) inset,
+            0 0 60px rgba(59, 130, 246, 0.1); 
+        }
+        .text-clean-shadow { filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.2)); }
+        select, input[type="text"] {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+      `}</style>
+      {/* --- END: Global Styles & Animations --- */}
+      
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        
+        {/* --- START: Multi-Layered Animated Background (Copied from Dashboards) --- */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+          <div className="absolute top-[7%] left-[13%] text-purple-500 text-9xl opacity-75">∑</div>
+          <div className="absolute top-[33%] right-[17%] text-blue-500 text-8xl opacity-70">π</div>
+          <div className="absolute top-[61%] left-[27%] text-green-500 text-8xl opacity-75">∞</div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
+          <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/40 via-purple-100/25 to-rose-100/40 animate-mesh-drift-3" />
+          <div className="absolute top-1/4 left-1/6 text-4xl font-bold text-blue-600/70 animate-equation-float-1">∫ e⁻ˣ² dx = √π/2</div>
+          {[...Array(60)].map((_, i) => (
+            <div key={i} className={`absolute w-2 h-2 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-md`}
+              style={{
+                left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 12}s`,
+                animationDuration: `${6 + Math.random() * 10}s`,
+                background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(168, 85, 247, 0.7)'][i % 3]}, rgba(255,255,255,0.2))`
+              }} /> ))}
+          <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-blue-200/30 to-cyan-200/20 rounded-full backdrop-blur-sm border border-blue-300/40 animate-glass-float-1 shadow-lg" />
         </div>
+        {/* --- END: Multi-Layered Animated Background --- */}
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-blue-600">{students.length}</div>
-            <div className="text-sm text-gray-600">Total Students</div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-green-600">
-              {students.filter(s => s.academicStatus === 'good-standing').length}
-            </div>
-            <div className="text-sm text-gray-600">Good Standing</div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-purple-600">
-              {students.filter(s => s.academicStatus === 'honors').length}
-            </div>
-            <div className="text-sm text-gray-600">Honors</div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-red-600">
-              {students.filter(s => s.academicStatus === 'probation').length}
-            </div>
-            <div className="text-sm text-gray-600">On Probation</div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-orange-600">
-              {(students.reduce((sum, s) => sum + s.gpa, 0) / students.length).toFixed(2)}
-            </div>
-            <div className="text-sm text-gray-600">Average GPA</div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="text-2xl font-bold text-cyan-600">
-              {students.reduce((sum, s) => sum + s.enrolledCourses.length, 0)}
-            </div>
-            <div className="text-sm text-gray-600">Total Enrollments</div>
-          </div>
-        </div>
-
-        {/* Filters and Controls */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              {/* Search */}
-              <input
-                type="text"
-                placeholder="Search students, ID, email, major..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 flex-1"
-              />
-              
-              {/* Year Filter */}
-              <select
-                value={yearFilter}
-                onChange={(e) => setYearFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                {yearFilters.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-
-              {/* Status Filter */}
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                {statusFilters.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
-
-              {/* Course Filter */}
-              <select
-                value={courseFilter}
-                onChange={(e) => setCourseFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                {courseFilters.map(course => (
-                  <option key={course} value={course}>{course}</option>
-                ))}
-              </select>
-
-              {/* Sort */}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                {sortOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
+        <div className="relative z-20 p-6">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-8 animate-glass-fade-in">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-clean-shadow mb-2">Student Directory</h1>
+              <p className="text-gray-600 text-lg">View, manage, and engage with your students.</p>
             </div>
 
-            {/* View Mode Toggle */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-4 py-2 rounded-lg ${viewMode === 'grid' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-700'}`}
-              >
-                🔲 Grid
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-4 py-2 rounded-lg ${viewMode === 'list' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-700'}`}
-              >
-                📄 List
-              </button>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 animate-slide-up-delayed">
+              {quickStats.map((stat) => (
+                <div key={stat.label} className="glass-stat-card p-4 rounded-xl text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <div className={`text-4xl font-bold text-${stat.color}-600`}>{stat.value}</div>
+                  <div className="text-sm text-gray-700 font-semibold">{stat.label}</div>
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Link href="/messages/new?type=student" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
-            <div className="text-center">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">💬</div>
-              <div className="font-medium text-gray-900">Send Message</div>
-              <div className="text-sm text-gray-600">Contact students</div>
-            </div>
-          </Link>
-          
-          <Link href="/lecturer/announcements" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
-            <div className="text-center">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📢</div>
-              <div className="font-medium text-gray-900">Send Announcement</div>
-              <div className="text-sm text-gray-600">Broadcast to class</div>
-            </div>
-          </Link>
-          
-          <Link href="/lecturer/analytics" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
-            <div className="text-center">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📊</div>
-              <div className="font-medium text-gray-900">Student Analytics</div>
-              <div className="text-sm text-gray-600">Performance insights</div>
-            </div>
-          </Link>
-          
-          <Link href="/lecturer/courses" className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow group">
-            <div className="text-center">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📚</div>
-              <div className="font-medium text-gray-900">Course Management</div>
-              <div className="text-sm text-gray-600">Manage enrollments</div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Results Info */}
-        <div className="mb-4">
-          <p className="text-gray-600">
-            Showing {filteredStudents.length} of {students.length} students
-          </p>
-        </div>
-
-        {/* Students Display */}
-        {filteredStudents.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <div className="text-4xl mb-4">🔍</div>
-            <div className="text-gray-500 mb-4">No students found</div>
-            <div className="text-sm text-gray-400">Try adjusting your search criteria</div>
-          </div>
-        ) : (
-          <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
-            : 'space-y-4'
-          }>
-            {filteredStudents.map((student) => (
-              <div key={student.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                {viewMode === 'grid' ? (
-                  /* Grid View */
-                  <div className="p-6">
-                    <div className="text-center mb-4">
-                      <span className="text-4xl mb-2 block">{student.avatar}</span>
-                      <h3 className="text-lg font-semibold text-gray-900">{student.name}</h3>
-                      <p className="text-sm text-gray-600">{student.studentId} • {student.year}</p>
-                      <p className="text-sm text-gray-600">{student.major}</p>
-                      <div className="flex items-center justify-center gap-2 mt-1">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(student.academicStatus)}`}>
-                          {student.academicStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </span>
-                        <span className={`font-bold ${getGPAColor(student.gpa)}`}>
-                          GPA: {student.gpa.toFixed(1)}
-                        </span>
-                      </div>
+            {/* Filters and Controls */}
+            <div className="glass-premium-card rounded-2xl p-6 mb-8 animate-slide-up-delayed-2">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search students, ID, email, major..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 bg-white/40 border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-400/50 backdrop-blur-sm transition-all text-gray-800 placeholder-gray-500"
+                    />
+                    <svg className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex gap-2">
+                  {[
+                    { state: yearFilter, setState: setYearFilter, options: yearFilters },
+                    { state: statusFilter, setState: setStatusFilter, options: statusFilters },
+                    { state: courseFilter, setState: setCourseFilter, options: courseFilters },
+                    { state: sortBy, setState: setSortBy, options: sortOptions },
+                  ].map((filter, i) => (
+                    <div key={i} className="relative">
+                      <select
+                        value={filter.state}
+                        onChange={(e) => filter.setState(e.target.value)}
+                        className="w-full px-4 py-2 pr-8 bg-white/40 border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-400/50 backdrop-blur-sm transition-all text-gray-800"
+                      >
+                        {filter.options.map(option => <option key={option} value={option}>{option}</option>)}
+                      </select>
+                       <svg className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                     </div>
+                  ))}
+                </div>
+                <div className="flex-shrink-0 flex gap-2 p-1 bg-black/5 rounded-lg">
+                  <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 rounded-md text-sm font-semibold flex items-center gap-2 transition-all ${viewMode === 'grid' ? 'bg-white shadow' : 'text-gray-600 hover:bg-white/50'}`}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    Grid
+                  </button>
+                  <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-md text-sm font-semibold flex items-center gap-2 transition-all ${viewMode === 'list' ? 'bg-white shadow' : 'text-gray-600 hover:bg-white/50'}`}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+                    List
+                  </button>
+                </div>
+              </div>
+            </div>
 
-                    <div className="space-y-3 text-sm">
-                      <div>
-                        <div className="font-medium text-gray-700">Enrolled Courses:</div>
-                        <div className="text-gray-600">
-                          {student.enrolledCourses.map(course => course.code).join(', ')}
+            {/* Results Info */}
+            <div className="mb-4 animate-slide-up-delayed-3">
+              <p className="text-gray-600">
+                Showing {filteredStudents.length} of {students.length} students
+              </p>
+            </div>
+
+            {/* Students Display */}
+            {filteredStudents.length === 0 ? (
+              <div className="glass-premium-card rounded-2xl p-8 text-center animate-slide-up-delayed-4">
+                <div className="text-6xl mb-4">🤷</div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">No Students Found</h3>
+                <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+              </div>
+            ) : (
+              <div className={viewMode === 'grid' 
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-slide-up-delayed-4' 
+                : 'space-y-4 animate-slide-up-delayed-4'
+              }>
+                {filteredStudents.map((student) => (
+                  <div key={student.id} className="glass-premium-card rounded-2xl group transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
+                    {viewMode === 'grid' ? (
+                      /* Grid View */
+                      <div className="p-6">
+                        <div className="text-center mb-4">
+                          <span className="text-5xl mb-2 block">{student.avatar}</span>
+                          <h3 className="text-xl font-bold text-gray-900">{student.name}</h3>
+                          <p className="text-sm text-gray-600">{student.studentId} • {student.year}</p>
+                          <div className="flex items-center justify-center gap-2 mt-2">
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusColor(student.academicStatus)}`}>
+                              {student.academicStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </span>
+                            <span className={`font-bold text-sm ${getGPAColor(student.gpa)}`}>
+                              GPA: {student.gpa.toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="border-t border-white/20 pt-4 space-y-2 text-sm">
+                          <div className="flex justify-between"><span className="font-medium text-gray-700">Courses:</span><span className="text-gray-600 font-semibold">{student.enrolledCourses.map(course => course.code).join(', ')}</span></div>
+                          <div className="flex justify-between"><span className="font-medium text-gray-700">Total Credits:</span><span className="text-gray-600 font-semibold">{student.totalCredits}</span></div>
+                          <div className="flex justify-between"><span className="font-medium text-gray-700">Response Rate:</span><span className={`font-semibold ${student.responseRate >= 80 ? 'text-green-600' : 'text-red-600'}`}>{student.responseRate}%</span></div>
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-white/20 flex flex-col gap-2">
+                          <button onClick={() => handleContactStudent(student, 'message')} className="w-full bg-blue-500/80 text-white px-4 py-2 rounded-lg hover:bg-blue-600/90 transition-colors flex items-center justify-center gap-2">
+                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clipRule="evenodd" /></svg> Message
+                          </button>
+                          <button onClick={() => setSelectedStudent(student)} className="w-full bg-white/50 px-4 py-2 rounded-lg hover:bg-white/80 transition-colors text-sm font-semibold">
+                            View Full Profile
+                          </button>
                         </div>
                       </div>
-                      
-                      <div>
-                        <div className="font-medium text-gray-700">Total Credits:</div>
-                        <div className="text-gray-600">{student.totalCredits}</div>
-                      </div>
-
-                      <div>
-                        <div className="font-medium text-gray-700">Communication:</div>
-                        <div className="text-gray-600">{student.queryHistory} queries, {student.appointmentHistory} appointments</div>
-                      </div>
-
-                      <div>
-                        <div className="font-medium text-gray-700">Response Rate:</div>
-                        <div className={`${student.responseRate >= 80 ? 'text-green-600' : 'text-red-600'}`}>
-                          {student.responseRate}%
+                    ) : (
+                      /* List View */
+                      <div className="p-4 flex items-center gap-4">
+                        <span className="text-4xl">{student.avatar}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <h3 className="text-lg font-bold text-gray-900">{student.name}</h3>
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusColor(student.academicStatus)}`}>{student.academicStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                            <span className={`font-bold text-sm ${getGPAColor(student.gpa)}`}>GPA: {student.gpa.toFixed(1)}</span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2">{student.year} • {student.major} • {student.enrolledCourses.length} Courses</p>
+                          {student.notes && <div className="p-2 bg-yellow-400/20 rounded text-xs text-yellow-800 border border-yellow-400/30"><strong>Note:</strong> {student.notes}</div>}
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <button onClick={() => handleContactStudent(student, 'message')} className="bg-blue-500/80 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600/90 text-sm flex items-center gap-1.5 justify-center">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clipRule="evenodd" /></svg>
+                          </button>
+                           <button onClick={() => setSelectedStudent(student)} className="bg-white/50 px-3 py-1.5 rounded-lg hover:bg-white/80 text-sm font-semibold flex items-center gap-1.5 justify-center">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                          </button>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t space-y-2">
-                      <button
-                        onClick={() => handleContactStudent(student, 'message')}
-                        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        💬 Send Message
-                      </button>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => handleContactStudent(student, 'email')}
-                          className="bg-gray-50 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm"
-                        >
-                          ✉️ Email
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedStudent(student)
-                            setEditingNotes(student.notes || '')
-                            setShowNotesModal(true)
-                          }}
-                          className="bg-yellow-50 text-yellow-700 px-3 py-2 rounded-lg hover:bg-yellow-100 transition-colors text-sm"
-                        >
-                          📝 Notes
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => setSelectedStudent(student)}
-                        className="w-full bg-purple-50 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-100 transition-colors text-sm"
-                      >
-                        👤 View Profile
-                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* --- MODALS --- */}
+            {selectedStudent && (
+              <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-float-up">
+                {showNotesModal ? (
+                  /* Notes Edit Modal */
+                  <div className="glass-premium-card rounded-2xl p-6 w-full max-w-2xl">
+                    <h2 className="text-2xl font-bold mb-4 text-gray-900">Edit Notes for {selectedStudent.name}</h2>
+                    <textarea
+                      rows={6}
+                      value={editingNotes}
+                      onChange={(e) => setEditingNotes(e.target.value)}
+                      className="w-full px-4 py-2 bg-white/40 border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-400/50 backdrop-blur-sm transition-all text-gray-800 placeholder-gray-500"
+                      placeholder="Add notes about this student's performance, behavior, special considerations, etc."
+                    />
+                    <div className="flex gap-4 mt-4">
+                      <button onClick={() => handleUpdateNotes(selectedStudent.id, editingNotes)} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Save Notes</button>
+                      <button onClick={() => setShowNotesModal(false)} className="bg-white/50 px-6 py-2 rounded-lg hover:bg-white/80 transition-colors text-gray-800">Cancel</button>
                     </div>
                   </div>
                 ) : (
-                  /* List View */
-                  <div className="p-6">
-                    <div className="flex items-start gap-4">
-                      <span className="text-3xl">{student.avatar}</span>
-                      
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">{student.name}</h3>
-                          <span className="text-sm text-gray-600">{student.studentId}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(student.academicStatus)}`}>
-                            {student.academicStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                          </span>
-                          <span className={`font-bold ${getGPAColor(student.gpa)}`}>
-                            GPA: {student.gpa.toFixed(1)}
-                          </span>
-                        </div>
-                        
-                        <p className="text-sm text-gray-600 mb-2">{student.year} • {student.major} • {student.totalCredits} credits</p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm mb-3">
-                          <div>
-                            <span className="font-medium text-gray-700">Courses:</span><br />
-                            <span className="text-gray-600">{student.enrolledCourses.map(c => c.code).join(', ')}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">Communication:</span><br />
-                            <span className="text-gray-600">{student.queryHistory} queries, {student.appointmentHistory} appts</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">Response Rate:</span><br />
-                            <span className={`${student.responseRate >= 80 ? 'text-green-600' : 'text-red-600'}`}>
-                              {student.responseRate}%
+                  /* Student Profile Modal */
+                  <div className="glass-premium-card rounded-2xl p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+                    <div className="flex justify-between items-start mb-6">
+                      <h2 className="text-2xl font-bold text-gray-900">{selectedStudent.name} - Profile</h2>
+                      <button onClick={() => setSelectedStudent(null)} className="text-gray-500 hover:text-gray-800 transition-colors text-2xl">×</button>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* Left Column */}
+                      <div className="lg:col-span-1 space-y-4">
+                        <div className="text-center">
+                          <span className="text-7xl mb-4 block">{selectedStudent.avatar}</span>
+                          <h3 className="text-2xl font-bold">{selectedStudent.name}</h3>
+                          <p className="text-gray-600">{selectedStudent.studentId}</p>
+                          <p className="text-gray-600">{selectedStudent.year} • {selectedStudent.major}</p>
+                          <div className="mt-2 flex items-center justify-center gap-2">
+                            <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(selectedStudent.academicStatus)}`}>
+                              {selectedStudent.academicStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                             </span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">Last Active:</span><br />
-                            <span className="text-gray-600">{new Date(student.lastActive).toLocaleDateString()}</span>
+                            <div className={`text-2xl font-bold ${getGPAColor(selectedStudent.gpa)}`}>GPA: {selectedStudent.gpa.toFixed(2)}</div>
                           </div>
                         </div>
-
-                        {student.notes && (
-                          <div className="p-2 bg-yellow-50 rounded text-sm">
-                            <span className="font-medium text-yellow-800">Notes: </span>
-                            <span className="text-yellow-700">{student.notes}</span>
+                        <div className="space-y-2">
+                          <button onClick={() => handleContactStudent(selectedStudent, 'message')} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
+                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clipRule="evenodd" /></svg> Send Message
+                          </button>
+                          <button onClick={() => { setEditingNotes(selectedStudent.notes || ''); setShowNotesModal(true); }} className="w-full bg-yellow-400/80 text-yellow-900 px-4 py-2 rounded-lg hover:bg-yellow-400 flex items-center justify-center gap-2">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg> Edit Notes
+                          </button>
+                        </div>
+                        <div className="glass-activity-card p-4 rounded-xl">
+                          <h4 className="font-semibold text-gray-900 mb-2">Contact Info</h4>
+                          <div className="space-y-1 text-sm text-gray-700">
+                             <div><span className="font-semibold">Email:</span> {selectedStudent.email}</div>
+                             {selectedStudent.contactInfo.phone && <div><span className="font-semibold">Phone:</span> {selectedStudent.contactInfo.phone}</div>}
+                             {selectedStudent.contactInfo.address && <div><span className="font-semibold">Address:</span> {selectedStudent.contactInfo.address}</div>}
+                             {selectedStudent.contactInfo.emergencyContact && <div><span className="font-semibold">Emergency:</span> {selectedStudent.contactInfo.emergencyContact}</div>}
+                             <div><span className="font-semibold">Prefers:</span> {selectedStudent.communicationPreference}</div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Right Column */}
+                      <div className="lg:col-span-2 space-y-6">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">Enrolled Courses</h4>
+                          <div className="space-y-2">
+                            {selectedStudent.enrolledCourses.map((course, idx) => (
+                              <div key={idx} className="p-3 glass-activity-card rounded-xl">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <div className="font-bold text-gray-800">{course.code} - {course.name}</div>
+                                    <div className="text-sm text-gray-600">{course.semester}</div>
+                                  </div>
+                                  <div className="text-right">
+                                    {course.grade ? <div className="font-bold text-blue-600">Grade: {course.grade}</div> : <div className="text-sm text-gray-500">In Progress</div>}
+                                    <div className={`text-sm ${getAttendanceColor(course.attendance)}`}>Attendance: {course.attendance}%</div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        {selectedStudent.specialNeeds && selectedStudent.specialNeeds.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Special Accommodations</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedStudent.specialNeeds.map((need, idx) => <span key={idx} className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm border border-orange-200">{need}</span>)}
+                            </div>
                           </div>
                         )}
-                      </div>
-                      
-                      <div className="flex flex-col gap-2">
-                        <button
-                          onClick={() => handleContactStudent(student, 'message')}
-                          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                        >
-                          💬 Message
-                        </button>
-                        <button
-                          onClick={() => handleContactStudent(student, 'email')}
-                          className="bg-gray-50 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm"
-                        >
-                          ✉️ Email
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedStudent(student)
-                            setEditingNotes(student.notes || '')
-                            setShowNotesModal(true)
-                          }}
-                          className="bg-yellow-50 text-yellow-700 px-4 py-2 rounded-lg hover:bg-yellow-100 transition-colors text-sm"
-                        >
-                          📝 Notes
-                        </button>
+                        {selectedStudent.notes && (
+                           <div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Instructor Notes</h4>
+                            <div className="p-4 bg-yellow-400/20 rounded-xl border border-yellow-400/30">
+                              <p className="text-yellow-900">{selectedStudent.notes}</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-            ))}
+            )}
           </div>
-        )}
-
-        {/* Student Profile Modal */}
-        {selectedStudent && !showNotesModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl font-bold">{selectedStudent.name} - Student Profile</h2>
-                <button
-                  onClick={() => setSelectedStudent(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1">
-                  <div className="text-center mb-6">
-                    <span className="text-6xl mb-4 block">{selectedStudent.avatar}</span>
-                    <h3 className="text-xl font-semibold">{selectedStudent.name}</h3>
-                    <p className="text-gray-600">{selectedStudent.studentId}</p>
-                    <p className="text-gray-600">{selectedStudent.year} • {selectedStudent.major}</p>
-                    <div className="mt-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedStudent.academicStatus)}`}>
-                        {selectedStudent.academicStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                      </span>
-                    </div>
-                    <div className={`text-2xl font-bold mt-2 ${getGPAColor(selectedStudent.gpa)}`}>
-                      GPA: {selectedStudent.gpa.toFixed(2)}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <button
-                      onClick={() => handleContactStudent(selectedStudent, 'message')}
-                      className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                    >
-                      💬 Send Message
-                    </button>
-                    <button
-                      onClick={() => handleContactStudent(selectedStudent, 'email')}
-                      className="w-full bg-gray-50 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 border"
-                    >
-                      ✉️ Send Email
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditingNotes(selectedStudent.notes || '')
-                        setShowNotesModal(true)
-                      }}
-                      className="w-full bg-yellow-50 text-yellow-700 px-4 py-2 rounded-lg hover:bg-yellow-100 border"
-                    >
-                      📝 Edit Notes
-                    </button>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-2">
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Contact Information</h4>
-                      <div className="space-y-1 text-sm">
-                        <div>📧 {selectedStudent.email}</div>
-                        {selectedStudent.contactInfo.phone && <div>📞 {selectedStudent.contactInfo.phone}</div>}
-                        {selectedStudent.contactInfo.address && <div>📍 {selectedStudent.contactInfo.address}</div>}
-                        {selectedStudent.contactInfo.emergencyContact && <div>🚨 {selectedStudent.contactInfo.emergencyContact}</div>}
-                        <div>💬 Prefers: {selectedStudent.communicationPreference}</div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Academic Overview</h4>
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                          <div className="font-medium text-blue-900">Total Credits</div>
-                          <div className="text-2xl font-bold text-blue-600">{selectedStudent.totalCredits}</div>
-                        </div>
-                        <div className="p-3 bg-green-50 rounded-lg">
-                          <div className="font-medium text-green-900">Response Rate</div>
-                          <div className="text-2xl font-bold text-green-600">{selectedStudent.responseRate}%</div>
-                        </div>
-                        <div className="p-3 bg-purple-50 rounded-lg">
-                          <div className="font-medium text-purple-900">Communications</div>
-                          <div className="text-2xl font-bold text-purple-600">{selectedStudent.queryHistory + selectedStudent.appointmentHistory}</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Enrolled Courses</h4>
-                      <div className="space-y-3">
-                        {selectedStudent.enrolledCourses.map((course, idx) => (
-                          <div key={idx} className="p-4 bg-gray-50 rounded-lg">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <div className="font-medium">{course.code} - {course.name}</div>
-                                <div className="text-sm text-gray-600">{course.semester}</div>
-                              </div>
-                              <div className="text-right">
-                                {course.grade && (
-                                  <div className="font-medium text-blue-600">Grade: {course.grade}</div>
-                                )}
-                                <div className={`text-sm ${getAttendanceColor(course.attendance)}`}>
-                                  Attendance: {course.attendance}%
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {selectedStudent.specialNeeds && selectedStudent.specialNeeds.length > 0 && (
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Special Accommodations</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedStudent.specialNeeds.map((need, idx) => (
-                            <span key={idx} className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
-                              {need}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedStudent.notes && (
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Instructor Notes</h4>
-                        <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                          <p className="text-gray-700">{selectedStudent.notes}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Communication History</h4>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                          <div className="font-medium text-blue-900">Queries Submitted</div>
-                          <div className="text-xl font-bold text-blue-600">{selectedStudent.queryHistory}</div>
-                        </div>
-                        <div className="p-3 bg-green-50 rounded-lg">
-                          <div className="font-medium text-green-900">Appointments Booked</div>
-                          <div className="text-xl font-bold text-green-600">{selectedStudent.appointmentHistory}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Notes Edit Modal */}
-        {showNotesModal && selectedStudent && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-              <h2 className="text-2xl font-bold mb-4">Edit Notes for {selectedStudent.name}</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Instructor Notes</label>
-                  <textarea
-                    rows={6}
-                    value={editingNotes}
-                    onChange={(e) => setEditingNotes(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="Add notes about this student's performance, behavior, special considerations, etc."
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => handleUpdateNotes(selectedStudent.id, editingNotes)}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-                  >
-                    Save Notes
-                  </button>
-                  <button
-                    onClick={() => setShowNotesModal(false)}
-                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
