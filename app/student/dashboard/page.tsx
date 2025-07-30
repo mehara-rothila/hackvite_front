@@ -1,4 +1,4 @@
-// app/student/dashboard/page.tsx - LINTING ERRORS FIXED
+// app/student/dashboard/page.tsx - ENHANCED WITH GLASSMORPHISM & VECTOR ICONS
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -114,11 +114,16 @@ export default function StudentDashboard() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'query': return '❓'
-      case 'announcement': return '📢'
-      case 'appointment': return '📅'
-      case 'message': return '💬'
-      default: return '📄'
+      case 'query': 
+        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      case 'announcement': 
+        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      case 'appointment': 
+        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+      case 'message': 
+        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+      default: 
+        return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
     }
   }
 
@@ -198,10 +203,52 @@ export default function StudentDashboard() {
         @keyframes float-reverse { 0% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(15px) rotate(-5deg); } 100% { transform: translateY(0) rotate(0deg); } }
         
         /* Enhanced Glassmorphism Card Styles */
-        .glass-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4)); backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset, 0 2px 8px rgba(255, 255, 255, 0.7) inset; }
-        .glass-stat-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3)); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 6px 24px rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.4) inset; }
-        .glass-activity-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.7); box-shadow: 0 4px 16px rgba(31, 38, 135, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.3) inset; }
-        .glass-sidebar-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35)); backdrop-filter: blur(28px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 6px 20px rgba(31, 38, 135, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.45) inset; }
+        .glass-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5)); 
+          backdrop-filter: blur(40px) saturate(120%); 
+          border: 1px solid rgba(255, 255, 255, 0.9); 
+          box-shadow: 
+            0 12px 40px rgba(31, 38, 135, 0.2), 
+            0 0 0 1px rgba(255, 255, 255, 0.6) inset, 
+            0 4px 16px rgba(255, 255, 255, 0.8) inset;
+        }
+        .glass-stat-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.4)); 
+          backdrop-filter: blur(32px) saturate(110%); 
+          border: 1px solid rgba(255, 255, 255, 0.85); 
+          box-shadow: 
+            0 8px 32px rgba(31, 38, 135, 0.15), 
+            0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+            0 2px 12px rgba(255, 255, 255, 0.9) inset; 
+        }
+        .glass-activity-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3)); 
+          backdrop-filter: blur(28px) saturate(105%); 
+          border: 1px solid rgba(255, 255, 255, 0.75); 
+          box-shadow: 
+            0 6px 24px rgba(31, 38, 135, 0.12), 
+            0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+            0 1px 8px rgba(255, 255, 255, 0.7) inset; 
+        }
+        .glass-sidebar-card { 
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.45)); 
+          backdrop-filter: blur(36px) saturate(115%); 
+          border: 1px solid rgba(255, 255, 255, 0.9); 
+          box-shadow: 
+            0 10px 36px rgba(31, 38, 135, 0.18), 
+            0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+            0 3px 14px rgba(255, 255, 255, 0.85) inset; 
+        }
+        .glass-premium-card {
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.55)); 
+          backdrop-filter: blur(44px) saturate(125%); 
+          border: 1px solid rgba(255, 255, 255, 0.95); 
+          box-shadow: 
+            0 16px 48px rgba(31, 38, 135, 0.25), 
+            0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+            0 6px 20px rgba(255, 255, 255, 0.95) inset,
+            0 0 60px rgba(59, 130, 246, 0.1); 
+        }
         .text-clean-shadow { filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.2)); }
       `}</style>
       {/* --- END: Global Styles & Animations --- */}
@@ -270,22 +317,23 @@ export default function StudentDashboard() {
         <div className="relative z-20 min-h-screen p-4 sm:p-6">
           <div className="max-w-screen-2xl mx-auto">
             
-            {/* Header (Unchanged) */}
+            {/* Header */}
             <div className="mb-6 animate-glass-fade-in">
               <div className="relative group">
                 <div className="absolute -inset-2 bg-gradient-to-r from-blue-300/20 via-purple-300/30 to-pink-300/20 rounded-2xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-1000 animate-aurora-glow" />
-                <div className="relative glass-card rounded-2xl overflow-hidden">
+                <div className="relative glass-premium-card rounded-2xl overflow-hidden">
                   <div className="p-5">
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                          👨‍🎓
+                        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                          </svg>
                         </div>
                         <div>
                           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-clean-shadow">
                             Welcome back, Student!
                           </h1>
-                          {/* FIX: Replaced ' with &apos; to fix react/no-unescaped-entities error */}
                           <p className="text-gray-600 text-sm font-medium">Here&apos;s what&apos;s happening with your studies today.</p>
                         </div>
                       </div>
@@ -299,15 +347,64 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* Quick Stats Grid (Unchanged) */}
+            {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
               {[
-                { href: "/student/queries", value: stats.totalQueries, label: "Queries", icon: "❓", color: "blue", bgColor: "from-blue-500 to-blue-600", pending: stats.pendingQueries, delay: "animate-slide-up-delayed" },
-                { href: "/student/announcements", value: stats.unreadAnnouncements, label: "Announcements", icon: "📢", color: "green", bgColor: "from-green-500 to-green-600", delay: "animate-slide-up-delayed-2" },
-                { href: "/student/appointments", value: stats.upcomingAppointments, label: "Appointments", icon: "📅", color: "purple", bgColor: "from-purple-500 to-purple-600", delay: "animate-slide-up-delayed-3" },
-                { href: "/student/messages", value: stats.unreadMessages, label: "Messages", icon: "💬", color: "yellow", bgColor: "from-yellow-500 to-orange-500", delay: "animate-slide-up-delayed-4" },
-                { href: "/student/courses", value: stats.enrolledCourses, label: "Courses", icon: "📚", color: "indigo", bgColor: "from-indigo-500 to-indigo-600", delay: "animate-slide-up-delayed-5" },
-                { href: "/student/resources", value: 24, label: "Resources", icon: "📋", color: "red", bgColor: "from-red-500 to-red-600", delay: "animate-slide-up-delayed-6" }
+                { 
+                  href: "/student/queries", 
+                  value: stats.totalQueries, 
+                  label: "Queries", 
+                  icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>, 
+                  color: "blue", 
+                  bgColor: "from-blue-500 to-blue-600", 
+                  pending: stats.pendingQueries, 
+                  delay: "animate-slide-up-delayed" 
+                },
+                { 
+                  href: "/student/announcements", 
+                  value: stats.unreadAnnouncements, 
+                  label: "Announcements", 
+                  icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, 
+                  color: "green", 
+                  bgColor: "from-green-500 to-green-600", 
+                  delay: "animate-slide-up-delayed-2" 
+                },
+                { 
+                  href: "/student/appointments", 
+                  value: stats.upcomingAppointments, 
+                  label: "Appointments", 
+                  icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>, 
+                  color: "purple", 
+                  bgColor: "from-purple-500 to-purple-600", 
+                  delay: "animate-slide-up-delayed-3" 
+                },
+                { 
+                  href: "/student/messages", 
+                  value: stats.unreadMessages, 
+                  label: "Messages", 
+                  icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>, 
+                  color: "yellow", 
+                  bgColor: "from-yellow-500 to-orange-500", 
+                  delay: "animate-slide-up-delayed-4" 
+                },
+                { 
+                  href: "/student/courses", 
+                  value: stats.enrolledCourses, 
+                  label: "Courses", 
+                  icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.909V17h2V9L12 3z"/></svg>, 
+                  color: "indigo", 
+                  bgColor: "from-indigo-500 to-indigo-600", 
+                  delay: "animate-slide-up-delayed-5" 
+                },
+                { 
+                  href: "/student/resources", 
+                  value: 24, 
+                  label: "Resources", 
+                  icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>, 
+                  color: "red", 
+                  bgColor: "from-red-500 to-red-600", 
+                  delay: "animate-slide-up-delayed-6" 
+                }
               ].map((stat) => (
                 <Link key={stat.label} href={stat.href} className={`group ${stat.delay}`}>
                   <div className="relative overflow-hidden rounded-xl transition-all duration-500 hover:scale-105 hover:-translate-y-1">
@@ -316,7 +413,7 @@ export default function StudentDashboard() {
                       <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-white/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
                       <div className="relative p-3">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 bg-gradient-to-br ${stat.bgColor} rounded-lg flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                          <div className={`w-10 h-10 bg-gradient-to-br ${stat.bgColor} rounded-lg flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                             {stat.icon}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -344,20 +441,44 @@ export default function StudentDashboard() {
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-300/40 via-purple-300/30 to-pink-300/40 rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-all duration-500" />
                     <div className="relative glass-sidebar-card rounded-xl p-3 h-full">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white text-xs shadow-lg">⚡</div>
+                        <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                          </svg>
+                        </div>
                         <h3 className="text-sm font-bold text-gray-900">Quick Actions</h3>
                       </div>
                       <div className="grid grid-cols-1 gap-2">
                         {[
-                          { href: "/student/queries", text: "New Query", icon: "❓", color: "from-blue-500 to-blue-600" },
-                          { href: "/student/appointments", text: "Book Meeting", icon: "📅", color: "from-purple-500 to-purple-600" },
-                          { href: "/edubot", text: "Ask EduBot", icon: "🤖", color: "from-green-500 to-green-600" },
-                          { href: "/messages/new", text: "Send Message", icon: "💬", color: "from-yellow-500 to-orange-500" }
+                          { 
+                            href: "/student/queries", 
+                            text: "New Query", 
+                            icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>, 
+                            color: "from-blue-500 to-blue-600" 
+                          },
+                          { 
+                            href: "/student/appointments", 
+                            text: "Book Meeting", 
+                            icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>, 
+                            color: "from-purple-500 to-purple-600" 
+                          },
+                          { 
+                            href: "/edubot", 
+                            text: "Ask EduBot", 
+                            icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c0 1.3.38 2.63 1.07 3.9A7 7 0 1018.93 11.9c.69-1.27 1.07-2.6 1.07-3.9L20.5 6zM12 10.2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0 7.8c-2.76 0-5-2.24-5-5 0-.78.18-1.53.5-2.2.32-.67.78-1.26 1.34-1.74A5.02 5.02 0 0112 8c1.93 0 3.68.78 4.95 2.05A7.1 7.1 0 0118 12c0 2.76-2.24 5-5 5z"/></svg>, 
+                            color: "from-green-500 to-green-600" 
+                          },
+                          { 
+                            href: "/messages/new", 
+                            text: "Send Message", 
+                            icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>, 
+                            color: "from-yellow-500 to-orange-500" 
+                          }
                         ].map((action) => (
                           <Link key={action.text} href={action.href} className="block group">
                             <div className={`relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r ${action.color} p-2 text-white text-xs font-semibold group-hover:shadow-lg`}>
                               <div className="flex items-center gap-2">
-                                <span className="text-sm">{action.icon}</span>
+                                {action.icon}
                                 <span>{action.text}</span>
                                 <svg className="w-3 h-3 ml-auto group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                               </div>
@@ -373,20 +494,44 @@ export default function StudentDashboard() {
                 <div className="animate-slide-up-delayed-8">
                   <div className="glass-sidebar-card rounded-xl p-3 h-full">
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-xs shadow-lg">🧭</div>
+                      <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      </div>
                       <h3 className="text-sm font-bold text-gray-900">Navigation</h3>
                     </div>
                     <div className="grid grid-cols-1 gap-2">
                       {[
-                        { href: "/student/courses", icon: "📚", title: "My Courses", color: "blue" },
-                        { href: "/student/lecturers", icon: "👩‍🏫", title: "Find Lecturers", color: "green" },
-                        { href: "/courses", icon: "🔍", title: "Browse Courses", color: "purple" },
-                        { href: "/messages/search", icon: "🔍", title: "Search Messages", color: "orange" }
+                        { 
+                          href: "/student/courses", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.909V17h2V9L12 3z"/></svg>, 
+                          title: "My Courses", 
+                          color: "blue" 
+                        },
+                        { 
+                          href: "/student/lecturers", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>, 
+                          title: "Find Lecturers", 
+                          color: "green" 
+                        },
+                        { 
+                          href: "/courses", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>, 
+                          title: "Browse Courses", 
+                          color: "purple" 
+                        },
+                        { 
+                          href: "/messages/search", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 14 9.5 14z"/></svg>, 
+                          title: "Search Messages", 
+                          color: "orange" 
+                        }
                       ].map((nav) => (
                         <Link key={nav.title} href={nav.href} className="block group">
                           <div className={`p-2 bg-${nav.color}-50 rounded-lg hover:bg-${nav.color}-100 transition-all duration-300 group-hover:shadow-sm border border-${nav.color}-100`}>
                             <div className="flex items-center gap-2">
-                              <div className={`w-5 h-5 bg-${nav.color}-200 rounded flex items-center justify-center text-xs`}>{nav.icon}</div>
+                              <div className={`w-5 h-5 bg-${nav.color}-200 rounded flex items-center justify-center`}>{nav.icon}</div>
                               <span className={`font-semibold text-xs text-${nav.color}-900`}>{nav.title}</span>
                               <svg className={`w-3 h-3 text-${nav.color}-400 ml-auto group-hover:translate-x-0.5 transition-transform duration-300`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                             </div>
@@ -402,7 +547,11 @@ export default function StudentDashboard() {
                   <div className="glass-sidebar-card rounded-xl p-3 h-full">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xs shadow-lg">📅</div>
+                        <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                          </svg>
+                        </div>
                         <h3 className="text-sm font-bold text-gray-900">Upcoming</h3>
                       </div>
                       <Link href="/student/appointments" className="text-xs text-blue-600 hover:text-blue-800 font-semibold">View All</Link>
@@ -412,7 +561,11 @@ export default function StudentDashboard() {
                         {upcomingAppointments.map((appt) => (
                           <div key={appt.id} className="glass-activity-card p-3 rounded-lg hover:shadow-sm transition-all duration-300">
                             <div className="flex items-start gap-2">
-                              <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-xs font-semibold shadow-sm flex-shrink-0">📝</div>
+                              <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 shadow-sm flex-shrink-0">
+                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                              </div>
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-xs text-gray-900 mb-1 truncate">{appt.subject}</h4>
                                 <p className="text-xs text-gray-600 mb-1 truncate">{appt.lecturer}</p>
@@ -428,7 +581,16 @@ export default function StudentDashboard() {
                                 </div>
                                 <div className="mt-2">
                                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full font-semibold ${appt.status === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                    {appt.status === 'confirmed' ? '✅' : '⏳'} {appt.status}
+                                    {appt.status === 'confirmed' ? (
+                                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                      </svg>
+                                    ) : (
+                                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 16c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z"/>
+                                      </svg>
+                                    )}
+                                    {appt.status}
                                   </span>
                                 </div>
                               </div>
@@ -438,7 +600,11 @@ export default function StudentDashboard() {
                       </div>
                     ) : (
                       <div className="text-center py-4">
-                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2"><span className="text-lg">📅</span></div>
+                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                          </svg>
+                        </div>
                         <h4 className="text-xs font-semibold text-gray-900 mb-1">No Appointments</h4>
                         <Link href="/student/appointments" className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors duration-300 text-xs font-semibold">Book Now</Link>
                       </div>
@@ -450,7 +616,11 @@ export default function StudentDashboard() {
                 <div className="animate-slide-up-delayed-8">
                   <div className="glass-sidebar-card rounded-xl p-3 h-full">
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white text-xs shadow-lg">📚</div>
+                      <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.909V17h2V9L12 3z"/>
+                        </svg>
+                      </div>
                       <h3 className="text-sm font-bold text-gray-900">My Courses</h3>
                     </div>
                     <div className="space-y-2">
@@ -497,19 +667,41 @@ export default function StudentDashboard() {
                 <div className="animate-slide-up-delayed-9">
                   <div className="glass-sidebar-card rounded-xl p-3 h-full">
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center text-white text-xs shadow-lg">🆘</div>
+                      <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+                        </svg>
+                      </div>
                       <h3 className="text-sm font-bold text-gray-900">Need Help?</h3>
                     </div>
                     <div className="space-y-2">
                       {[
-                        { href: "/edubot", icon: "🤖", title: "Ask EduBot", desc: "AI answers", color: "emerald" },
-                        { href: "/student/queries", icon: "❓", title: "Submit Query", desc: "Lecturer help", color: "blue" },
-                        { href: "/student/lecturers", icon: "👩‍🏫", title: "Contact Lecturer", desc: "Faculty directory", color: "purple" }
+                        { 
+                          href: "/edubot", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c0 1.3.38 2.63 1.07 3.9A7 7 0 1018.93 11.9c.69-1.27 1.07-2.6 1.07-3.9L20.5 6zM12 10.2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>, 
+                          title: "Ask EduBot", 
+                          desc: "AI answers", 
+                          color: "emerald" 
+                        },
+                        { 
+                          href: "/student/queries", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>, 
+                          title: "Submit Query", 
+                          desc: "Lecturer help", 
+                          color: "blue" 
+                        },
+                        { 
+                          href: "/student/lecturers", 
+                          icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>, 
+                          title: "Contact Lecturer", 
+                          desc: "Faculty directory", 
+                          color: "purple" 
+                        }
                       ].map((help) => (
                         <Link key={help.title} href={help.href} className="block group">
                           <div className="glass-activity-card p-2 rounded-lg hover:shadow-sm transition-all duration-300 group-hover:scale-105 border border-gray-100">
                             <div className="flex items-center gap-2">
-                              <div className={`w-6 h-6 bg-${help.color}-100 rounded-lg flex items-center justify-center text-sm shadow-sm`}>{help.icon}</div>
+                              <div className={`w-6 h-6 bg-${help.color}-100 rounded-lg flex items-center justify-center shadow-sm`}>{help.icon}</div>
                               <div className="flex-1 min-w-0">
                                 <div className="font-semibold text-xs text-gray-900">{help.title}</div>
                                 <div className="text-xs text-gray-600 truncate">{help.desc}</div>
@@ -529,11 +721,15 @@ export default function StudentDashboard() {
               <div className="animate-slide-up-delayed-7">
                 <div className="relative group h-full">
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-200/30 via-purple-200/20 to-pink-200/30 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-all duration-500" />
-                  <div className="relative glass-card rounded-2xl overflow-hidden h-full">
+                  <div className="relative glass-premium-card rounded-2xl overflow-hidden h-full">
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xl shadow-lg">📊</div>
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            </svg>
+                          </div>
                           <div>
                             <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
                             <p className="text-xs text-gray-500">Latest updates</p>
@@ -549,13 +745,20 @@ export default function StudentDashboard() {
                           <div key={activity.id} className="relative group">
                             <div className={`glass-activity-card rounded-lg border-l-4 ${getActivityColor(activity.type, activity.priority)} p-3 group-hover:shadow-md group-hover:scale-[1.01] transition-all duration-300`}>
                               <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-lg shadow-sm flex-shrink-0">{getActivityIcon(activity.type)}</div>
+                                <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">{getActivityIcon(activity.type)}</div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between gap-2 mb-1">
                                     <h3 className={`font-semibold text-sm ${!activity.read ? 'text-gray-800' : 'text-gray-700'} truncate`}>{activity.title}</h3>
                                     <div className="flex items-center gap-2 flex-shrink-0">
                                       {!activity.read && (<span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full font-semibold animate-pulse">NEW</span>)}
-                                      {activity.priority === 'high' && (<span className="px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-bold border border-red-200">🔥 HIGH</span>)}
+                                      {activity.priority === 'high' && (
+                                        <span className="px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-bold border border-red-200 flex items-center gap-1">
+                                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                          </svg>
+                                          HIGH
+                                        </span>
+                                      )}
                                     </div>
                                   </div>
                                   <p className="text-xs text-gray-600 mb-1 leading-relaxed">{activity.description}</p>
