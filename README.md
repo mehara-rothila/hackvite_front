@@ -281,9 +281,9 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 📞 Support
 
-- 📧 **Email:** support@edulink.mehara.io
+
 - 🌐 **Website:** [https://edulink.mehara.io](https://edulink.mehara.io)
-- 📚 **Documentation:** [View Docs](https://edulink.mehara.io/docs)
+
 
 ---
 
