@@ -5,19 +5,6 @@ import { useState, useEffect } from 'react'
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [email, setEmail] = useState('')
-  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
-
-  // Mouse tracking for dynamic gradient
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
-      })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,6 +172,22 @@ export default function LandingPage() {
             filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 30px rgba(168, 85, 247, 0.5));
           }
         }
+
+        /* Floating icon animations */
+        @keyframes float { 
+          0% { transform: translateY(0) rotate(0deg); } 
+          50% { transform: translateY(-15px) rotate(5deg); } 
+          100% { transform: translateY(0) rotate(0deg); } 
+        }
+        @keyframes float-reverse { 
+          0% { transform: translateY(0) rotate(0deg); } 
+          50% { transform: translateY(15px) rotate(-5deg); } 
+          100% { transform: translateY(0) rotate(0deg); } 
+        }
+
+        .floating-icon { animation: float 6s ease-in-out infinite; }
+        .floating-icon-reverse { animation: float-reverse 7s ease-in-out infinite; }
+        .floating-icon-slow { animation: float 10s ease-in-out infinite; }
 
         .animate-mesh-drift-1 { animation: mesh-drift-1 20s ease-in-out infinite; }
         .animate-mesh-drift-2 { animation: mesh-drift-2 25s ease-in-out infinite; }
@@ -1055,76 +1058,72 @@ export default function LandingPage() {
       `}</style>
       
       <div className="main-container">
-        {/* EXACT BACKGROUND COPY FROM LOGIN PAGE - BRIGHTER */}
-        <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
-          {/* Dynamic mouse-following gradient */}
+        {/* --- START: Multi-Layered Stylish Animated Background --- */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+          
+          {/* Static beautiful gradient */}
           <div
-            className="absolute inset-0 opacity-40 transition-all duration-700 ease-out"
+            className="absolute inset-0 opacity-40"
             style={{
-              background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.3) 0%, rgba(168, 85, 247, 0.25) 25%, transparent 50%)`
+              background: `radial-gradient(800px circle at 50% 50%, rgba(59, 130, 246, 0.3) 0%, rgba(168, 85, 247, 0.25) 25%, transparent 50%)`
             }}
           />
 
-          {/* Light colorful gradient meshes - BRIGHTER */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-100/60 via-purple-100/55 to-pink-100/60 animate-mesh-drift-1" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/55 via-violet-100/50 to-orange-100/55 animate-mesh-drift-2" />
-          <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/60 via-purple-100/45 to-rose-100/60 animate-mesh-drift-3" />
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/50 via-transparent to-green-100/50 animate-mesh-drift-4" />
-        </div>
+          {/* Layer 1: Floating Mathematical Symbols */}
+          <div className="absolute top-[7%] left-[13%] text-purple-500 text-9xl opacity-75 floating-icon">∑</div>
+          <div className="absolute top-[33%] right-[17%] text-blue-500 text-8xl opacity-70 floating-icon-reverse">π</div>
+          <div className="absolute top-[61%] left-[27%] text-green-500 text-8xl opacity-75 floating-icon-slow">∞</div>
+          <div className="absolute top-[19%] right-[38%] text-red-500 text-7xl opacity-65 floating-icon">⚛</div>
+          <div className="absolute bottom-[31%] left-[8%] text-indigo-500 text-8xl opacity-70 floating-icon-reverse">∫</div>
+          <div className="absolute bottom-[12%] right-[42%] text-teal-500 text-9xl opacity-75 floating-icon">≈</div>
+          <div className="absolute bottom-[47%] right-[9%] text-pink-500 text-8xl opacity-65 floating-icon-slow">±</div>
+          <div className="absolute top-[23%] left-[54%] text-fuchsia-500 text-8xl opacity-70 floating-icon">Δ</div>
+          <div className="absolute top-[44%] left-[38%] text-emerald-500 text-7xl opacity-65 floating-icon-slow">λ</div>
+          <div className="absolute top-[81%] left-[67%] text-cyan-500 text-9xl opacity-70 floating-icon-reverse">θ</div>
+          <div className="absolute top-[29%] left-[83%] text-rose-500 text-8xl opacity-65 floating-icon">α</div>
+          <div className="absolute bottom-[63%] left-[6%] text-amber-500 text-9xl opacity-70 floating-icon-slow">β</div>
+          <div className="absolute bottom-[19%] left-[71%] text-purple-500 text-8xl opacity-65 floating-icon-reverse">μ</div>
+          <div className="absolute bottom-[28%] left-[32%] text-blue-500 text-7xl opacity-70 floating-icon">ω</div>
+          <div className="absolute top-[52%] left-[18%] text-sky-500 text-8xl opacity-60 floating-icon-slow">γ</div>
+          <div className="absolute top-[37%] right-[29%] text-lime-500 text-9xl opacity-55 floating-icon">σ</div>
+          <div className="absolute bottom-[42%] right-[37%] text-orange-500 text-8xl opacity-50 floating-icon-reverse">δ</div>
+          <div className="absolute top-[73%] right-[13%] text-violet-500 text-8xl opacity-60 floating-icon-slow">ρ</div>
+          
+          {/* Layer 2: Drifting Gradient Meshes */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
+          <div className="absolute inset-0 bg-gradient-to-bl from-cyan-100/40 via-purple-100/25 to-rose-100/40 animate-mesh-drift-3" />
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/30 via-transparent to-green-100/30 animate-mesh-drift-4" />
 
-        {/* Clean Educational Background - 6 Large Mathematical Equations - BRIGHTER */}
-        <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
-          {/* 6 Large Mathematical Equations Only */}
-          <div className="absolute top-1/4 left-1/6 text-4xl font-bold text-blue-600 animate-equation-float-1" style={{ opacity: 0.9, maxWidth: '100vw' }}>
-            ∫₀^∞ e^(-x²) dx = √π/2
-          </div>
-          <div className="absolute top-1/3 right-1/5 text-3xl font-bold text-emerald-600 animate-equation-float-2" style={{ opacity: 0.9, maxWidth: '100vw' }}>
-            ∑ᵢ₌₁^∞ 1/n² = π²/6
-          </div>
-          <div className="absolute bottom-1/4 left-1/5 text-3xl font-bold text-pink-600 animate-equation-float-3" style={{ opacity: 0.9, maxWidth: '100vw' }}>
-            E = mc² = ħω
-          </div>
-          <div className="absolute top-1/2 right-1/6 text-3xl font-bold text-purple-600 animate-equation-float-4" style={{ opacity: 0.9, maxWidth: '100vw' }}>
-            π = 4∑(-1)ⁿ/(2n+1)
-          </div>
-          <div className="absolute bottom-1/3 right-1/4 text-3xl font-bold text-orange-600 animate-equation-float-1" style={{ opacity: 0.9, maxWidth: '100vw' }}>
-            lim(x→0) sin(x)/x = 1
-          </div>
-          <div className="absolute top-2/3 left-1/4 text-3xl font-bold text-cyan-600 animate-equation-float-2" style={{ opacity: 0.9, maxWidth: '100vw' }}>
-            a² + b² = c²
-          </div>
-
-          {/* Floating Knowledge Particles - BRIGHTER */}
-          {[...Array(30)].map((_, i) => (
+          {/* Layer 3: Floating Equations */}
+          <div className="absolute top-1/4 left-1/6 text-4xl font-bold text-blue-600/70 animate-equation-float-1">∫ e⁻ˣ² dx = √π/2</div>
+          <div className="absolute top-1/3 right-1/5 text-3xl font-bold text-emerald-600/70 animate-equation-float-2">∑ 1/n² = π²/6</div>
+          <div className="absolute bottom-1/4 left-1/5 text-3xl font-bold text-pink-600/70 animate-equation-float-3">E = mc²</div>
+          <div className="absolute top-1/2 right-1/6 text-3xl font-bold text-purple-600/70 animate-equation-float-4">a² + b² = c²</div>
+          
+          {/* Layer 4: Drifting Knowledge Particles */}
+          {[...Array(60)].map((_, i) => (
             <div
               key={i}
-              className={`absolute w-3 h-3 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-md`}
+              className={`absolute w-2 h-2 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-md`}
               style={{
-                left: `${5 + Math.random() * 90}%`,
-                top: `${5 + Math.random() * 90}%`,
-                animationDelay: `${Math.random() * 8}s`,
-                animationDuration: `${6 + Math.random() * 4}s`,
-                background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.9)', 'rgba(16, 185, 129, 0.9)', 'rgba(239, 68, 68, 0.9)', 'rgba(168, 85, 247, 0.9)', 'rgba(245, 158, 11, 0.9)', 'rgba(236, 72, 153, 0.9)'][i % 6]}, rgba(255,255,255,0.4))`,
-                maxWidth: '100vw',
-                maxHeight: '100vh'
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 12}s`,
+                animationDuration: `${6 + Math.random() * 10}s`,
+                background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(168, 85, 247, 0.7)', 'rgba(245, 158, 11, 0.7)', 'rgba(236, 72, 153, 0.7)'][i % 5]}, rgba(255,255,255,0.2))`
               }}
             />
           ))}
-        </div>
 
-        {/* Light Floating Glass Orbs - BRIGHTER */}
-        <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
-          {/* Large colorful glass orbs - BRIGHTER */}
-          <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-blue-200/50 to-cyan-200/40 rounded-full backdrop-blur-sm border border-blue-300/60 animate-glass-float-1 shadow-lg" />
-          <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/45 to-pink-200/35 rounded-full backdrop-blur-sm border border-purple-300/50 animate-glass-float-2 shadow-lg" />
-          <div className="absolute bottom-24 left-32 w-88 h-88 bg-gradient-to-br from-emerald-200/45 to-teal-200/35 rounded-full backdrop-blur-sm border border-emerald-300/45 animate-glass-float-3 shadow-lg" />
-          <div className="absolute bottom-16 right-16 w-72 h-72 bg-gradient-to-br from-orange-200/45 to-yellow-200/35 rounded-full backdrop-blur-sm border border-orange-300/50 animate-glass-float-4 shadow-lg" />
-
-          {/* Medium colorful bubbles - BRIGHTER */}
-          <div className="absolute top-1/4 left-1/5 w-56 h-56 bg-gradient-to-br from-rose-200/40 to-pink-200/30 rounded-full backdrop-blur-sm border border-rose-300/45 animate-bubble-drift-1 shadow-md" />
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-200/42 to-blue-200/32 rounded-full backdrop-blur-sm border border-indigo-300/50 animate-bubble-drift-2 shadow-md" />
-          <div className="absolute top-3/5 right-1/5 w-48 h-48 bg-gradient-to-br from-green-200/40 to-emerald-200/30 rounded-full backdrop-blur-sm border border-green-300/40 animate-bubble-drift-3 shadow-md" />
+          {/* Layer 5: Floating Glass Orbs & Bubbles */}
+          <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-blue-200/30 to-cyan-200/20 rounded-full backdrop-blur-sm border border-blue-300/40 animate-glass-float-1 shadow-lg" />
+          <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/25 to-pink-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-2 shadow-lg" />
+          <div className="absolute bottom-24 left-32 w-72 h-72 bg-gradient-to-br from-emerald-200/25 to-teal-200/15 rounded-full backdrop-blur-sm border border-emerald-300/25 animate-glass-float-3 shadow-lg" />
+          <div className="absolute top-1/4 left-1/5 w-56 h-56 bg-gradient-to-br from-rose-200/20 to-pink-200/10 rounded-full backdrop-blur-sm border border-rose-300/25 animate-bubble-drift-1 shadow-md" />
+          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-200/22 to-blue-200/12 rounded-full backdrop-blur-sm border border-indigo-300/30 animate-bubble-drift-2 shadow-md" />
         </div>
+        {/* --- END: Multi-Layered Stylish Animated Background --- */}
 
         {/* Navigation */}
         <nav className="navbar">
