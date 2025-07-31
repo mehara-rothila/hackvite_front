@@ -88,77 +88,77 @@ npm install -D @typescript-eslint/parser @typescript-eslint/eslint-plugin
 ### 🏠 Root & Authentication Pages
 | Page | URL | Description |
 |------|-----|-------------|
-| **Homepage** | `https://edulink.mehara.io/` | Main landing page |
-| **Login** | `https://edulink.mehara.io/login` | User authentication |
-| **Register** | `https://edulink.mehara.io/register` | Registration hub |
-| **Student Register** | `https://edulink.mehara.io/register/student` | Student signup |
-| **Lecturer Register** | `https://edulink.mehara.io/register/lecturer` | Lecturer signup |
+| **Homepage** | [https://edulink.mehara.io/](https://edulink.mehara.io/) | Main landing page |
+| **Login** | [https://edulink.mehara.io/login](https://edulink.mehara.io/login) | User authentication |
+| **Register** | [https://edulink.mehara.io/register](https://edulink.mehara.io/register) | Registration hub |
+| **Student Register** | [https://edulink.mehara.io/register/student](https://edulink.mehara.io/register/student) | Student signup |
+| **Lecturer Register** | [https://edulink.mehara.io/register/lecturer](https://edulink.mehara.io/register/lecturer) | Lecturer signup |
 
 ### 🎓 Student Portal (13 Pages)
 | Feature | URL | Purpose |
 |---------|-----|---------|
-| **Dashboard** | `https://edulink.mehara.io/student/dashboard` | Student overview & stats |
-| **Profile** | `https://edulink.mehara.io/student/profile` | Personal information |
-| **Settings** | `https://edulink.mehara.io/student/settings` | Account preferences |
-| **Courses** | `https://edulink.mehara.io/student/courses` | Enrolled courses |
-| **Lecturers** | `https://edulink.mehara.io/student/lecturers` | Faculty directory |
-| **Queries** | `https://edulink.mehara.io/student/queries` | Ask questions |
-| **Query Details** | `https://edulink.mehara.io/student/queries/[id]` | Individual query view |
-| **Announcements** | `https://edulink.mehara.io/student/announcements` | Important updates |
-| **Appointments** | `https://edulink.mehara.io/student/appointments` | Schedule meetings |
-| **Messages** | `https://edulink.mehara.io/student/messages` | Direct messaging |
-| **Conversations** | `https://edulink.mehara.io/student/conversations` | Chat overview |
-| **Chat View** | `https://edulink.mehara.io/student/conversations/[id]` | Individual chats |
-| **Resources** | `https://edulink.mehara.io/student/resources` | Learning materials |
+| **Dashboard** | [https://edulink.mehara.io/student/dashboard](https://edulink.mehara.io/student/dashboard) | Student overview & stats |
+| **Profile** | [https://edulink.mehara.io/student/profile](https://edulink.mehara.io/student/profile) | Personal information |
+| **Settings** | [https://edulink.mehara.io/student/settings](https://edulink.mehara.io/student/settings) | Account preferences |
+| **Courses** | [https://edulink.mehara.io/student/courses](https://edulink.mehara.io/student/courses) | Enrolled courses |
+| **Lecturers** | [https://edulink.mehara.io/student/lecturers](https://edulink.mehara.io/student/lecturers) | Faculty directory |
+| **Queries** | [https://edulink.mehara.io/student/queries](https://edulink.mehara.io/student/queries) | Ask questions |
+| **Query Details** | [https://edulink.mehara.io/student/queries/[id]](https://edulink.mehara.io/student/queries/[id]) | Individual query view |
+| **Announcements** | [https://edulink.mehara.io/student/announcements](https://edulink.mehara.io/student/announcements) | Important updates |
+| **Appointments** | [https://edulink.mehara.io/student/appointments](https://edulink.mehara.io/student/appointments) | Schedule meetings |
+| **Messages** | [https://edulink.mehara.io/student/messages](https://edulink.mehara.io/student/messages) | Direct messaging |
+| **Conversations** | [https://edulink.mehara.io/student/conversations](https://edulink.mehara.io/student/conversations) | Chat overview |
+| **Chat View** | [https://edulink.mehara.io/student/conversations/[id]](https://edulink.mehara.io/student/conversations/[id]) | Individual chats |
+| **Resources** | [https://edulink.mehara.io/student/resources](https://edulink.mehara.io/student/resources) | Learning materials |
 
 ### 👨‍🏫 Lecturer Portal (16 Pages)
 | Feature | URL | Purpose |
 |---------|-----|---------|
-| **Dashboard** | `https://edulink.mehara.io/lecturer/dashboard` | Teaching overview |
-| **Profile** | `https://edulink.mehara.io/lecturer/profile` | Professional profile |
-| **Settings** | `https://edulink.mehara.io/lecturer/settings` | Account settings |
-| **Courses** | `https://edulink.mehara.io/lecturer/courses` | Managed courses |
-| **Students** | `https://edulink.mehara.io/lecturer/students` | Student roster |
-| **Queries** | `https://edulink.mehara.io/lecturer/queries` | Student questions |
-| **Announcements** | `https://edulink.mehara.io/lecturer/announcements` | Broadcast updates |
-| **Appointments** | `https://edulink.mehara.io/lecturer/appointments` | Meeting management |
-| **Availability** | `https://edulink.mehara.io/lecturer/availability` | Set office hours |
-| **Messages** | `https://edulink.mehara.io/lecturer/messages` | Communication hub |
-| **Conversations** | `https://edulink.mehara.io/lecturer/conversations` | Chat management |
-| **Chat View** | `https://edulink.mehara.io/lecturer/conversations/[id]` | Individual chats |
-| **Resources** | `https://edulink.mehara.io/lecturer/resources` | Teaching materials |
+| **Dashboard** | [https://edulink.mehara.io/lecturer/dashboard](https://edulink.mehara.io/lecturer/dashboard) | Teaching overview |
+| **Profile** | [https://edulink.mehara.io/lecturer/profile](https://edulink.mehara.io/lecturer/profile) | Professional profile |
+| **Settings** | [https://edulink.mehara.io/lecturer/settings](https://edulink.mehara.io/lecturer/settings) | Account settings |
+| **Courses** | [https://edulink.mehara.io/lecturer/courses](https://edulink.mehara.io/lecturer/courses) | Managed courses |
+| **Students** | [https://edulink.mehara.io/lecturer/students](https://edulink.mehara.io/lecturer/students) | Student roster |
+| **Queries** | [https://edulink.mehara.io/lecturer/queries](https://edulink.mehara.io/lecturer/queries) | Student questions |
+| **Announcements** | [https://edulink.mehara.io/lecturer/announcements](https://edulink.mehara.io/lecturer/announcements) | Broadcast updates |
+| **Appointments** | [https://edulink.mehara.io/lecturer/appointments](https://edulink.mehara.io/lecturer/appointments) | Meeting management |
+| **Availability** | [https://edulink.mehara.io/lecturer/availability](https://edulink.mehara.io/lecturer/availability) | Set office hours |
+| **Messages** | [https://edulink.mehara.io/lecturer/messages](https://edulink.mehara.io/lecturer/messages) | Communication hub |
+| **Conversations** | [https://edulink.mehara.io/lecturer/conversations](https://edulink.mehara.io/lecturer/conversations) | Chat management |
+| **Chat View** | [https://edulink.mehara.io/lecturer/conversations/[id]](https://edulink.mehara.io/lecturer/conversations/[id]) | Individual chats |
+| **Resources** | [https://edulink.mehara.io/lecturer/resources](https://edulink.mehara.io/lecturer/resources) | Teaching materials |
 
 #### 📊 Analytics Dashboard (4 Views)
 | Analytics | URL | Insights |
 |-----------|-----|----------|
-| **Main Analytics** | `https://edulink.mehara.io/lecturer/analytics` | Performance overview |
-| **Engagement** | `https://edulink.mehara.io/lecturer/analytics/engagement` | Student interaction metrics |
-| **Query Analytics** | `https://edulink.mehara.io/lecturer/analytics/queries` | Question patterns & trends |
-| **Response Times** | `https://edulink.mehara.io/lecturer/analytics/response-times` | Communication efficiency |
+| **Main Analytics** | [https://edulink.mehara.io/lecturer/analytics](https://edulink.mehara.io/lecturer/analytics) | Performance overview |
+| **Engagement** | [https://edulink.mehara.io/lecturer/analytics/engagement](https://edulink.mehara.io/lecturer/analytics/engagement) | Student interaction metrics |
+| **Query Analytics** | [https://edulink.mehara.io/lecturer/analytics/queries](https://edulink.mehara.io/lecturer/analytics/queries) | Question patterns & trends |
+| **Response Times** | [https://edulink.mehara.io/lecturer/analytics/response-times](https://edulink.mehara.io/lecturer/analytics/response-times) | Communication efficiency |
 
 ### 📚 Course Management (4 Pages)
 | Feature | URL | Functionality |
 |---------|-----|---------------|
-| **Course Browser** | `https://edulink.mehara.io/courses` | Explore all courses |
-| **Course Details** | `https://edulink.mehara.io/courses/[id]` | Individual course view |
-| **Course Messages** | `https://edulink.mehara.io/courses/[id]/messages` | Course discussions |
-| **Course Resources** | `https://edulink.mehara.io/courses/[id]/resources` | Course materials |
-| **Course Students** | `https://edulink.mehara.io/courses/[id]/students` | Enrolled students |
+| **Course Browser** | [https://edulink.mehara.io/courses](https://edulink.mehara.io/courses) | Explore all courses |
+| **Course Details** | [https://edulink.mehara.io/courses/[id]](https://edulink.mehara.io/courses/[id]) | Individual course view |
+| **Course Messages** | [https://edulink.mehara.io/courses/[id]/messages](https://edulink.mehara.io/courses/[id]/messages) | Course discussions |
+| **Course Resources** | [https://edulink.mehara.io/courses/[id]/resources](https://edulink.mehara.io/courses/[id]/resources) | Course materials |
+| **Course Students** | [https://edulink.mehara.io/courses/[id]/students](https://edulink.mehara.io/courses/[id]/students) | Enrolled students |
 
 ### 💬 Messaging System (5 Pages)
 | Feature | URL | Purpose |
 |---------|-----|---------|
-| **New Message** | `https://edulink.mehara.io/messages/new` | Compose message |
-| **Search Messages** | `https://edulink.mehara.io/messages/search` | Find conversations |
-| **Sent Messages** | `https://edulink.mehara.io/messages/sent` | Outbox |
-| **Draft Messages** | `https://edulink.mehara.io/messages/drafts` | Unsent messages |
-| **Archived** | `https://edulink.mehara.io/messages/archive` | Message archive |
+| **New Message** | [https://edulink.mehara.io/messages/new](https://edulink.mehara.io/messages/new) | Compose message |
+| **Search Messages** | [https://edulink.mehara.io/messages/search](https://edulink.mehara.io/messages/search) | Find conversations |
+| **Sent Messages** | [https://edulink.mehara.io/messages/sent](https://edulink.mehara.io/messages/sent) | Outbox |
+| **Draft Messages** | [https://edulink.mehara.io/messages/drafts](https://edulink.mehara.io/messages/drafts) | Unsent messages |
+| **Archived** | [https://edulink.mehara.io/messages/archive](https://edulink.mehara.io/messages/archive) | Message archive |
 
 ### 🤖 AI & Utilities (2 Pages)
 | Feature | URL | Description |
 |---------|-----|-------------|
-| **EduBot AI** | `https://edulink.mehara.io/edubot` | AI educational assistant |
-| **Notifications** | `https://edulink.mehara.io/notifications` | Alert center |
+| **EduBot AI** | [https://edulink.mehara.io/edubot](https://edulink.mehara.io/edubot) | AI educational assistant |
+| **Notifications** | [https://edulink.mehara.io/notifications](https://edulink.mehara.io/notifications) | Alert center |
 
 ---
 
