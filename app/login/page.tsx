@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { authAPI } from '@/lib/api'
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -20,32 +21,30 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    // Mock authentication from your original logic
-    setTimeout(() => {
-      if (formData.email && formData.password) {
-        const isStudent = formData.email.includes('student') || formData.email.includes('s.')
-        const role = isStudent ? 'student' : 'lecturer'
+    try {
+      // Call real backend API
+      const authResponse = await authAPI.login({
+        email: formData.email,
+        password: formData.password,
+        rememberMe: formData.remember
+      })
 
-        // Store mock user data
-        localStorage.setItem('edulink_user', JSON.stringify({
-          id: Math.random().toString(36).substr(2, 9),
-          email: formData.email,
-          role: role,
-          name: formData.email.split('@')[0],
-          isAuthenticated: true
-        }))
-
-        // Redirect based on role
-        if (role === 'student') {
-          router.push('/student/dashboard')
-        } else {
-          router.push('/lecturer/dashboard')
-        }
+      // Redirect based on user role
+      const userRole = authResponse.user.role.toLowerCase()
+      if (userRole === 'student') {
+        router.push('/student/dashboard')
+      } else if (userRole === 'lecturer') {
+        router.push('/lecturer/dashboard')
       } else {
-        setError('Please fill in all fields')
+        router.push('/dashboard')
       }
+
+    } catch (error) {
+      console.error('Login error:', error)
+      setError(error instanceof Error ? error.message : 'Login failed. Please try again.')
+    } finally {
       setLoading(false)
-    }, 1000)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

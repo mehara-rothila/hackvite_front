@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { authAPI } from '@/lib/api'
 import './student-register.css'
 
 export default function StudentRegisterPage() {
@@ -26,7 +27,7 @@ export default function StudentRegisterPage() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ 
+      setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
       })
@@ -57,30 +58,40 @@ export default function StudentRegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     setLoading(true)
 
-    setTimeout(() => {
-      const userData = {
-        id: Math.random().toString(36).substr(2, 9),
+    try {
+      // Call real backend API
+      const authResponse = await authAPI.registerStudent({
         email: formData.email,
-        role: 'student',
-        name: `${formData.firstName} ${formData.lastName}`,
+        password: formData.password,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        studentId: formData.studentId,
-        university: formData.university,
         department: formData.department,
-        yearOfStudy: formData.yearOfStudy,
-        isAuthenticated: true,
-        registeredAt: new Date().toISOString()
-      }
+        studentId: formData.studentId,
+        year: formData.yearOfStudy,
+        major: formData.department // Using department as major for now
+      })
 
-      localStorage.setItem('edulink_user', JSON.stringify(userData))
+      // Registration successful - redirect to dashboard
       router.push('/student/dashboard')
-    }, 1500)
+
+    } catch (error) {
+      console.error('Registration error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.'
+
+      // Set specific field errors if possible
+      if (errorMessage.toLowerCase().includes('email already exists')) {
+        setErrors(prev => ({ ...prev, email: 'This email is already registered' }))
+      } else {
+        setErrors(prev => ({ ...prev, general: errorMessage }))
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -92,11 +103,12 @@ export default function StudentRegisterPage() {
       [name]: type === 'checkbox' ? checked : value
     }))
 
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }))
+    // Clear errors on change
+    if (errors[name] || errors.general) {
+      const newErrors = { ...errors }
+      delete newErrors[name]
+      delete newErrors.general
+      setErrors(newErrors)
     }
   }
 
@@ -105,13 +117,13 @@ export default function StudentRegisterPage() {
       {/* Light Colorful Educational Background - SAME AS LOGIN */}
       <div className="absolute inset-0">
         {/* Dynamic mouse-following gradient */}
-        <div 
+        <div
           className="absolute inset-0 opacity-30 transition-all duration-700 ease-out"
           style={{
             background: `radial-gradient(800px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.2) 0%, rgba(168, 85, 247, 0.15) 25%, transparent 50%)`
           }}
         />
-        
+
         {/* Light colorful gradient meshes */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-purple-100/35 to-pink-100/40 animate-mesh-drift-1" />
         <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/35 via-violet-100/30 to-orange-100/35 animate-mesh-drift-2" />
@@ -162,7 +174,7 @@ export default function StudentRegisterPage() {
         <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/25 to-pink-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-2 shadow-lg" />
         <div className="absolute bottom-24 left-32 w-88 h-88 bg-gradient-to-br from-emerald-200/25 to-teal-200/15 rounded-full backdrop-blur-sm border border-emerald-300/25 animate-glass-float-3 shadow-lg" />
         <div className="absolute bottom-16 right-16 w-72 h-72 bg-gradient-to-br from-orange-200/25 to-yellow-200/15 rounded-full backdrop-blur-sm border border-orange-300/30 animate-glass-float-4 shadow-lg" />
-        
+
         <div className="absolute top-1/4 left-1/5 w-56 h-56 bg-gradient-to-br from-rose-200/20 to-pink-200/10 rounded-full backdrop-blur-sm border border-rose-300/25 animate-bubble-drift-1 shadow-md" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-200/22 to-blue-200/12 rounded-full backdrop-blur-sm border border-indigo-300/30 animate-bubble-drift-2 shadow-md" />
         <div className="absolute top-3/5 right-1/5 w-48 h-48 bg-gradient-to-br from-green-200/20 to-emerald-200/10 rounded-full backdrop-blur-sm border border-green-300/20 animate-bubble-drift-3 shadow-md" />
@@ -171,22 +183,22 @@ export default function StudentRegisterPage() {
       {/* Main Content - SAME STRUCTURE AS LOGIN */}
       <div className="relative z-20 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
-          
+
           {/* Light Glass Container - SAME AS LOGIN */}
           <div className="relative group">
             {/* Colorful outer glow */}
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-300/30 via-purple-300/40 to-pink-300/30 rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-1000 animate-aurora-glow" />
-            
+
             {/* Glass Panel */}
             <div className="relative bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-2xl overflow-hidden">
-              
+
               {/* Inner glass effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-blue-50/20 to-purple-50/20 rounded-3xl" />
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/20 via-transparent to-purple-100/20 rounded-3xl" />
-              
+
               {/* Content */}
               <div className="relative p-10">
-                
+
                 {/* Header - SAME STYLE AS LOGIN */}
                 <div className="text-center mb-10 animate-glass-fade-in">
                   <div className="mb-8">
@@ -195,14 +207,14 @@ export default function StudentRegisterPage() {
                     </h1>
                     <div className="mt-3 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-purple-400/60 to-transparent animate-line-glow" />
                   </div>
-                  
+
                   <div className="flex items-center justify-center mb-4">
                     <span className="text-3xl mr-3">🎓</span>
                     <h2 className="text-3xl font-medium text-gray-800 animate-slide-up-delayed">
                       Student Registration
                     </h2>
                   </div>
-                  
+
                   <p className="text-gray-600 text-lg animate-slide-up-delayed-2">
                     Create your student account to start connecting with your lecturers
                   </p>
@@ -210,7 +222,22 @@ export default function StudentRegisterPage() {
 
                 {/* Form - USING SAME FIELD STRUCTURE AS LOGIN */}
                 <form className="space-y-6" onSubmit={handleSubmit}>
-                  
+
+                  {/* General Error Message */}
+                  {errors.general && (
+                    <div className="relative overflow-hidden rounded-2xl animate-slide-up-delayed">
+                      <div className="absolute inset-0 bg-gradient-to-r from-red-100/90 to-red-50/80 backdrop-blur-lg border border-red-300/70 shadow-lg" />
+                      <div className="relative p-5 text-red-700">
+                        <div className="flex items-center">
+                          <svg className="w-6 h-6 mr-4 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          <span className="font-semibold">{errors.general}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Name Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up-delayed-3">
                     <div className="group">
@@ -220,7 +247,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                        
+
                         <input
                           type="text"
                           name="firstName"
@@ -240,7 +267,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                        
+
                         <input
                           type="text"
                           name="lastName"
@@ -262,7 +289,7 @@ export default function StudentRegisterPage() {
                     <div className="relative">
                       <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                      
+
                       <input
                         type="email"
                         name="email"
@@ -284,7 +311,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                        
+
                         <input
                           type="password"
                           name="password"
@@ -304,7 +331,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-lg rounded-2xl border border-gray-200/60 group-focus-within:border-blue-400/60 group-focus-within:bg-white/60 transition-all duration-500 shadow-sm" />
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500" />
-                        
+
                         <input
                           type="password"
                           name="confirmPassword"
@@ -327,7 +354,7 @@ export default function StudentRegisterPage() {
                           <span className="text-2xl mr-3">📚</span>
                           Academic Information
                         </h3>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="group">
                             <label className="block text-sm font-bold text-gray-700 mb-2">Student ID *</label>
@@ -449,7 +476,7 @@ export default function StudentRegisterPage() {
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 backdrop-blur-lg border border-blue-400/30 group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 transition-all duration-500 shadow-lg" />
                       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-all duration-500" />
                       <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 blur opacity-50 group-hover:opacity-70 transition-all duration-500" />
-                      
+
                       <div className="relative py-4 px-6 text-white font-bold text-lg group-hover:scale-[1.02] transition-transform duration-300">
                         {loading ? (
                           <div className="flex items-center justify-center">
