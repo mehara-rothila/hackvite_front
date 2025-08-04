@@ -4,7 +4,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { authAPI } from '@/lib/api'
+import { authAPI, tokenManager } from '../../../lib/api';
 
 export default function LecturerRegisterPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })

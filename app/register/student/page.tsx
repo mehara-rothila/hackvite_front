@@ -4,8 +4,34 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { authAPI } from '@/lib/api'
+import { authAPI, tokenManager } from '../../../lib/api';
 import './student-register.css'
+
+// Generate consistent particle data that won't change between server/client
+const generateParticleData = () => {
+  const particles = []
+  // Use deterministic values based on index instead of Math.random()
+  for (let i = 0; i < 30; i++) {
+    particles.push({
+      left: ((i * 37) % 100), // Deterministic positioning
+      top: ((i * 23 + 17) % 100),
+      animationDelay: (i * 0.3) % 8,
+      animationDuration: 6 + (i % 4),
+      colorIndex: i % 6
+    })
+  }
+  return particles
+}
+
+const PARTICLE_DATA = generateParticleData()
+const PARTICLE_COLORS = [
+  'rgba(59, 130, 246, 0.8)',
+  'rgba(16, 185, 129, 0.8)', 
+  'rgba(239, 68, 68, 0.8)',
+  'rgba(168, 85, 247, 0.8)',
+  'rgba(245, 158, 11, 0.8)',
+  'rgba(236, 72, 153, 0.8)'
+]
 
 export default function StudentRegisterPage() {
   const [formData, setFormData] = useState({
@@ -23,9 +49,11 @@ export default function StudentRegisterPage() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
+    setMounted(true)
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
@@ -86,6 +114,8 @@ export default function StudentRegisterPage() {
       // Set specific field errors if possible
       if (errorMessage.toLowerCase().includes('email already exists')) {
         setErrors(prev => ({ ...prev, email: 'This email is already registered' }))
+      } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('CONNECTION_REFUSED')) {
+        setErrors(prev => ({ ...prev, general: 'Unable to connect to server. Please check if the backend is running.' }))
       } else {
         setErrors(prev => ({ ...prev, general: errorMessage }))
       }
@@ -112,9 +142,20 @@ export default function StudentRegisterPage() {
     }
   }
 
+  // Don't render particles until mounted to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      {/* Light Colorful Educational Background - SAME AS LOGIN */}
+      {/* Light Colorful Educational Background */}
       <div className="absolute inset-0">
         {/* Dynamic mouse-following gradient */}
         <div
@@ -152,23 +193,23 @@ export default function StudentRegisterPage() {
           x = (-b ± √(b²-4ac))/2a
         </div>
 
-        {/* Floating Knowledge Particles */}
-        {[...Array(30)].map((_, i) => (
+        {/* Fixed Floating Knowledge Particles - No more hydration mismatch */}
+        {PARTICLE_DATA.map((particle, i) => (
           <div
             key={i}
             className={`absolute w-3 h-3 rounded-full animate-particle-drift-${(i % 4) + 1} shadow-md`}
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${6 + Math.random() * 4}s`,
-              background: `radial-gradient(circle, ${['rgba(59, 130, 246, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(239, 68, 68, 0.8)', 'rgba(168, 85, 247, 0.8)', 'rgba(245, 158, 11, 0.8)', 'rgba(236, 72, 153, 0.8)'][i % 6]}, rgba(255,255,255,0.3))`
+              left: `${particle.left}%`,
+              top: `${particle.top}%`,
+              animationDelay: `${particle.animationDelay}s`,
+              animationDuration: `${particle.animationDuration}s`,
+              background: `radial-gradient(circle, ${PARTICLE_COLORS[particle.colorIndex]}, rgba(255,255,255,0.3))`
             }}
           />
         ))}
       </div>
 
-      {/* Light Floating Glass Orbs - SAME AS LOGIN */}
+      {/* Light Floating Glass Orbs */}
       <div className="absolute inset-0">
         <div className="absolute top-16 left-16 w-80 h-80 bg-gradient-to-br from-blue-200/30 to-cyan-200/20 rounded-full backdrop-blur-sm border border-blue-300/40 animate-glass-float-1 shadow-lg" />
         <div className="absolute top-32 right-24 w-96 h-96 bg-gradient-to-br from-purple-200/25 to-pink-200/15 rounded-full backdrop-blur-sm border border-purple-300/30 animate-glass-float-2 shadow-lg" />
@@ -180,11 +221,11 @@ export default function StudentRegisterPage() {
         <div className="absolute top-3/5 right-1/5 w-48 h-48 bg-gradient-to-br from-green-200/20 to-emerald-200/10 rounded-full backdrop-blur-sm border border-green-300/20 animate-bubble-drift-3 shadow-md" />
       </div>
 
-      {/* Main Content - SAME STRUCTURE AS LOGIN */}
+      {/* Main Content */}
       <div className="relative z-20 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
 
-          {/* Light Glass Container - SAME AS LOGIN */}
+          {/* Light Glass Container */}
           <div className="relative group">
             {/* Colorful outer glow */}
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-300/30 via-purple-300/40 to-pink-300/30 rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-1000 animate-aurora-glow" />
@@ -199,7 +240,7 @@ export default function StudentRegisterPage() {
               {/* Content */}
               <div className="relative p-10">
 
-                {/* Header - SAME STYLE AS LOGIN */}
+                {/* Header */}
                 <div className="text-center mb-10 animate-glass-fade-in">
                   <div className="mb-8">
                     <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-text-glow">
@@ -220,7 +261,7 @@ export default function StudentRegisterPage() {
                   </p>
                 </div>
 
-                {/* Form - USING SAME FIELD STRUCTURE AS LOGIN */}
+                {/* Form */}
                 <form className="space-y-6" onSubmit={handleSubmit}>
 
                   {/* General Error Message */}
@@ -281,7 +322,7 @@ export default function StudentRegisterPage() {
                     </div>
                   </div>
 
-                  {/* Email Field - SAME AS LOGIN */}
+                  {/* Email Field */}
                   <div className="group animate-slide-up-delayed-4">
                     <label className="block text-sm font-bold text-gray-700 mb-3 group-focus-within:text-blue-600 transition-all duration-500">
                       Email Address *
@@ -433,7 +474,7 @@ export default function StudentRegisterPage() {
                     </div>
                   </div>
 
-                  {/* Terms Checkbox - SAME STYLE AS LOGIN */}
+                  {/* Terms Checkbox */}
                   <div className="animate-slide-up-delayed-7">
                     <label className="flex items-center cursor-pointer group">
                       <input
@@ -466,7 +507,7 @@ export default function StudentRegisterPage() {
                     {errors.agreeToTerms && <p className="text-red-600 text-sm mt-2 ml-8">{errors.agreeToTerms}</p>}
                   </div>
 
-                  {/* Submit Button - SAME STYLE AS LOGIN */}
+                  {/* Submit Button */}
                   <div className="animate-slide-up-delayed-8">
                     <button
                       type="submit"
@@ -496,7 +537,7 @@ export default function StudentRegisterPage() {
                   </div>
                 </form>
 
-                {/* Footer Links - SAME STYLE AS LOGIN */}
+                {/* Footer Links */}
                 <div className="mt-8 text-center animate-slide-up-delayed-9">
                   <p className="text-gray-600 font-medium mb-3">
                     Want to register as a lecturer?{' '}
@@ -515,7 +556,7 @@ export default function StudentRegisterPage() {
             </div>
           </div>
 
-          {/* Back to Role Selection - SAME AS LOGIN */}
+          {/* Back to Role Selection */}
           <div className="mt-8 text-center animate-slide-up-delayed-9">
             <Link href="/register" className="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-300 cursor-pointer group font-medium">
               <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
