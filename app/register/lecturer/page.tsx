@@ -4,6 +4,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { authAPI } from '@/lib/api'
 
 export default function LecturerRegisterPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -40,15 +41,35 @@ export default function LecturerRegisterPage() {
       return
     }
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    try {
+      // Extract first and last name from full name
+      const nameParts = fullName.trim().split(' ')
+      const firstName = nameParts[0] || ''
+      const lastName = nameParts.slice(1).join(' ') || ''
 
-    console.log('Form Submitted:', { fullName, email, lecturerId, password })
-    
-    // On success
-    setIsLoading(false)
-    router.push('/lecturer/dashboard')
+      // Call real backend API
+      const authResponse = await authAPI.registerLecturer({
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        department: 'General', // You might want to add a department field
+        employeeId: lecturerId,
+        office: '', // You might want to add office field
+        phone: '' // You might want to add phone field
+      })
+
+      // Registration successful - redirect to dashboard
+      router.push('/lecturer/dashboard')
+
+    } catch (error) {
+      console.error('Registration error:', error)
+      setError(error instanceof Error ? error.message : 'Registration failed. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
+
 
   return (
     <>
